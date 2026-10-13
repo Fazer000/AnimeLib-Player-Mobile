@@ -30,7 +30,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.aistudio.animelib.mgyxza"
+        applicationId "com.aistudio.animelib.player"
         minSdk 29
         targetSdk 35
         versionCode 1
