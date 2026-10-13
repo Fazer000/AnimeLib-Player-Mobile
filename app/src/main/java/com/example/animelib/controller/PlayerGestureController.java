@@ -107,6 +107,9 @@ public class PlayerGestureController {
         hidePlaqueHandler.removeCallbacksAndMessages(null);
     }
 
+    private float initialBrightness = 0.5f;
+    private int initialVolume = 0;
+
     @SuppressLint("ClickableViewAccessibility")
     private void setupGestureListeners() {
         GestureDetector gestureDetector = new GestureDetector(activity, new GestureDetector.SimpleOnGestureListener() {
@@ -160,13 +163,17 @@ public class PlayerGestureController {
                     isVerticalBrightness = false;
                     isVerticalVolume = false;
 
+                    float curB = activity.getWindow().getAttributes().screenBrightness;
+                    initialBrightness = curB < 0 ? 0.5f : curB;
+                    initialVolume = audioManager != null ? audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) : 0;
+
                     // Hold for 2x speed
                     holdSpeedHandler.postDelayed(() -> {
                         if (isTouching && !isHorizontalSeeking && !isVerticalBrightness && !isVerticalVolume) {
                             isHoldingSpeed = true;
                             callback.onHoldSpeed(true);
                             if (holdSpeedToast != null) {
-                                holdSpeedToast.setText("2x Скорость");
+                                holdSpeedToast.setText("2.0x");
                                 holdSpeedToast.setVisibility(View.VISIBLE);
                             }
                         }
@@ -174,6 +181,10 @@ public class PlayerGestureController {
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
+                    if (isHoldingSpeed) {
+                        return true;
+                    }
+
                     float dx = event.getX() - touchStartX;
                     float dy = event.getY() - touchStartY;
 
@@ -200,11 +211,13 @@ public class PlayerGestureController {
                             showSeekPreview(previewPos, duration, deltaMs);
                         }
                     } else if (isVerticalBrightness) {
-                        float deltaBrightness = -dy / height;
-                        adjustBrightness(deltaBrightness);
+                        float deltaRatio = -dy / height;
+                        float targetBrightness = Math.max(0.01f, Math.min(1.0f, initialBrightness + deltaRatio));
+                        setBrightness(targetBrightness);
                     } else if (isVerticalVolume) {
-                        float deltaVol = -dy / height;
-                        adjustVolume(deltaVol);
+                        float deltaRatio = -dy / height;
+                        int targetVolume = Math.max(0, Math.min(maxVolume, Math.round(initialVolume + deltaRatio * maxVolume)));
+                        setVolume(targetVolume);
                     }
                     return true;
 
@@ -250,26 +263,20 @@ public class PlayerGestureController {
                 prefix, deltaMs / 1000, formatDuration(targetPos), formatDuration(duration)));
     }
 
-    private void adjustBrightness(float delta) {
+    private void setBrightness(float brightness) {
         WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
-        float current = lp.screenBrightness;
-        if (current < 0) current = 0.5f;
-        float newBrightness = Math.max(0.01f, Math.min(1.0f, current + delta * 0.05f));
-        lp.screenBrightness = newBrightness;
+        lp.screenBrightness = brightness;
         activity.getWindow().setAttributes(lp);
 
-        int percent = Math.round(newBrightness * 100);
+        int percent = Math.round(brightness * 100);
         showGesturePlaque(R.drawable.ic_brightness, percent);
     }
 
-    private void adjustVolume(float delta) {
+    private void setVolume(int volume) {
         if (audioManager == null || maxVolume <= 0) return;
-        int current = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        int step = delta > 0 ? 1 : (delta < 0 ? -1 : 0);
-        int target = Math.max(0, Math.min(maxVolume, current + step));
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, target, 0);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
 
-        int percent = (target * 100) / maxVolume;
+        int percent = (volume * 100) / maxVolume;
         showGesturePlaque(R.drawable.ic_volume, percent);
     }
 

@@ -91,6 +91,10 @@ public class VideoFiltersManager {
         if (targetView == null) return null;
         if (targetView instanceof androidx.media3.ui.PlayerView) {
             androidx.media3.ui.PlayerView pv = (androidx.media3.ui.PlayerView) targetView;
+            View videoSurface = pv.getVideoSurfaceView();
+            if (videoSurface != null) {
+                return videoSurface;
+            }
             View contentFrame = pv.findViewById(androidx.media3.ui.R.id.exo_content_frame);
             if (contentFrame != null) {
                 return contentFrame;

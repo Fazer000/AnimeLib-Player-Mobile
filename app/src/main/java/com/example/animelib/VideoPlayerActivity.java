@@ -201,6 +201,22 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         if (btnToggleFullscreen != null) btnToggleFullscreen.setOnClickListener(v -> toggleFullscreen());
         if (btnLockScreen != null) btnLockScreen.setOnClickListener(v -> lockController.lock());
 
+        if (btnPlay != null) {
+            btnPlay.setOnClickListener(v -> {
+                if (player != null) {
+                    player.play();
+                    updatePlayPauseButtons(true);
+                }
+            });
+        }
+        if (btnPause != null) {
+            btnPause.setOnClickListener(v -> {
+                if (player != null) {
+                    player.pause();
+                    updatePlayPauseButtons(false);
+                }
+            });
+        }
         if (btnNext != null) btnNext.setOnClickListener(v -> playNextVideo());
         if (btnPrev != null) btnPrev.setOnClickListener(v -> playPreviousVideo());
 
@@ -235,6 +251,31 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
         playerView.setPlayer(player);
         playerView.setResizeMode(currentResizeMode);
+        playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) visibility -> {
+            View topBar = findViewById(R.id.topBarContainer);
+            View bottomBar = findViewById(R.id.playersControlBar);
+            View centerBar = findViewById(R.id.centerControlsContainer);
+            boolean isVisible = (visibility == View.VISIBLE);
+
+            if (topBar != null) {
+                topBar.animate().cancel();
+                topBar.animate().alpha(isVisible ? 1f : 0f).setDuration(220).start();
+            }
+            if (bottomBar != null) {
+                bottomBar.animate().cancel();
+                bottomBar.animate().alpha(isVisible ? 1f : 0f).setDuration(220).start();
+            }
+            if (centerBar != null) {
+                centerBar.animate().cancel();
+                centerBar.animate().alpha(isVisible ? 1f : 0f).setDuration(220).start();
+            }
+
+            if (isVisible) {
+                systemUiController.showSystemUI();
+            } else {
+                systemUiController.hideSystemUI();
+            }
+        });
 
         if (ambientLightManager != null) {
             ambientLightManager.setPlayer(player);

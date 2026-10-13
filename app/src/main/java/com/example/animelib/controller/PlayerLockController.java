@@ -86,6 +86,8 @@ public class PlayerLockController {
     private void setupLockOverlayGestures() {
         if (layoutLockedOverlay == null) return;
 
+        View swipeUnlockPill = layoutLockedOverlay.findViewById(com.example.animelib.R.id.swipeUnlockPill);
+
         layoutLockedOverlay.setOnTouchListener(new View.OnTouchListener() {
             private float downY = 0;
 
@@ -93,19 +95,38 @@ public class PlayerLockController {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        downY = event.getY();
+                        downY = event.getRawY();
                         if (lockedStatusBadge != null) {
                             lockedStatusBadge.setVisibility(View.VISIBLE);
                             handler.removeCallbacksAndMessages(null);
                             handler.postDelayed(() -> lockedStatusBadge.setVisibility(View.GONE), 2000);
                         }
+                        if (swipeUnlockPill != null) {
+                            swipeUnlockPill.animate().cancel();
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (swipeUnlockPill != null) {
+                            float dy = downY - event.getRawY();
+                            if (dy > 0) {
+                                swipeUnlockPill.setTranslationY(-dy);
+                            } else {
+                                swipeUnlockPill.setTranslationY(0f);
+                            }
+                        }
                         return true;
 
                     case MotionEvent.ACTION_UP:
-                        float deltaY = downY - event.getY();
-                        // Свайп вверх более чем на 120px для разблокировки экрана
+                    case MotionEvent.ACTION_CANCEL:
+                        float deltaY = downY - event.getRawY();
                         if (deltaY > 120) {
                             unlock();
+                            if (swipeUnlockPill != null) {
+                                swipeUnlockPill.setTranslationY(0f);
+                            }
+                        } else if (swipeUnlockPill != null) {
+                            swipeUnlockPill.animate().translationY(0f).setDuration(220).start();
                         }
                         return true;
                 }

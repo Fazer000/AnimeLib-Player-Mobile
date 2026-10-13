@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.animelib.R;
+import com.example.animelib.data.DatabaseManager;
 import android.util.Log;
 
 public class CustomToast {
@@ -426,41 +427,20 @@ public class CustomToast {
     }
 
     public static boolean isDarkTheme(Context context) {
-        if (context == null) return false;
-
-        // 1. Проверяем сохраненную настройку темы пользователя через ThemeUtils
-        try {
-            int savedTheme = ThemeUtils.getSavedThemePreference(context);
-            if (savedTheme == ThemeUtils.THEME_LIGHT) {
-                return false;
-            } else if (savedTheme == ThemeUtils.THEME_DARK) {
-                return true;
-            }
-        } catch (Exception ignored) {}
-
-        // 2. Проверяем глобальный AppCompatDelegate режим
-        try {
-            int defaultNight = androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode();
-            if (defaultNight == androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO) {
-                return false;
-            } else if (defaultNight == androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES) {
-                return true;
-            }
-        } catch (Exception ignored) {}
-
-        // 3. Проверяем локальный режим активности
-        if (context instanceof androidx.appcompat.app.AppCompatActivity) {
-            try {
-                int localNight = ((androidx.appcompat.app.AppCompatActivity) context).getDelegate().getLocalNightMode();
-                if (localNight == androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO) {
-                    return false;
-                } else if (localNight == androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES) {
-                    return true;
-                }
-            } catch (Exception ignored) {}
+        if (context == null) return true;
+        if (context instanceof Activity && context.getClass().getSimpleName().contains("VideoPlayerActivity")) {
+            return true;
         }
 
-        // 4. Проверяем системную конфигурацию UI_MODE_NIGHT_MASK
+        try {
+            int themeSetting = DatabaseManager.getInstance(context).loadThemeSetting();
+            if (themeSetting == ThemeUtils.THEME_DARK) {
+                return true;
+            } else if (themeSetting == ThemeUtils.THEME_LIGHT) {
+                return false;
+            }
+        } catch (Exception ignored) {}
+
         try {
             int nightMode = context.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
             if (nightMode == android.content.res.Configuration.UI_MODE_NIGHT_NO) {
@@ -470,24 +450,6 @@ public class CustomToast {
             }
         } catch (Exception ignored) {}
 
-        // 5. Фолбэк: определяем тему по цвету текста темы (в светлой теме primaryTextColor темный)
-        try {
-            TypedValue typedValue = new TypedValue();
-            if (context.getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
-                    || context.getTheme().resolveAttribute(R.attr.primaryTextColor, typedValue, true)) {
-                int color;
-                if (typedValue.resourceId != 0) {
-                    color = androidx.core.content.ContextCompat.getColor(context, typedValue.resourceId);
-                } else {
-                    color = typedValue.data;
-                }
-                double luminance = (0.299 * android.graphics.Color.red(color) 
-                        + 0.587 * android.graphics.Color.green(color) 
-                        + 0.114 * android.graphics.Color.blue(color)) / 255.0;
-                return luminance > 0.5;
-            }
-        } catch (Exception ignored) {}
-
-        return false;
+        return true;
     }
 }

@@ -94,7 +94,7 @@
                 android:background="@android:color/transparent"
                 app:shutter_background_color="@android:color/transparent"
                 app:surface_type="texture_view"
-                app:animation_enabled="false"
+                app:animation_enabled="true"
                 app:controller_layout_id="@layout/custom_player_controller"
                 app:repeat_toggle_modes="none"
                 app:show_buffering="never"

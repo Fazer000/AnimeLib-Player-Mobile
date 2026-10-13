@@ -294,22 +294,20 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
                     final String finalLatestTag = latestTag;
                     final String finalReleaseUrl = releaseUrl;
 
-                    if (getContext() instanceof Activity) {
-                        ((Activity) getContext()).runOnUiThread(() -> {
-                            if (updateProgressBar != null) updateProgressBar.setVisibility(View.GONE);
-                            if (ivUpdateArrow != null) ivUpdateArrow.setVisibility(View.VISIBLE);
+                    new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                        if (updateProgressBar != null) updateProgressBar.setVisibility(View.GONE);
+                        if (ivUpdateArrow != null) ivUpdateArrow.setVisibility(View.VISIBLE);
 
-                            if (finalHasUpdate) {
-                                CustomToast.showInfo(getContext(), "Доступно обновление: " + finalLatestTag);
-                                try {
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalReleaseUrl));
-                                    getContext().startActivity(intent);
-                                } catch (Exception ignored) {}
-                            } else {
-                                CustomToast.showInfo(getContext(), "У вас актуальная версия! (Fazer000/AnimeLib-Player-Mobile)");
-                            }
-                        });
-                    }
+                        if (finalHasUpdate) {
+                            CustomToast.showInfo(getContext(), "Доступно обновление: " + finalLatestTag);
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalReleaseUrl));
+                                getContext().startActivity(intent);
+                            } catch (Exception ignored) {}
+                        } else {
+                            CustomToast.showInfo(getContext(), "У вас актуальная версия!");
+                        }
+                    });
                 }).start();
             });
         }
