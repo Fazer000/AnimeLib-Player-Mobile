@@ -262,6 +262,30 @@ public class DatabaseManager {
         }
     }
 
+    public void saveTestModeSetting(boolean enabled) {
+        executor.execute(() -> {
+            try {
+                AppSettings settings = db.appSettingsDao().getSettingsSync();
+                if (settings == null) {
+                    settings = new AppSettings();
+                }
+                settings.setTestModeEnabled(enabled);
+                db.appSettingsDao().upsert(settings);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to save test mode setting", e);
+            }
+        });
+    }
+
+    public boolean loadTestModeSetting() {
+        try {
+            AppSettings settings = db.appSettingsDao().getSettingsSync();
+            return settings == null || settings.isTestModeEnabled();
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
     public void saveSubtitlesEnabledSetting(boolean subtitlesEnabled) {
         executor.execute(() -> {
             try {

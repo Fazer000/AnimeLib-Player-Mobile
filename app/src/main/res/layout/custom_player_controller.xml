@@ -107,45 +107,7 @@
                 android:textSize="18sp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:layout_marginBottom="4dp"
                 android:text="Загрузка..."/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/currentTeamName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#E0E0E0"
-                    android:textSize="12sp"
-                    android:text="Dream Cast"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#E0E0E0"
-                    android:textSize="12sp"
-                    android:layout_marginHorizontal="10dp"
-                    android:text="—"/>
-
-                <TextView
-                    android:id="@+id/currentEpisodeNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#E0E0E0"
-                    android:textSize="12sp"
-                    android:text="1 серия"/>
-
-                <TextView
-                    android:id="@+id/currentEpisodeName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#E0E0E0"
-                    android:textSize="12sp"
-                    android:text=""/>
-            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
 
@@ -489,12 +451,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                app:played_color="@android:color/transparent"
+                app:played_color="#A855F7"
                 app:scrubber_color="@color/white_color"
                 app:bar_height="4dp"
                 app:touch_target_height="24dp"
-                app:buffered_color="@android:color/transparent"
-                app:unplayed_color="@android:color/transparent"
+                app:buffered_color="#80FFFFFF"
+                app:unplayed_color="#4DFFFFFF"
                 app:ad_marker_color="@android:color/transparent"
                 app:played_ad_marker_color="@android:color/transparent"
                 app:scrubber_drawable="@drawable/custom_scrubber"

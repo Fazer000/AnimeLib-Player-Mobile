@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvVideoCount;
     private ImageButton btnSort;
     private ImageButton btnRefresh;
+    private ImageButton btnTestMode;
     private EditText etSearchVideos;
     private ImageButton btnClearSearch;
     private RecyclerView rvFolders;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvEmptyTitle;
     private TextView tvEmptySubtitle;
     private MaterialButton btnEmptyAction;
+    private MaterialButton btnLaunchTestMode;
 
     // Data
     private final List<VideoItem> allVideos = new ArrayList<>();
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         tvVideoCount = findViewById(R.id.tvVideoCount);
         btnSort = findViewById(R.id.btnSort);
         btnRefresh = findViewById(R.id.btnRefresh);
+        btnTestMode = findViewById(R.id.btnTestMode);
         etSearchVideos = findViewById(R.id.etSearchVideos);
         btnClearSearch = findViewById(R.id.btnClearSearch);
         rvFolders = findViewById(R.id.rvFolders);
@@ -119,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         tvEmptyTitle = findViewById(R.id.tvEmptyTitle);
         tvEmptySubtitle = findViewById(R.id.tvEmptySubtitle);
         btnEmptyAction = findViewById(R.id.btnEmptyAction);
+        btnLaunchTestMode = findViewById(R.id.btnLaunchTestMode);
 
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.purple_primary));
         swipeRefreshLayout.setOnRefreshListener(this::loadVideosFromStorage);
@@ -140,6 +144,12 @@ public class MainActivity extends AppCompatActivity {
     private void setupSearchAndListeners() {
         btnRefresh.setOnClickListener(v -> loadVideosFromStorage());
         btnSort.setOnClickListener(v -> showSortDialog());
+        if (btnTestMode != null) {
+            btnTestMode.setOnClickListener(v -> showTestModeMenu());
+        }
+        if (btnLaunchTestMode != null) {
+            btnLaunchTestMode.setOnClickListener(v -> launchTestPlayerWithDemoPlaylist());
+        }
 
         etSearchVideos.addTextChangedListener(new TextWatcher() {
             @Override
@@ -326,7 +336,43 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void showTestModeMenu() {
+        boolean isTestModeOn = databaseManager.loadTestModeSetting();
+        String toggleText = isTestModeOn ? "Скрыть тестовые видео в списке" : "Показывать тестовые видео в списке";
+
+        String[] options = new String[]{
+                "Запустить тест плеера (демо-видео)",
+                toggleText
+        };
+
+        new AlertDialog.Builder(this)
+                .setTitle("Тест-режим плеера")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        launchTestPlayerWithDemoPlaylist();
+                    } else if (which == 1) {
+                        databaseManager.saveTestModeSetting(!isTestModeOn);
+                        loadVideosFromStorage();
+                        com.example.animelib.util.CustomToast.showInfo(this,
+                                !isTestModeOn ? "Тестовые видео добавлены в список" : "Тестовые видео скрыты");
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
+    }
+
+    private void launchTestPlayerWithDemoPlaylist() {
+        List<VideoItem> testItems = videoRepository.getTestVideos();
+        if (testItems.isEmpty()) return;
+        VideoItem first = testItems.get(0);
+        openVideoInPlayer(first, testItems);
+    }
+
     private void openVideoInPlayer(VideoItem video) {
+        openVideoInPlayer(video, displayedVideos);
+    }
+
+    private void openVideoInPlayer(VideoItem video, List<VideoItem> playlist) {
         Intent intent = new Intent(this, VideoPlayerActivity.class);
         String targetPath = video.getPath() != null && !video.getPath().isEmpty()
                 ? video.getPath() : video.getUriString();
@@ -339,8 +385,10 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> playlistTitles = new ArrayList<>();
         int currentIndex = 0;
 
-        for (int i = 0; i < displayedVideos.size(); i++) {
-            VideoItem item = displayedVideos.get(i);
+        List<VideoItem> targetPlaylist = (playlist != null && !playlist.isEmpty()) ? playlist : displayedVideos;
+
+        for (int i = 0; i < targetPlaylist.size(); i++) {
+            VideoItem item = targetPlaylist.get(i);
             String itemPath = item.getPath() != null && !item.getPath().isEmpty() ? item.getPath() : item.getUriString();
             playlistPaths.add(itemPath);
             playlistTitles.add(item.getTitle());

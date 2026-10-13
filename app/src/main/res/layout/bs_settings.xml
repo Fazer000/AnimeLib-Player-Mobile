@@ -77,60 +77,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- 1. Quality -->
-                <LinearLayout
-                    android:id="@+id/qualityOption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/bg_m3_item_top"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp"
-                    android:layout_marginBottom="3dp">
 
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_quality"
-                        app:tint="@color/primary_text_color"
-                        android:layout_marginEnd="12dp"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Качество"
-                        android:textColor="@color/primary_text_color"
-                        android:textSize="15.5sp"
-                        android:fontFamily="@font/open_sans_bold"/>
-
-                    <TextView
-                        android:id="@+id/currentQualityText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/accent_text_color"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/open_sans"
-                        android:text="1080p"/>
-
-                    <TextView
-                        android:id="@+id/currentQualityTagText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="1.5dp"
-                        android:background="@drawable/tag_fhd_background"
-                        android:text="FHD"
-                        android:textStyle="bold"
-                        android:textSize="9.5sp"
-                        android:textColor="#FFFFFF"
-                        android:visibility="gone"/>
-                </LinearLayout>
 
                 <!-- 2. Video Server -->
                 <LinearLayout
@@ -480,46 +427,6 @@
                         android:checked="false"/>
                 </LinearLayout>
 
-                <!-- 5. 4K Video -->
-                <LinearLayout
-                    android:id="@+id/fourKOption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/bg_m3_item_middle"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="12dp"
-                    android:layout_marginBottom="3dp">
-
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_4k"
-                        app:tint="@color/primary_text_color"
-                        android:layout_marginEnd="12dp"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="4K видео"
-                        android:textColor="@color/primary_text_color"
-                        android:textSize="15.5sp"
-                        android:fontFamily="@font/open_sans_bold"/>
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/fourKSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        app:trackTint="@color/switch_track_tint"
-                        app:thumbTint="@color/switch_thumb_tint"
-                        android:checked="false"/>
-                </LinearLayout>
-
                 <!-- 6. Video Filters -->
                 <LinearLayout
                     android:id="@+id/videoFiltersOption"
@@ -586,7 +493,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Пропуск опенинга"
+                        android:text="Пропуск сегмента"
                         android:textColor="@color/primary_text_color"
                         android:textSize="15.5sp"
                         android:fontFamily="@font/open_sans_bold"/>

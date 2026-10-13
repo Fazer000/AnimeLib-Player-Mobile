@@ -18,4 +18,9 @@ public interface VideoRepository {
      * @return true, если хотя бы у одного видео прогресс изменился.
      */
     boolean refreshWatchProgress(List<VideoItem> items);
+
+    /**
+     * Возвращает список тестовых медиафайлов для демо-режима плеера.
+     */
+    List<VideoItem> getTestVideos();
 }

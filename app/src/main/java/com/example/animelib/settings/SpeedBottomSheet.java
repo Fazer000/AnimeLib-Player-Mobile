@@ -177,7 +177,7 @@ public class SpeedBottomSheet extends FlexibleBottomSheetDialog {
             } else if (speed < 10.0f) {
                 speedStateLabel.setText("Быстрый просмотр");
             } else {
-                speedStateLabel.setText("Режим пропуска опенинга");
+                speedStateLabel.setText("Режим пропуска сегмента");
             }
         }
 

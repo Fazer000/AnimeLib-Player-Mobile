@@ -2,6 +2,8 @@ package com.example.animelib.settings;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,14 +138,6 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
             exitBtn.setOnClickListener(v -> dismiss());
         }
 
-        // Quality (Fixed Native in local files)
-        View qualityOption = view.findViewById(R.id.qualityOption);
-        TextView currentQualityText = view.findViewById(R.id.currentQualityText);
-        if (currentQualityText != null) currentQualityText.setText("Оригинал (Native)");
-        if (qualityOption != null) {
-            qualityOption.setOnClickListener(v -> CustomToast.showInfo(getContext(), "Качество видео определяется исходным файлом"));
-        }
-
         // Hide video server option (not applicable for local files)
         View videoServerOption = view.findViewById(R.id.videoServerOption);
         if (videoServerOption != null) videoServerOption.setVisibility(View.GONE);
@@ -237,12 +231,87 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
             themeOption.setOnClickListener(v -> showThemeDialog());
         }
 
-        // App Version
+        // Bug Report (GitHub)
+        View bugReportOption = view.findViewById(R.id.bugReportOption);
+        if (bugReportOption != null) {
+            bugReportOption.setOnClickListener(v -> {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Fazer000/AnimeLib-Player-Mobile/issues"));
+                    getContext().startActivity(intent);
+                } catch (Exception e) {
+                    CustomToast.showWarning(getContext(), "Не удалось открыть браузер");
+                }
+            });
+        }
+
+        // Check for Updates via GitHub
         TextView appVersionText = view.findViewById(R.id.appVersionText);
-        if (appVersionText != null) appVersionText.setText("Версия 1.0.0-beta");
+        if (appVersionText != null) appVersionText.setText("Версия 1.0.0 (Fazer000)");
         View checkForUpdatesOption = view.findViewById(R.id.checkForUpdatesOption);
+        View updateProgressBar = view.findViewById(R.id.updateProgressBar);
+        View ivUpdateArrow = view.findViewById(R.id.ivUpdateArrow);
         if (checkForUpdatesOption != null) {
-            checkForUpdatesOption.setOnClickListener(v -> CustomToast.showInfo(getContext(), "AnimeLib Player v1.0.0-beta"));
+            checkForUpdatesOption.setOnClickListener(v -> {
+                if (updateProgressBar != null) updateProgressBar.setVisibility(View.VISIBLE);
+                if (ivUpdateArrow != null) ivUpdateArrow.setVisibility(View.GONE);
+
+                new Thread(() -> {
+                    boolean hasUpdate = false;
+                    String latestTag = "v1.0.0";
+                    String releaseUrl = "https://github.com/Fazer000/AnimeLib-Player-Mobile/releases";
+                    try {
+                        java.net.URL url = new java.net.URL("https://api.github.com/repos/Fazer000/AnimeLib-Player-Mobile/releases/latest");
+                        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("GET");
+                        conn.setRequestProperty("User-Agent", "AnimeLib-Player-Android");
+                        conn.setConnectTimeout(5000);
+                        conn.setReadTimeout(5000);
+
+                        if (conn.getResponseCode() == 200) {
+                            java.io.InputStream is = conn.getInputStream();
+                            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(is));
+                            StringBuilder sb = new StringBuilder();
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                sb.append(line);
+                            }
+                            reader.close();
+
+                            org.json.JSONObject json = new org.json.JSONObject(sb.toString());
+                            if (json.has("tag_name")) {
+                                latestTag = json.getString("tag_name");
+                                if (json.has("html_url")) {
+                                    releaseUrl = json.getString("html_url");
+                                }
+                                if (!"v1.0.0".equalsIgnoreCase(latestTag) && !"1.0.0".equalsIgnoreCase(latestTag)) {
+                                    hasUpdate = true;
+                                }
+                            }
+                        }
+                    } catch (Exception ignored) {}
+
+                    final boolean finalHasUpdate = hasUpdate;
+                    final String finalLatestTag = latestTag;
+                    final String finalReleaseUrl = releaseUrl;
+
+                    if (getContext() instanceof Activity) {
+                        ((Activity) getContext()).runOnUiThread(() -> {
+                            if (updateProgressBar != null) updateProgressBar.setVisibility(View.GONE);
+                            if (ivUpdateArrow != null) ivUpdateArrow.setVisibility(View.VISIBLE);
+
+                            if (finalHasUpdate) {
+                                CustomToast.showInfo(getContext(), "Доступно обновление: " + finalLatestTag);
+                                try {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalReleaseUrl));
+                                    getContext().startActivity(intent);
+                                } catch (Exception ignored) {}
+                            } else {
+                                CustomToast.showInfo(getContext(), "У вас актуальная версия! (Fazer000/AnimeLib-Player-Mobile)");
+                            }
+                        });
+                    }
+                }).start();
+            });
         }
 
         setCancelable(true);
@@ -250,10 +319,9 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void showSpeedDialog() {
+        dismiss();
         SpeedBottomSheet dialog = new SpeedBottomSheet(getContext(), currentPlaybackSpeed, speed -> {
             currentPlaybackSpeed = speed;
-            TextView currentSpeedText = findViewById(R.id.currentSpeedText);
-            if (currentSpeedText != null) currentSpeedText.setText(String.format(java.util.Locale.US, "%.1fx", speed));
             if (speedListener != null) speedListener.onSpeedChanged(speed);
         });
         dialog.setOnBackPressedListener(this::show);
@@ -261,10 +329,9 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void showResizeModeDialog() {
+        dismiss();
         ResizeModeBottomSheet dialog = new ResizeModeBottomSheet(getContext(), currentResizeMode, mode -> {
             currentResizeMode = mode;
-            TextView currentResizeModeText = findViewById(R.id.currentResizeModeText);
-            if (currentResizeModeText != null) currentResizeModeText.setText(getResizeModeName(mode));
             if (onResizeModeChangedListener != null) onResizeModeChangedListener.onResizeModeChanged(mode);
         });
         dialog.setOnBackPressedListener(this::show);
@@ -272,6 +339,7 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void showSurroundDialog() {
+        dismiss();
         com.example.animelib.data.DatabaseManager db = com.example.animelib.data.DatabaseManager.getInstance(getContext());
         SurroundSoundBottomSheet dialog = new SurroundSoundBottomSheet(
                 getContext(),
@@ -295,10 +363,9 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void showSkipDurationDialog() {
+        dismiss();
         SkipDurationBottomSheet dialog = new SkipDurationBottomSheet(getContext(), longSkipDuration, duration -> {
             longSkipDuration = duration;
-            TextView currentSkipText = findViewById(R.id.currentSkipDurationText);
-            if (currentSkipText != null) currentSkipText.setText(duration + " сек");
             if (onSkipDurationChangedListener != null) onSkipDurationChangedListener.onSkipDurationChanged(duration);
         });
         dialog.setOnBackPressedListener(this::show);
@@ -306,6 +373,7 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void showVideoFiltersDialog() {
+        dismiss();
         VideoFiltersBottomSheet dialog = new VideoFiltersBottomSheet(
                 getContext(),
                 filterBrightness, filterContrast, filterSaturation, filterGamma, filterHue,
@@ -325,6 +393,7 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void showSubtitlesDialog() {
+        dismiss();
         SubtitlesBottomSheet dialog = new SubtitlesBottomSheet(
                 getContext(),
                 subtitlesEnabled,
@@ -346,10 +415,9 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void showThemeDialog() {
+        dismiss();
         ThemeSelectionBottomSheet dialog = new ThemeSelectionBottomSheet(getContext(), currentTheme, theme -> {
             currentTheme = theme;
-            TextView currentThemeText = findViewById(R.id.currentThemeText);
-            if (currentThemeText != null) currentThemeText.setText(ThemeUtils.getThemeName(theme));
             if (onThemeChangedListener != null) onThemeChangedListener.onThemeChanged(theme);
         });
         dialog.setOnBackPressedListener(this::show);

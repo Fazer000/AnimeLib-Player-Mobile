@@ -46,6 +46,11 @@ public class LocalVideoRepository implements VideoRepository {
             scanDirectoryFallback(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), list);
         }
 
+        // Если включен тест-режим или локальных файлов нет, всегда добавляем тестовые видео
+        if (list.isEmpty() || databaseManager.loadTestModeSetting()) {
+            list.addAll(TestMediaProvider.getTestVideoItems());
+        }
+
         // Синхронизация сохраненного прогресса из Room Database
         for (VideoItem item : list) {
             if (item.getPath() != null) {
@@ -57,6 +62,20 @@ public class LocalVideoRepository implements VideoRepository {
         }
 
         return list;
+    }
+
+    @Override
+    public List<VideoItem> getTestVideos() {
+        List<VideoItem> testList = TestMediaProvider.getTestVideoItems();
+        for (VideoItem item : testList) {
+            if (item.getPath() != null) {
+                VideoPlaybackHistoryEntity history = databaseManager.getVideoHistory(item.getPath());
+                if (history != null) {
+                    item.setLastPositionMs(history.getLastPositionMs());
+                }
+            }
+        }
+        return testList;
     }
 
     @Override

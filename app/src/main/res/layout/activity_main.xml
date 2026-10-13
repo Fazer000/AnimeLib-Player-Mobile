@@ -50,6 +50,17 @@
 
         </LinearLayout>
 
+        <!-- Test Mode Button -->
+        <ImageButton
+            android:id="@+id/btnTestMode"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_play"
+            app:tint="@color/purple_primary"
+            android:padding="8dp"
+            android:contentDescription="Тест плеера" />
+
         <!-- Sort Button -->
         <ImageButton
             android:id="@+id/btnSort"
@@ -208,6 +219,17 @@
                 android:text="Предоставить доступ"
                 android:textColor="@color/white_color"
                 app:backgroundTint="@color/purple_primary"
+                app:cornerRadius="10dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLaunchTestMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Запустить тест плеера"
+                android:textColor="@color/purple_primary"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                app:strokeColor="@color/purple_primary"
                 app:cornerRadius="10dp" />
 
         </LinearLayout>

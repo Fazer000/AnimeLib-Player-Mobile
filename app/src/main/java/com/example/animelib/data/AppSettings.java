@@ -33,6 +33,8 @@ public class AppSettings {
     private float filterGamma = 1.0f;
     private float filterHue = 0f;
 
+    private boolean testModeEnabled = true;
+
     public static final int REPLIES_UNLIMITED = -1;
     private boolean disableCommentsInPlayer = false;
     private int commentRepliesLimit = 3;
@@ -230,5 +232,13 @@ public class AppSettings {
 
     public void setCommentRepliesLimit(int commentRepliesLimit) {
         this.commentRepliesLimit = commentRepliesLimit;
+    }
+
+    public boolean isTestModeEnabled() {
+        return testModeEnabled;
+    }
+
+    public void setTestModeEnabled(boolean testModeEnabled) {
+        this.testModeEnabled = testModeEnabled;
     }
 }

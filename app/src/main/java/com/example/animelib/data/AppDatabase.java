@@ -11,7 +11,7 @@ import com.example.animelib.data.entity.VideoPlaybackHistoryEntity;
 @Database(entities = {
         AppSettings.class,
         VideoPlaybackHistoryEntity.class
-}, version = 29, exportSchema = false)
+}, version = 30, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
 
