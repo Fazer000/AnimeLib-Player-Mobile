@@ -44,6 +44,10 @@ public class CustomToast {
         show(context, message, TYPE_WARNING);
     }
 
+    public static void showError(Context context, String message) {
+        show(context, message, TYPE_WARNING);
+    }
+
     public static void showSuccess(Context context, String message) {
         show(context, message, TYPE_SUCCESS);
     }

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.example.animelib.R;
 import com.example.animelib.models.SubtitleData;
+import com.example.animelib.ui.UpdateActivity;
 import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.FlexibleBottomSheetDialog;
 import com.example.animelib.util.ThemeUtils;
@@ -246,72 +247,43 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
         TextView appVersionText = view.findViewById(R.id.appVersionText);
         if (appVersionText != null) appVersionText.setText("Версия 1.0.0 (Fazer000)");
         View checkForUpdatesOption = view.findViewById(R.id.checkForUpdatesOption);
-        View updateProgressBar = view.findViewById(R.id.updateProgressBar);
-        View ivUpdateArrow = view.findViewById(R.id.ivUpdateArrow);
         if (checkForUpdatesOption != null) {
             checkForUpdatesOption.setOnClickListener(v -> {
-                if (updateProgressBar != null) updateProgressBar.setVisibility(View.VISIBLE);
-                if (ivUpdateArrow != null) ivUpdateArrow.setVisibility(View.GONE);
-
-                new Thread(() -> {
-                    boolean hasUpdate = false;
-                    String latestTag = "v1.0.0";
-                    String releaseUrl = "https://github.com/Fazer000/AnimeLib-Player-Mobile/releases";
-                    try {
-                        java.net.URL url = new java.net.URL("https://api.github.com/repos/Fazer000/AnimeLib-Player-Mobile/releases/latest");
-                        java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("GET");
-                        conn.setRequestProperty("User-Agent", "AnimeLib-Player-Android");
-                        conn.setConnectTimeout(5000);
-                        conn.setReadTimeout(5000);
-
-                        if (conn.getResponseCode() == 200) {
-                            java.io.InputStream is = conn.getInputStream();
-                            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(is));
-                            StringBuilder sb = new StringBuilder();
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                sb.append(line);
-                            }
-                            reader.close();
-
-                            org.json.JSONObject json = new org.json.JSONObject(sb.toString());
-                            if (json.has("tag_name")) {
-                                latestTag = json.getString("tag_name");
-                                if (json.has("html_url")) {
-                                    releaseUrl = json.getString("html_url");
-                                }
-                                if (!"v1.0.0".equalsIgnoreCase(latestTag) && !"1.0.0".equalsIgnoreCase(latestTag)) {
-                                    hasUpdate = true;
-                                }
-                            }
-                        }
-                    } catch (Exception ignored) {}
-
-                    final boolean finalHasUpdate = hasUpdate;
-                    final String finalLatestTag = latestTag;
-                    final String finalReleaseUrl = releaseUrl;
-
-                    new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
-                        if (updateProgressBar != null) updateProgressBar.setVisibility(View.GONE);
-                        if (ivUpdateArrow != null) ivUpdateArrow.setVisibility(View.VISIBLE);
-
-                        if (finalHasUpdate) {
-                            CustomToast.showInfo(getContext(), "Доступно обновление: " + finalLatestTag);
-                            try {
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalReleaseUrl));
-                                getContext().startActivity(intent);
-                            } catch (Exception ignored) {}
-                        } else {
-                            CustomToast.showInfo(getContext(), "У вас актуальная версия!");
-                        }
-                    });
-                }).start();
+                try {
+                    Intent intent = new Intent(getContext(), UpdateActivity.class);
+                    getContext().startActivity(intent);
+                    dismiss();
+                } catch (Exception e) {
+                    CustomToast.showError(getContext(), "Не удалось открыть страницу обновлений");
+                }
             });
         }
 
         setCancelable(true);
         setCanceledOnTouchOutside(true);
+    }
+
+    private boolean isVersionNewer(String latestTag, String currentVersion) {
+        if (latestTag == null || latestTag.isEmpty()) return false;
+        String l = latestTag.replaceAll("(?i)^v", "").replaceAll("-.*$", "").trim();
+        String c = currentVersion.replaceAll("(?i)^v", "").replaceAll("-.*$", "").trim();
+        if (l.equalsIgnoreCase(c)) return false;
+        String[] lParts = l.split("\\.");
+        String[] cParts = c.split("\\.");
+        int length = Math.max(lParts.length, cParts.length);
+        for (int i = 0; i < length; i++) {
+            int lNum = 0;
+            int cNum = 0;
+            try {
+                if (i < lParts.length) lNum = Integer.parseInt(lParts[i].replaceAll("[^0-9]", ""));
+            } catch (Exception ignored) {}
+            try {
+                if (i < cParts.length) cNum = Integer.parseInt(cParts[i].replaceAll("[^0-9]", ""));
+            } catch (Exception ignored) {}
+            if (lNum > cNum) return true;
+            if (lNum < cNum) return false;
+        }
+        return !l.equalsIgnoreCase(c);
     }
 
     private void showSpeedDialog() {

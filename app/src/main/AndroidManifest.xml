@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".AnimeLibApplication"
@@ -50,6 +51,12 @@
                 <data android:mimeType="video/*" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.example.animelib.ui.UpdateActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AnimeLIB"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
