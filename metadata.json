@@ -1,0 +1,8 @@
+{
+  "name": "AnimeLib Player",
+  "description": "AnimeLib Player — offline video player for playing local video files with advanced playback features, gestures, 3D sound, and video file explorer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

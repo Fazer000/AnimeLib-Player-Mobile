@@ -1,0 +1,56 @@
+{
+    "data": [
+        {
+            "id": 16135,
+            "name": "Kaifuku Jutsushi no Yarinaoshi",
+            "rus_name": "Маг-целитель: Новый старт",
+            "eng_name": "Redo of Healer",
+            "model": "anime",
+            "slug": "kaifuku-jutsushi-no-yarinaoshi-anime",
+            "slug_url": "16135--kaifuku-jutsushi-no-yarinaoshi-anime",
+            "cover": {
+                "filename": "63b3f101-2bc9-4848-9c17-8c7819bc96d1",
+                "thumbnail": "https://cover.imglib.info/uploads/anime/16135/cover/63b3f101-2bc9-4848-9c17-8c7819bc96d1_thumb.jpg",
+                "default": "https://cover.imglib.info/uploads/anime/16135/cover/63b3f101-2bc9-4848-9c17-8c7819bc96d1.jpg",
+                "md": "https://cover.imglib.info/uploads/anime/16135/cover/63b3f101-2bc9-4848-9c17-8c7819bc96d1.jpg"
+            },
+            "ageRestriction": {
+                "id": 4,
+                "label": "18+"
+            },
+            "site": 5,
+            "type": {
+                "id": 16,
+                "label": "TV Сериал"
+            },
+            "releaseDate": "2021-01-13",
+            "rating": {
+                "average": "7.81",
+                "averageFormated": "7.8",
+                "votes": 2305,
+                "votesFormated": "2.3 K",
+                "user": 0
+            },
+            "status": {
+                "id": 2,
+                "label": "Завершён"
+            },
+            "releaseDateString": "13 января 2021 г.",
+            "shiki_rate": null
+        }
+    ],
+    "links": {
+        "first": "http://api.cdnlibs.org/api/anime?page=1",
+        "last": null,
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "path": "http://api.cdnlibs.org/api/anime",
+        "per_page": 60,
+        "to": 1,
+        "seed": "50449bf72f88d7eb6305fc16af92e753"
+    }
+}

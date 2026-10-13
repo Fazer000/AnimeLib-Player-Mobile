@@ -1,0 +1,153 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.AnimeLIB" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- Custom Colors -->
+        <item name="primaryColor">@color/dt_primary_color</item>
+        <item name="secondaryColor">@color/dt_secondary_color</item>
+        <item name="blueColor">@color/dt_blue_color</item>
+        <item name="alphaPrimaryColor">@color/dt_alpha_primary_color</item>
+
+        <item name="statusBarColor">@color/dt_header_color</item>
+
+        <item name="borderColor">@color/dt_border_color</item>
+        <item name="alphaBorderColor">@color/dt_alpha_border_color</item>
+
+        <item name="lineColor">@color/dt_line_color</item>
+
+        <item name="primaryTextColor">@color/dt_primary_text_color</item>
+        <item name="secondaryTextColor">@color/dt_secondary_text_color</item>
+        <item name="accentTextColor">@color/dt_accent_text_color</item>
+
+        <item name="rvItemBackground">@color/dt_player_item_background</item>
+        <item name="cardBackgroundColor">@color/dt_card_background</item>
+        <item name="bookmarkCardBackground">@color/dt_bookmark_card_bg</item>
+        <item name="cardElevationColor">@color/dt_card_elevation</item>
+        <item name="ratingStarColor">@color/dt_rating_star</item>
+        <item name="playerItemBackground">@color/dt_player_item_background</item>
+        <item name="relatedPanelBackground">@color/dt_related_panel_background</item>
+        <item name="relatedTitleColor">@color/dt_related_title_color</item>
+        <item name="relatedSubtitleColor">@color/dt_related_subtitle_color</item>
+
+        <!-- System Color -->
+        <item name="colorPrimary">@color/dt_primary_color</item>
+        <item name="colorPrimaryVariant">@color/dt_alpha_primary_color</item>
+        <item name="colorOnPrimary">@color/dt_secondary_color</item>
+        <item name="colorSecondary">@color/white_color</item>
+
+        <item name="android:windowBackground">@color/dt_header_color</item>
+        <item name="android:navigationBarColor">@color/dt_primary_color</item>
+
+        <item name="android:iconTint">@color/dt_primary_color</item>
+
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/dt_header_color</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Global font family -->
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textColor">@color/dt_primary_text_color</item>
+
+        <item name="logoDrawable">@drawable/ic_logo_non_back_night</item>
+
+<!--        <item name="android:fitsSystemWindows">true</item>-->
+    </style>
+
+    <style name="SplashScreenTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/dt_header_color</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/animelib_logo</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item> <!-- Цвет круга behind иконки -->
+        <item name="postSplashScreenTheme">@style/Theme.AnimeLIB</item>
+        <item name="android:statusBarColor">@color/dt_header_color</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="SplashScreenTheme.WebView" parent="SplashScreenTheme">
+        <item name="postSplashScreenTheme">@style/Theme.AnimeLIB.WebView</item>
+    </style>
+
+    <style name="Theme.AnimeLIB.WebView" parent="Theme.AnimeLIB">
+        <item name="statusBarColor">@color/dt_header_color</item>
+        <item name="android:statusBarColor">@color/dt_header_color</item>
+        <item name="android:windowBackground">@color/dt_header_color</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.AnimeLIB.HeaderBar" parent="Theme.AnimeLIB">
+        <item name="statusBarColor">@color/toolbar_header_bg</item>
+        <item name="android:statusBarColor">@color/toolbar_header_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="CustomSpinnerShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">30dp</item>
+        <item name="android:textColor">@color/dt_primary_text_color</item>
+    </style>
+
+    <!-- Основная тема для AlertDialog -->
+    <style name="MaterialAlertDialog.AnimeLIB" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@color/dt_primary_color</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+
+        <!-- Цвета текста -->
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@color/dt_accent_text_color</item>
+        <!-- Радиус скругления -->
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <!-- Video player theme - always fullscreen, landscape -->
+    <style name="Theme.AnimeLIB.VideoPlayer" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorBackground">@color/black_color</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:fitsSystemWindows">false</item>
+        <item name="android:windowBackground">@color/black_color</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges</item>
+        <!-- Ensure landscape orientation -->
+        <item name="android:screenOrientation">landscape</item>
+        <!-- Global font family -->
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="fontFamily">@font/open_sans</item>
+        
+        <!-- Custom Colors -->
+        <item name="primaryColor">@color/dt_primary_color</item>
+        <item name="secondaryColor">@color/dt_secondary_color</item>
+        <item name="blueColor">@color/dt_blue_color</item>
+        <item name="alphaPrimaryColor">@color/dt_alpha_primary_color</item>
+        <item name="borderColor">@color/dt_border_color</item>
+        <item name="alphaBorderColor">@color/dt_alpha_border_color</item>
+        <item name="lineColor">@color/dt_line_color</item>
+        <item name="primaryTextColor">@color/dt_primary_text_color</item>
+        <item name="secondaryTextColor">@color/dt_secondary_text_color</item>
+        <item name="accentTextColor">@color/dt_accent_text_color</item>
+        <item name="cardBackgroundColor">@color/dt_card_background</item>
+        <item name="cardElevationColor">@color/dt_card_elevation</item>
+        <item name="ratingStarColor">@color/dt_rating_star</item>
+        <item name="playerItemBackground">@color/dt_player_item_background</item>
+        <item name="relatedPanelBackground">@color/dt_related_panel_background</item>
+        <item name="relatedTitleColor">@color/dt_related_title_color</item>
+        <item name="relatedSubtitleColor">@color/dt_related_subtitle_color</item>
+    </style>
+
+    <style name="SpinnerTextStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:textColor">@color/dt_primary_text_color</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- Кастомный стиль для спиннера (темная тема) -->
+    <style name="CustomProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
+        <item name="indicatorColor">?attr/secondaryColor</item>
+        <item name="trackColor">@android:color/transparent</item>
+        <item name="trackThickness">4dp</item>
+        <item name="indicatorSize">48dp</item>
+    </style>
+</resources>

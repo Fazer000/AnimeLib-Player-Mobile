@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
+
+        <View
+            android:layout_width="36dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bottom_sheet_handle"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp">
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:padding="6dp"
+                app:tint="@color/accent_text_color"
+                android:background="@drawable/button_close_background"
+                android:src="@drawable/ic_arrow_back"
+                android:scaleType="fitCenter"
+                android:contentDescription="Назад"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Фильтры изображения"
+                android:textColor="@color/primary_text_color"
+                android:textStyle="bold"
+                android:fontFamily="@font/open_sans_bold"
+                android:paddingVertical="8dp"
+                android:textSize="@dimen/bs_title_text_size"
+                android:layout_marginStart="8dp"/>
+
+            <TextView
+                android:id="@+id/btnResetFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Сброс"
+                android:textColor="@color/secondary_text_color"
+                android:textSize="12sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:background="@drawable/btn_reset_speed_background"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/bs_divider_color"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp">
+
+            <!-- 1. Brightness Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Яркость"
+                    android:textColor="@color/primary_text_color"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/tvBrightnessValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textColor="@color/accent_text_color"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <com.example.animelib.views.ExpressiveSlider
+                android:id="@+id/sliderBrightness"
+                style="@style/Widget.AnimeLIB.Slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:valueFrom="-100.0"
+                android:valueTo="100.0"
+                android:stepSize="1.0"
+                android:value="0.0"
+                app:labelBehavior="gone" />
+
+            <!-- 2. Contrast Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Контрастность"
+                    android:textColor="@color/primary_text_color"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/tvContrastValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100%"
+                    android:textColor="@color/accent_text_color"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <com.example.animelib.views.ExpressiveSlider
+                android:id="@+id/sliderContrast"
+                style="@style/Widget.AnimeLIB.Slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:valueFrom="50.0"
+                android:valueTo="150.0"
+                android:stepSize="1.0"
+                android:value="100.0"
+                app:labelBehavior="gone" />
+
+            <!-- 3. Saturation Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Насыщенность"
+                    android:textColor="@color/primary_text_color"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/tvSaturationValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100%"
+                    android:textColor="@color/accent_text_color"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <com.example.animelib.views.ExpressiveSlider
+                android:id="@+id/sliderSaturation"
+                style="@style/Widget.AnimeLIB.Slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:valueFrom="0.0"
+                android:valueTo="200.0"
+                android:stepSize="1.0"
+                android:value="100.0"
+                app:labelBehavior="gone" />
+
+            <!-- 4. Gamma Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Гамма"
+                    android:textColor="@color/primary_text_color"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/tvGammaValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1.00"
+                    android:textColor="@color/accent_text_color"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <com.example.animelib.views.ExpressiveSlider
+                android:id="@+id/sliderGamma"
+                style="@style/Widget.AnimeLIB.Slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:valueFrom="0.5"
+                android:valueTo="2.0"
+                android:stepSize="0.05"
+                android:value="1.0"
+                app:labelBehavior="gone" />
+
+            <!-- 5. Hue Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Оттенок"
+                    android:textColor="@color/primary_text_color"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/tvHueValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0°"
+                    android:textColor="@color/accent_text_color"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <com.example.animelib.views.ExpressiveSlider
+                android:id="@+id/sliderHue"
+                style="@style/Widget.AnimeLIB.Slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:valueFrom="-180.0"
+                android:valueTo="180.0"
+                android:stepSize="1.0"
+                android:value="0.0"
+                app:labelBehavior="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

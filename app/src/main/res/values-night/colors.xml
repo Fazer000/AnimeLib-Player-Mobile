@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Unified Text Colors (Dark Mode Overrides) -->
+    <color name="app_text_primary">#BFBFBF</color>
+    <color name="app_text_secondary">#8A8A8E</color>
+    <color name="app_text_brand_button">@color/purple_primary</color>
+    <color name="app_text_accent_blue">#79A5D8</color>
+
+    <!-- Semantic Theme Colors (Dark Override) -->
+    <color name="resize_card_selected_bg">@color/purple_secondary_dark</color>
+    <color name="resize_card_selected_stroke">@color/purple_primary</color>
+    <color name="resize_card_unselected_bg">#1C1C1E</color>
+    <color name="resize_card_unselected_stroke">#33333C</color>
+    <color name="resize_preview_inner_bg">#2A323D</color>
+
+    <color name="switch_track_unchecked">#2D2D36</color>
+    <color name="switch_thumb_unchecked">#7E8FA6</color>
+    <color name="toolbar_header_bg">@color/dt_header_color</color>
+    <color name="bs_bg_color">#131316</color>
+    <color name="bs_divider_color">#2D2D36</color>
+    <color name="card_bg_color">#1C1C1E</color>
+    <color name="primary_text_color">#BFBFBF</color>
+    <color name="secondary_text_color">#8A8A8E</color>
+    <color name="accent_text_color">#8A8A8E</color>
+    <color name="comment_input_bg">#1C1C1E</color>
+    <color name="comment_input_stroke">#33333C</color>
+    <color name="chip_selected_bg">@color/purple_secondary_dark</color>
+    <color name="chip_selected_stroke">@color/purple_primary</color>
+    <color name="chip_unselected_bg">#1C1C1E</color>
+    <color name="chip_unselected_stroke">#33333C</color>
+    <color name="close_btn_bg">#20FFFFFF</color>
+    <color name="placeholder_bg">#1C1C1E</color>
+    <color name="stop_btn_bg">#2A1B20</color>
+    <color name="sort_popup_item_selected_bg">#2A2D37</color>
+    <color name="sort_popup_item_selected_text">#FFFFFF</color>
+    <color name="stop_btn_stroke">#4A2026</color>
+    <color name="stop_btn_text">#FF5252</color>
+
+    <!-- Player Episodes, Timecode, and Player Download Progress Colors -->
+    <color name="player_glass_bg">#4D0F121A</color>
+    <color name="player_item_inactive_text">#CBD5E1</color>
+    <color name="player_item_inactive_stroke">#33FFFFFF</color>
+    <color name="player_item_active_text">#FFFFFF</color>
+    <color name="player_item_active_stroke">@color/purple_primary</color>
+
+    <!-- Dialog Colors (Dark Theme Overrides) -->
+    <color name="dialog_bg">#131316</color>
+    <color name="dialog_card_bg">#1C1C1E</color>
+    <color name="dialog_input_bg">#1C1C1E</color>
+    <color name="dialog_input_stroke">#33333C</color>
+    <color name="dialog_text_title">#FFFFFF</color>
+    <color name="dialog_text_body">#D1D5DB</color>
+    <color name="dialog_text_muted">#9CA3AF</color>
+    <color name="dialog_text_hint">#6B7280</color>
+    <color name="dialog_icon_close">#9CA3AF</color>
+
+    <color name="dialog_danger_bg">#3B2224</color>
+    <color name="dialog_danger_text">#FCA5A5</color>
+    <color name="dialog_cancel_text">#D1D5DB</color>
+
+    <color name="dialog_btn_neutral_bg">#1C1C1E</color>
+    <color name="dialog_btn_neutral_text">#FFFFFF</color>
+
+    <color name="dialog_btn_secondary_bg">#1C1C1E</color>
+    <color name="dialog_btn_secondary_stroke">#33333C</color>
+    <color name="dialog_btn_secondary_text">#D1D5DB</color>
+
+    <color name="dialog_ripple_color">#33FFFFFF</color>
+    <color name="dialog_rules_num_bg">#36363C</color>
+    <color name="dialog_rules_num_text">#FFFFFF</color>
+</resources>

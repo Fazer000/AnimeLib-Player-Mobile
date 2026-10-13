@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Standard Button Dimensions -->
+    <dimen name="button_height_standard">48dp</dimen>
+    <dimen name="button_height_small">36dp</dimen>
+    <dimen name="button_height_large">52dp</dimen>
+
+    <!-- Corner Radii -->
+    <dimen name="button_corner_radius">12dp</dimen>
+    <dimen name="button_corner_radius_small">8dp</dimen>
+    <dimen name="button_corner_radius_pill">24dp</dimen>
+
+    <!-- Button Text Sizes -->
+    <dimen name="button_text_size_standard">15sp</dimen>
+    <dimen name="button_text_size_small">13sp</dimen>
+    <dimen name="button_text_size_large">16sp</dimen>
+
+    <!-- Button Paddings -->
+    <dimen name="button_padding_horizontal">16dp</dimen>
+    <dimen name="button_padding_vertical">10dp</dimen>
+    <dimen name="button_padding_small_horizontal">12dp</dimen>
+    <dimen name="button_padding_small_vertical">6dp</dimen>
+
+    <!-- Icon Specs -->
+    <dimen name="button_icon_size">20dp</dimen>
+    <dimen name="button_icon_padding">8dp</dimen>
+</resources>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
+
+        <!-- Bottom Sheet Drag Handle -->
+        <View
+            android:layout_width="36dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bottom_sheet_handle"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Header Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp">
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:padding="6dp"
+                app:tint="@color/accent_text_color"
+                android:background="@drawable/button_close_background"
+                android:src="@drawable/ic_arrow_back"
+                android:scaleType="fitCenter"
+                android:contentDescription="Назад"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Длительность пропуска"
+                android:textColor="@color/primary_text_color"
+                android:textStyle="bold"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="@dimen/bs_title_text_size"
+                android:paddingVertical="8dp"
+                android:layout_marginStart="8dp"/>
+
+            <ImageButton
+                android:id="@+id/confirmButton"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:padding="6dp"
+                app:tint="@color/accent_text_color"
+                android:background="@drawable/button_close_background"
+                android:src="@drawable/ic_check"
+                android:scaleType="fitCenter"
+                android:contentDescription="Применить"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/bs_divider_color"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- Main Display & Stepper Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp">
+
+                <TextView
+                    android:id="@+id/btnMinus10"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:text="-10"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:gravity="center"
+                    android:background="@drawable/chip_unselected"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/btnMinus5"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="4dp"
+                    android:text="-5"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:gravity="center"
+                    android:background="@drawable/chip_unselected"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/digitalTimeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/primary_text_color"
+                        android:text="1:25"
+                        android:textSize="24sp"
+                        android:fontFamily="@font/open_sans_bold"/>
+
+                    <TextView
+                        android:id="@+id/digitalTimeSubtext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1 мин 25 сек (85 сек)"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="11sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btnPlus5"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="+5"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:gravity="center"
+                    android:background="@drawable/chip_unselected"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/btnPlus10"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:text="+10"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:gravity="center"
+                    android:background="@drawable/chip_unselected"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+
+            <!-- Material 3 Expressive Slider -->
+            <com.example.animelib.views.ExpressiveSlider
+                android:id="@+id/timeSlider"
+                style="@style/Widget.AnimeLIB.Slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginHorizontal="16dp"
+                android:valueFrom="10.0"
+                android:valueTo="240.0"
+                android:stepSize="1.0"
+                app:labelBehavior="gone" />
+
+        </LinearLayout>
+
+        <!-- Presets Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bs_subtitle_quick_select"
+            android:textColor="@color/secondary_text_color"
+            android:textSize="@dimen/bs_subtitle_text_size"
+            android:textStyle="bold"
+            android:fontFamily="@font/open_sans_bold"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Row 1 Presets -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center">
+
+            <TextView android:id="@+id/preset30"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/chip_unselected"
+                android:text="30s"
+                android:textSize="12sp"
+                android:textColor="@color/primary_text_color"/>
+
+            <TextView android:id="@+id/preset60"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/chip_unselected"
+                android:text="60s"
+                android:textSize="12sp"
+                android:textColor="@color/primary_text_color"/>
+
+            <TextView android:id="@+id/preset85"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/chip_unselected"
+                android:text="85s"
+                android:textSize="12sp"
+                android:textColor="@color/primary_text_color"/>
+
+        </LinearLayout>
+
+        <!-- Row 2 Presets -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center">
+
+            <TextView android:id="@+id/preset90"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/chip_unselected"
+                android:text="90s"
+                android:textSize="12sp"
+                android:textColor="@color/primary_text_color"/>
+
+            <TextView android:id="@+id/preset110"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/chip_unselected"
+                android:text="110s"
+                android:textSize="12sp"
+                android:textColor="@color/primary_text_color"/>
+
+            <TextView android:id="@+id/preset120"
+                android:layout_width="0dp"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/chip_unselected"
+                android:text="120s"
+                android:textSize="12sp"
+                android:textColor="@color/primary_text_color"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Selected state (active voiceover) -->
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="10dp" />
+            <solid android:color="@color/chip_selected_bg" />
+            <stroke android:width="0.5dp" android:color="@color/chip_selected_stroke" />
+        </shape>
+    </item>
+    <!-- Normal / Unselected state -->
+    <item>
+        <ripple android:color="@color/close_btn_bg">
+            <item>
+                <shape android:shape="rectangle">
+                    <corners android:radius="10dp" />
+                    <solid android:color="@android:color/transparent" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+</selector>

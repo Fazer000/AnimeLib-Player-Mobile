@@ -1,0 +1,83 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace 'com.example.animelib'
+    compileSdk 35
+
+    signingConfigs {
+        debug {
+            storeFile file("${rootDir}/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.aistudio.animelib.mgyxza"
+        minSdk 29
+        targetSdk 35
+        versionCode 1
+        versionName "1.0.0-beta"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation libs.okhttp
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.gson
+    implementation libs.room.runtime
+    implementation libs.lifecycle.viewmodel
+    implementation libs.lifecycle.livedata
+    implementation libs.media3.exoplayer.hls
+    annotationProcessor libs.room.compiler
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+    implementation libs.swiperefreshlayout
+    implementation libs.core
+    implementation libs.media3.exoplayer
+    implementation libs.media3.ui
+    implementation libs.media3.common
+    implementation libs.media3.datasource.okhttp
+    implementation libs.jsoup
+    implementation libs.core.splashscreen
+    implementation libs.work.runtime
+}

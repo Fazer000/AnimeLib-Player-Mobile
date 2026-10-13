@@ -1,0 +1,88 @@
+<resources>
+    <dimen name="dialog_margin">10dp</dimen>
+    <string name="app_name">AnimeLib Player</string>
+    <string name="site_url">v5.animelib.org</string>
+
+    <!-- Domain Selection Strings -->
+    <string name="url_input_title">Выбор сервера / региона</string>
+    <string name="url_input_subtitle">Выберите доступный домен для работы приложения:</string>
+    <string name="url_input_cis_title">Ссылка Для СНГ</string>
+    <string name="url_input_cis_url">v5.animelib.org</string>
+    <string name="url_input_cis_details">AnimeLib: v5.animelib.org • MangaLib: mangalib.me • RanobeLib: ranobelib.me</string>
+    <string name="url_input_other_title">Остальные страны</string>
+    <string name="url_input_other_url">animelib.org</string>
+    <string name="url_input_other_details">AnimeLib: animelib.org • MangaLib: mangalib.org • RanobeLib: ranobelib.org</string>
+    <dimen name="line_height">0.5dp</dimen>
+    <dimen name="splash_screen_ic_dp">50</dimen>
+    <string name="bearer_token">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOTZkYjliMDI4NGM0OWQ1Yzc2NTIxMzkxZTRlNDJkNjAwNTFmMDUzMDU2NjBjZGQzYTRjYmEzN2FjMmRmYTZhNjEyM2VmNDgxZDBjMGU0Y2MiLCJpYXQiOjE3NTc0MzEyNDcuOTg2MjE5LCJuYmYiOjE3NTc0MzEyNDcuOTg2MjIxLCJleHAiOjE3NjAwMjMyNDcuOTgyNTM3LCJzdWIiOiI5NDM5MzIxIiwic2NvcGVzIjpbXX0.FG2bBdeF0328Prrsr9Q_SL-VkQyeJMqE9b9uQ1E74JsCnJPveeMMLYNuJt_cTp5XpkvFK3XHltfCM7wi4Gg-x3rlpG-sTELMaoMNWv-4TmNcQbrKwSnTSVJfUFlnguVA7kpGHBgfAaL3NVKSwu_Pu1xqq6UwqpV9hBSJ6iTHG7T3vz7e_HxhGWQ7AZ47xmoo76aOnWQ2vIceF-zq6gF0peKBsHXuG8Prl-88xyltkT2SSnAJrTl4xmPQsM0F0OntkkFZGU6XPdFwXw-orxvtpCfsv556ra5fdbACMjqfZ3euwqXEHGRtkjMJpmku1-sV_xubQvCgbwuO8WRc-ukuWv3x2WTffkXypFKviEdNTXLBFki5ex4sblvaYhDUd4IrZwIjL-GRPQ9_X6WZITz7Lic5faKs1kr3mxXDSuK7u7tC2WSCom_I_CYR9_aIytJ_XkxixG-aa3LP9-jaOn0n7iZS8XNjaIlLHyqr2Of9wPvJ-A1NVv41EeaptXWs7VcSWg42-fUkofNyS2Qn1Qdo9DzVKmqzO9jMpe-8suwBVGl3gpr4nCwn4J8tIKOTzWX—xHkotH5w1TYaQAtzKs6ocyptylNdAD8WRm_FU3E3pdY5Ecarem7SK8ij5rh724GMiBXN9y9s6jBSwPoIAD9W-R4UoXo1mhsRNGiJ4EkC0U</string>
+
+    <dimen name="bs_title_text_size">18sp</dimen>
+    <dimen name="bs_subtitle_text_size">12sp</dimen>
+
+    <!-- Bottom Sheet Titles -->
+    <string name="bs_title_settings">Настройки плеера</string>
+    <string name="bs_title_quality">Качество</string>
+    <string name="bs_title_speed">Скорость</string>
+    <string name="bs_title_subtitles">Субтитры</string>
+    <string name="bs_title_theme">Выбор темы</string>
+    <string name="bs_title_resize_mode">Режим отображения</string>
+    <string name="bs_title_skip_duration">Длительность пропуска</string>
+    <string name="bs_title_voiceovers">Озвучка</string>
+    <string name="bs_title_surround_sound">Объемный звук</string>
+    <string name="bs_title_download">Скачивание серий</string>
+    <string name="bs_title_download_progress">Процесс скачивания</string>
+    <string name="bs_title_comment_settings">Настройки комментариев</string>
+    <string name="player_unavailable_without_auth">Плеер недоступен без авторизации</string>
+
+    <!-- Bottom Sheet Subtitles / Section Headers -->
+    <string name="bs_subtitle_playback">Воспроизведение</string>
+    <string name="bs_subtitle_audio">Звук и аудио</string>
+    <string name="bs_subtitle_appearance">Внешний вид</string>
+    <string name="bs_subtitle_app">Приложение</string>
+    <string name="bs_subtitle_quick_select">Быстрый выбор</string>
+    <string name="bs_subtitle_format_default">Формат субтитров по умолчанию</string>
+    <string name="bs_subtitle_available_tracks">Доступные дорожки текущего видео</string>
+    <string name="bs_subtitle_3d_mode">Режим 3D Звука:</string>
+    <string name="bs_subtitle_3d_width">Объем 3D Сцены:</string>
+    <string name="bs_subtitle_dialogue_boost">Четкость Озвучки / Голоса:</string>
+    <string name="bs_subtitle_bass_boost">Глубокий Бас LFE:</string>
+    <string name="bs_subtitle_treble_boost">Высокие частоты (Treble &amp; Air):</string>
+    <string name="bs_subtitle_download_player">Плеер</string>
+    <string name="bs_subtitle_download_quality">Качество</string>
+    <string name="bs_subtitle_download_voiceovers">Озвучки / Переводы</string>
+
+    <!-- Subtitle Styling Strings -->
+    <string name="bs_subtitle_style_title">Оформление субтитров (для VTT / SRT)</string>
+    <string name="bs_subtitle_style_preview">Предпросмотр субтитров</string>
+    <string name="bs_subtitle_style_preview_text">Пример текста субтитров</string>
+    <string name="bs_subtitle_style_size">Размер шрифта:</string>
+    <string name="bs_subtitle_style_color">Цвет текста:</string>
+    <string name="bs_subtitle_style_bg">Фон субтитров:</string>
+    <string name="bs_subtitle_style_edge">Обводка и тень:</string>
+    <string name="bs_subtitle_size_14">14sp</string>
+    <string name="bs_subtitle_size_16">16sp</string>
+    <string name="bs_subtitle_size_18">18sp</string>
+    <string name="bs_subtitle_size_22">22sp</string>
+    <string name="bs_subtitle_size_26">26sp</string>
+    <string name="bs_subtitle_color_white">Белый</string>
+    <string name="bs_subtitle_color_yellow">Желтый</string>
+    <string name="bs_subtitle_color_cyan">Голубой</string>
+    <string name="bs_subtitle_color_green">Зеленый</string>
+    <string name="bs_subtitle_bg_none">Без фона</string>
+    <string name="bs_subtitle_bg_translucent">Полупрозрачный</string>
+    <string name="bs_subtitle_bg_black">Черный</string>
+    <string name="bs_subtitle_edge_outline">Контур</string>
+    <string name="bs_subtitle_edge_shadow">Тень</string>
+    <string name="bs_subtitle_edge_none">Без обводки</string>
+
+    <!-- Standardized Button Strings -->
+    <string name="btn_save">Сохранить</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="btn_delete">Удалить</string>
+    <string name="btn_apply">Применить</string>
+    <string name="btn_close">Закрыть</string>
+    <string name="btn_download">Скачать</string>
+    <string name="btn_download_apk">СКАЧАТЬ И УСТАНОВИТЬ APK</string>
+    <string name="btn_open_github">Открыть страницу на GitHub</string>
+    <string name="btn_reset">Сбросить</string>
+</resources>

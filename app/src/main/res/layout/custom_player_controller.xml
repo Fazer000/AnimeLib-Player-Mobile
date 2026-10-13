@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/exo_controller"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="false"
+    android:background="@drawable/player_controls_background">
+
+    <RelativeLayout
+        android:id="@+id/topBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp">
+
+        <ImageButton
+            android:id="@+id/ibClosePlayer"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_close"
+            android:background="@android:color/transparent"
+            android:foreground="@drawable/ripple_circle"/>
+
+        <LinearLayout
+            android:id="@+id/topRightButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Settings Button Container with Quality Badge overlay -->
+            <FrameLayout
+                android:id="@+id/settingsButtonContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <ImageButton
+                    android:id="@+id/settingsButton"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@android:color/transparent"
+                    android:foreground="@drawable/ripple_circle"
+                    android:src="@drawable/ic_settings"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Settings"
+                    android:padding="6dp" />
+
+                <TextView
+                    android:id="@+id/settingsQualityTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="-1dp"
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="1dp"
+                    android:background="@drawable/bg_quality_badge"
+                    android:text="HD"
+                    android:textColor="#FFFFFF"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:elevation="2dp"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <!-- Picture-in-Picture Button -->
+            <ImageButton
+                android:id="@+id/pipButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                android:src="@drawable/ic_pip"
+                android:scaleType="fitCenter"
+                android:contentDescription="Picture-in-Picture"
+                android:padding="6dp" />
+        </LinearLayout>
+
+        <!-- Anime info wrapper -->
+        <LinearLayout
+            android:id="@+id/animeInfoContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="80dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/animeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white_color"
+                android:textSize="18sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginBottom="4dp"
+                android:text="Загрузка..."/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/currentTeamName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#E0E0E0"
+                    android:textSize="12sp"
+                    android:text="Dream Cast"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#E0E0E0"
+                    android:textSize="12sp"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="—"/>
+
+                <TextView
+                    android:id="@+id/currentEpisodeNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#E0E0E0"
+                    android:textSize="12sp"
+                    android:text="1 серия"/>
+
+                <TextView
+                    android:id="@+id/currentEpisodeName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#E0E0E0"
+                    android:textSize="12sp"
+                    android:text=""/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Episode Navigation and Play Controls -->
+    <LinearLayout
+        android:id="@+id/centerControlsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Previous Episode Button -->
+        <ImageButton
+            android:id="@+id/prevEpisodeButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:foreground="@drawable/ripple_circle"
+            android:src="@drawable/ic_player_back"
+            android:rotation="180"
+            android:scaleType="fitCenter"
+            android:contentDescription="Previous Episode"
+            android:padding="8dp"
+            android:visibility="visible"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Play/Pause Button -->
+        <FrameLayout
+            android:layout_width="64dp"
+            android:layout_height="64dp">
+
+            <ImageButton
+                android:id="@+id/btnPlayerPlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="0dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                android:src="@drawable/ic_player_play"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                android:contentDescription="Play"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <ImageButton
+                android:id="@+id/btnPlayerPause"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="0dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                android:src="@drawable/ic_player_pause"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                android:contentDescription="Pause"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/playLoadingIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                app:indicatorColor="@color/purple_primary"
+                app:trackCornerRadius="8dp"
+                app:trackThickness="4dp"
+                app:indicatorSize="48dp"
+                android:visibility="gone"
+                android:clickable="false"
+                android:focusable="false" />
+        </FrameLayout>
+
+        <!-- Next Episode Button -->
+        <ImageButton
+            android:id="@+id/nextEpisodeButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:foreground="@drawable/ripple_circle"
+            android:src="@drawable/ic_player_next"
+            android:scaleType="fitCenter"
+            android:contentDescription="Next Episode"
+            android:padding="8dp"
+            android:visibility="visible"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+    <!-- Progress Bar -->
+    <LinearLayout
+        android:id="@+id/playersControlBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <!-- Download progress plaque container -->
+        <RelativeLayout
+            android:id="@+id/overlayBadgesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="6dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <!-- Download progress plaque -->
+            <TextView
+                android:id="@+id/downloadProgressText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/video_time_background"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="Скачивание 0%"
+                android:textColor="@color/player_item_inactive_text"
+                android:textSize="11sp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <!-- Time and Fullscreen Controls -->
+        <LinearLayout
+            android:id="@+id/timeAndControlsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/timeCodeContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:background="@drawable/video_time_background"
+                android:paddingVertical="3dp"
+                android:paddingHorizontal="8dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/exo_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="00:00"
+                    android:textColor="@color/player_item_inactive_text"
+                    android:textSize="10.5sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text=" / "
+                    android:textColor="@color/player_item_inactive_text"
+                    android:textSize="10.5sp" />
+
+                <TextView
+                    android:id="@+id/exo_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="00:00"
+                    android:textColor="@color/player_item_inactive_text"
+                    android:textSize="10.5sp" />
+
+            </LinearLayout>
+
+            <!-- Current Segment Indicator Badge -->
+            <TextView
+                android:id="@+id/currentSegmentBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/video_time_background"
+                android:paddingVertical="3dp"
+                android:paddingHorizontal="8dp"
+                android:textColor="@color/white_color"
+                android:textSize="10.5sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Skip segment button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/skipSegmentButton"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:layout_marginEnd="8dp"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="10dp"
+                android:textAllCaps="false"
+                android:text="Пропустить сегмент"
+                android:textColor="@color/gray_color"
+                android:textSize="11sp"
+                app:rippleColor="@color/dt_line_color"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:backgroundTint="?attr/alphaPrimaryColor"
+                app:strokeColor="?attr/alphaBorderColor"
+                app:strokeWidth="0.5dp"
+                app:cornerRadius="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:visibility="gone" />
+
+            <!-- Skip Forward Button -->
+            <ImageButton
+                android:id="@+id/skipForwardButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:padding="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                app:tint="@color/white_color"
+                android:src="@drawable/ic_skip"
+                android:scaleType="fitCenter"
+                android:contentDescription="Skip Forward 1:25"/>
+
+            <ImageButton
+                android:id="@+id/bookmarkButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:padding="8dp"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                android:src="@drawable/ic_bookmark"
+                app:tint="@color/white_color"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                android:contentDescription="Bookmark" />
+
+            <!-- Comments Button -->
+            <ImageButton
+                android:id="@+id/commentsButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:padding="6dp"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                android:src="@drawable/ic_comments_2"
+                app:tint="@color/white_color"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                android:contentDescription="Comments" />
+
+            <!-- Episodes Menu Button -->
+            <ImageButton
+                android:id="@+id/episodesMenuButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                android:src="@drawable/ic_episodes"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                android:contentDescription="Episodes Menu"
+                android:padding="6dp" />
+
+            <!-- Players Menu Button -->
+            <ImageButton
+                android:id="@+id/menuToggleButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                android:src="@drawable/ic_voice"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                android:contentDescription="Players Menu"
+                android:padding="6dp" />
+
+            <ImageButton
+                android:id="@+id/menuToggleFullscreen"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:padding="6dp"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ripple_circle"
+                app:tint="@color/white_color"
+                android:src="@drawable/ic_fullscreen"
+                android:scaleType="fitCenter"
+                android:contentDescription="Players Menu" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/timeBarContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp">
+
+            <com.example.animelib.views.TimebarSegmentsView
+                android:id="@+id/timebarSegmentsView"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical" />
+
+            <androidx.media3.ui.DefaultTimeBar
+                android:id="@+id/exo_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:played_color="@android:color/transparent"
+                app:scrubber_color="@color/white_color"
+                app:bar_height="4dp"
+                app:touch_target_height="24dp"
+                app:buffered_color="@android:color/transparent"
+                app:unplayed_color="@android:color/transparent"
+                app:ad_marker_color="@android:color/transparent"
+                app:played_ad_marker_color="@android:color/transparent"
+                app:scrubber_drawable="@drawable/custom_scrubber"
+                app:scrubber_enabled_size="12dp"
+                app:scrubber_dragged_size="16dp"
+                app:scrubber_disabled_size="0dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- Lock Screen Button (Directly below PiP button, visible only in landscape mode) -->
+    <ImageButton
+        android:id="@+id/btnLockScreen"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:foreground="@drawable/ripple_circle"
+        android:src="@drawable/ic_lock"
+        android:scaleType="fitCenter"
+        android:contentDescription="Блокировка экрана"
+        android:padding="6dp"
+        android:visibility="gone" />
+
+</FrameLayout>

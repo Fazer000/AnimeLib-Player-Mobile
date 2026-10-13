@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="primaryColor" format="color" />
+    <attr name="secondaryColor" format="color" />
+    <attr name="blueColor" format="color" />
+    <attr name="alphaPrimaryColor" format="color" />
+
+    <attr name="statusBarColor" format="color" />
+
+    <attr name="borderColor" format="color" />
+    <attr name="alphaBorderColor" format="color" />
+
+    <attr name="lineColor" format="color" />
+
+    <attr name="primaryTextColor" format="color" />
+    <attr name="secondaryTextColor" format="color" />
+    <attr name="accentTextColor" format="color" />
+    <attr name="brandButtonTextColor" format="color" />
+    <attr name="accentBlueTextColor" format="color" />
+    
+    <!-- Дополнительные цвета для anime info -->
+    <attr name="cardBackgroundColor" format="color" />
+    <attr name="bookmarkCardBackground" format="color" />
+    <attr name="cardElevationColor" format="color" />
+    <attr name="ratingStarColor" format="color" />
+
+    <attr name="rvItemBackground" format="color" />
+
+    <!-- Player item -->
+    <attr name="playerItemBackground" format="color" />
+    
+    <!-- Related Titles Panel -->
+    <attr name="relatedPanelBackground" format="color" />
+    <attr name="relatedTitleColor" format="color" />
+    <attr name="relatedSubtitleColor" format="color" />
+
+    <attr name="logoDrawable" format="reference" />
+
+    <!-- Material 3 Linear Progress Indicator -->
+    <declare-styleable name="M3LinearProgressIndicator">
+        <attr name="m3TrackHeight" format="dimension" />
+        <attr name="m3GapSize" format="dimension" />
+        <attr name="m3StopDotSize" format="dimension" />
+        <attr name="m3IndicatorColor" format="color" />
+        <attr name="m3TrackColor" format="color" />
+        <attr name="m3StopDotColor" format="color" />
+        <attr name="m3ShowStopDot" format="boolean" />
+        <attr name="android:max" />
+        <attr name="android:progress" />
+        <attr name="android:indeterminate" />
+    </declare-styleable>
+</resources>
