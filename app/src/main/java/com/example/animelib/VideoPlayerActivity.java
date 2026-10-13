@@ -196,9 +196,15 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
     private void setupClickListeners() {
         if (btnClose != null) btnClose.setOnClickListener(v -> finish());
-        if (btnSettings != null) btnSettings.setOnClickListener(v -> showSettingsBottomSheet());
+        if (btnSettings != null) btnSettings.setOnClickListener(v -> {
+            if (playerView != null) playerView.showController();
+            showSettingsBottomSheet();
+        });
         if (btnPip != null) btnPip.setOnClickListener(v -> enterPipMode());
-        if (btnToggleFullscreen != null) btnToggleFullscreen.setOnClickListener(v -> toggleFullscreen());
+        if (btnToggleFullscreen != null) btnToggleFullscreen.setOnClickListener(v -> {
+            if (playerView != null) playerView.showController();
+            toggleFullscreen();
+        });
         if (btnLockScreen != null) btnLockScreen.setOnClickListener(v -> lockController.lock());
 
         if (btnPlay != null) {
@@ -206,6 +212,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 if (player != null) {
                     player.play();
                     updatePlayPauseButtons(true);
+                    if (playerView != null) playerView.showController();
                 }
             });
         }
@@ -214,11 +221,18 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 if (player != null) {
                     player.pause();
                     updatePlayPauseButtons(false);
+                    if (playerView != null) playerView.showController();
                 }
             });
         }
-        if (btnNext != null) btnNext.setOnClickListener(v -> playNextVideo());
-        if (btnPrev != null) btnPrev.setOnClickListener(v -> playPreviousVideo());
+        if (btnNext != null) btnNext.setOnClickListener(v -> {
+            if (playerView != null) playerView.showController();
+            playNextVideo();
+        });
+        if (btnPrev != null) btnPrev.setOnClickListener(v -> {
+            if (playerView != null) playerView.showController();
+            playPreviousVideo();
+        });
 
         if (btnSkipForward != null) {
             btnSkipForward.setOnClickListener(v -> {
@@ -226,6 +240,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                     long targetPos = Math.min(player.getDuration(), player.getCurrentPosition() + (skipDurationSeconds * 1000L));
                     player.seekTo(targetPos);
                     gestureController.showDoubleTapSkipIndicator(true, skipDurationSeconds);
+                    if (playerView != null) playerView.showController();
                 }
             });
         }
@@ -251,28 +266,20 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
         playerView.setPlayer(player);
         playerView.setResizeMode(currentResizeMode);
+        playerView.setControllerShowTimeoutMs(3000);
+        playerView.setControllerHideOnTouch(true);
         playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) visibility -> {
+            boolean isVisible = (visibility == View.VISIBLE);
             View topBar = findViewById(R.id.topBarContainer);
             View bottomBar = findViewById(R.id.playersControlBar);
             View centerBar = findViewById(R.id.centerControlsContainer);
-            boolean isVisible = (visibility == View.VISIBLE);
 
-            if (topBar != null) {
-                topBar.animate().cancel();
-                topBar.animate().alpha(isVisible ? 1f : 0f).setDuration(220).start();
-            }
-            if (bottomBar != null) {
-                bottomBar.animate().cancel();
-                bottomBar.animate().alpha(isVisible ? 1f : 0f).setDuration(220).start();
-            }
-            if (centerBar != null) {
-                centerBar.animate().cancel();
-                centerBar.animate().alpha(isVisible ? 1f : 0f).setDuration(220).start();
-            }
+            if (topBar != null) topBar.setAlpha(isVisible ? 1f : 0f);
+            if (bottomBar != null) bottomBar.setAlpha(isVisible ? 1f : 0f);
+            if (centerBar != null) centerBar.setAlpha(isVisible ? 1f : 0f);
 
-            if (isVisible) {
-                systemUiController.showSystemUI();
-            } else {
+            // Always enforce sticky immersive mode so status bar / navigation bar NEVER pop up
+            if (systemUiController != null) {
                 systemUiController.hideSystemUI();
             }
         });
@@ -546,6 +553,22 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     @Override
     public int getSkipDurationSeconds() {
         return skipDurationSeconds;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && systemUiController != null) {
+            systemUiController.hideSystemUI();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (systemUiController != null) {
+            systemUiController.hideSystemUI();
+        }
     }
 
     @Override

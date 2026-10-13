@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
+
+        <View
+            android:layout_width="36dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bottom_sheet_handle" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp">
+
+            <!-- Title Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <ImageButton
+                    android:id="@+id/bs_back"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/button_close_background"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    app:tint="@color/accent_text_color"
+                    android:src="@drawable/ic_chevron_right"
+                    android:rotation="180"
+                    android:contentDescription="Back" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:text="Создать Issue (GitHub)"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/open_sans_bold" />
+
+                <ImageButton
+                    android:id="@+id/bs_close"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/button_close_background"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    app:tint="@color/accent_text_color"
+                    android:src="@drawable/ic_close"
+                    android:contentDescription="Close" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Заголовок проблемы"
+                android:textColor="@color/primary_text_color"
+                android:textSize="14sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/etIssueTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:background="@drawable/bg_m3_item_single"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="10dp"
+                android:hint="Например: Ошибка при воспроизведении MKV"
+                android:textColorHint="@color/secondary_text_color"
+                android:textColor="@color/primary_text_color"
+                android:textSize="14.5sp"
+                android:fontFamily="@font/open_sans"
+                android:inputType="textCapSentences"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Описание"
+                android:textColor="@color/primary_text_color"
+                android:textSize="14sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/etIssueBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:gravity="top|start"
+                android:background="@drawable/bg_m3_item_single"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="10dp"
+                android:hint="Опишите проблему или предложение подробнее..."
+                android:textColorHint="@color/secondary_text_color"
+                android:textColor="@color/primary_text_color"
+                android:textSize="14.5sp"
+                android:fontFamily="@font/open_sans"
+                android:inputType="textMultiLine"
+                android:layout_marginBottom="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmitIssue"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="Открыть на GitHub"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:fontFamily="@font/open_sans_bold"
+                app:cornerRadius="16dp"
+                app:backgroundTint="#A855F7"
+                android:textColor="@color/white_color" />
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

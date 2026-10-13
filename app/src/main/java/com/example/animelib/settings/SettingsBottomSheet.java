@@ -231,16 +231,14 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
             themeOption.setOnClickListener(v -> showThemeDialog());
         }
 
-        // Bug Report (GitHub)
+        // Bug Report (GitHub Issue BS)
         View bugReportOption = view.findViewById(R.id.bugReportOption);
         if (bugReportOption != null) {
             bugReportOption.setOnClickListener(v -> {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Fazer000/AnimeLib-Player-Mobile/issues"));
-                    getContext().startActivity(intent);
-                } catch (Exception e) {
-                    CustomToast.showWarning(getContext(), "Не удалось открыть браузер");
-                }
+                dismiss();
+                CreateIssueBottomSheet dialog = new CreateIssueBottomSheet(getContext());
+                dialog.setOnBackPressedListener(this::show);
+                dialog.show();
             });
         }
 
