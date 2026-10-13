@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.animelib.R;
-import com.example.animelib.util.FloatingBottomSheetUtils;
 import com.example.animelib.util.FlexibleBottomSheetDialog;
 import com.example.animelib.util.Surround51AudioProcessor;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -87,7 +86,6 @@ public class SurroundSoundBottomSheet extends FlexibleBottomSheetDialog {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.bs_surround_sound, null);
         setContentView(view);
-        FloatingBottomSheetUtils.setupFloatingStyle(this);
 
         ImageButton backButton = view.findViewById(R.id.backButton);
         ImageButton closeButton = view.findViewById(R.id.closeButton);

@@ -46,7 +46,6 @@ public class ThemeSelectionBottomSheet extends FlexibleBottomSheetDialog {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.bs_theme_selection, null);
         setContentView(view);
-        com.example.animelib.util.FloatingBottomSheetUtils.setupFloatingStyle(this);
 
         // Находим элементы
         ImageButton closeButton = view.findViewById(R.id.bs_theme_back);

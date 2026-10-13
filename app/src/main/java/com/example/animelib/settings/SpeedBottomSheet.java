@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.example.animelib.R;
-import com.example.animelib.util.FloatingBottomSheetUtils;
 import com.example.animelib.util.FlexibleBottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.slider.Slider;
@@ -58,7 +57,6 @@ public class SpeedBottomSheet extends FlexibleBottomSheetDialog {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.bs_speed, null);
         setContentView(view);
-        FloatingBottomSheetUtils.setupFloatingStyle(this);
 
         // Header back button
         ImageButton backButton = view.findViewById(R.id.backButton);

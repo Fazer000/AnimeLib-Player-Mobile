@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.example.animelib.R;
 import com.example.animelib.util.FlexibleBottomSheetDialog;
-import com.example.animelib.util.FloatingBottomSheetUtils;
 import com.google.android.material.slider.Slider;
 
 import java.util.Locale;
@@ -65,7 +64,6 @@ public class VideoFiltersBottomSheet extends FlexibleBottomSheetDialog {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.bs_video_filters, null);
         setContentView(view);
-        FloatingBottomSheetUtils.setupFloatingStyle(this);
 
         ImageButton backButton = view.findViewById(R.id.backButton);
         TextView btnResetFilters = view.findViewById(R.id.btnResetFilters);

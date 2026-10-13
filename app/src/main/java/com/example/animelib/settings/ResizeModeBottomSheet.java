@@ -52,7 +52,6 @@ public class ResizeModeBottomSheet extends FlexibleBottomSheetDialog {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.bs_resize_mode_selection, null);
         setContentView(view);
-        com.example.animelib.util.FloatingBottomSheetUtils.setupFloatingStyle(this);
 
         ImageButton backButton = view.findViewById(R.id.bs_resize_back);
         LinearLayout resizeFitOption = view.findViewById(R.id.resizeFitOption);

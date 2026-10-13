@@ -398,52 +398,19 @@ public class CustomToast {
             return trimmed;
         }
 
-        if (lower.contains("comment") || lower.contains("коммент")) {
-            if (lower.contains("отправк") || lower.contains("публикац") || lower.contains("post")) {
-                return "Ошибка публикации комментария";
-            } else if (lower.contains("сохран") || lower.contains("редакт") || lower.contains("edit")) {
-                return "Ошибка сохранения комментария";
-            } else if (lower.contains("удал") || lower.contains("delete")) {
-                return "Ошибка удаления комментария";
-            } else if (lower.contains("оцен") || lower.contains("лайк") || lower.contains("like") || lower.contains("vote")) {
-                return "Не удалось оценить комментарий";
-            }
-            return "Ошибка загрузки комментариев";
+        if (lower.contains("filenotfound") || lower.contains("no such file")) {
+            return "Файл не найден";
         }
-
-        if (lower.contains("episod") || lower.contains("эпизод") || lower.contains("сери")) {
-            return "Ошибка загрузки эпизодов";
+        if (lower.contains("permission") || lower.contains("access denied")) {
+            return "Отсутствует разрешение на чтение файла";
         }
-
-        if (lower.contains("player") || lower.contains("плеер") || lower.contains("озвуч")) {
-            return "Ошибка загрузки плееров";
+        if (lower.contains("codec") || lower.contains("decoder") || lower.contains("unsupported")) {
+            return "Неподдерживаемый видеокодек или формат";
         }
-
-        if (lower.contains("anime") || lower.contains("аниме") || lower.contains("title") || lower.contains("тайтл")) {
-            return "Ошибка загрузки данных аниме";
+        if (lower.contains("source error") || lower.contains("behind live window")) {
+            return "Ошибка источника видео";
         }
-
-        if (lower.contains("rule") || lower.contains("правил")) {
-            return "Ошибка загрузки правил";
-        }
-
-        if (lower.contains("status") || lower.contains("статус")) {
-            return "Не удалось изменить статус просмотра";
-        }
-
-        if (lower.contains("bookmark") || lower.contains("закладк")) {
-            return "Не удалось сохранить закладку";
-        }
-
-        if (lower.contains("apk") || lower.contains("скачиван") || lower.contains("download") || lower.contains("обновлен")) {
-            return "Ошибка загрузки обновления";
-        }
-
-        if (lower.contains("игнор") || lower.contains("пользовател")) {
-            return "Не удалось выполнить действие с пользователем";
-        }
-
-        return "Ошибка соединения с сервером";
+        return trimmed;
     }
 
     private static int autoDetectType(String message) {

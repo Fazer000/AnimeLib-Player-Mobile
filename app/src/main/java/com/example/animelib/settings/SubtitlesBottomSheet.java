@@ -97,7 +97,6 @@ public class SubtitlesBottomSheet extends FlexibleBottomSheetDialog {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.bs_subtitles_selection, null);
         setContentView(view);
-        com.example.animelib.util.FloatingBottomSheetUtils.setupFloatingStyle(this);
 
         ImageButton backButton = view.findViewById(R.id.bs_subtitles_back);
         LinearLayout enableRow = view.findViewById(R.id.subtitlesEnableRow);

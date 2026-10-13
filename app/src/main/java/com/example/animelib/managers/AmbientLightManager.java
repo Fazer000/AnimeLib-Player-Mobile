@@ -267,6 +267,13 @@ public class AmbientLightManager {
         setPlayer(mainPlayer, null, null);
     }
 
+    public void setVideoUrl(String videoUrl) {
+        this.currentVideoUrl = videoUrl;
+        if (mainPlayer != null) {
+            setPlayer(mainPlayer, null, videoUrl);
+        }
+    }
+
     public void setPlayer(@Nullable ExoPlayer mainPlayer, @Nullable MediaItem mediaItem, @Nullable String videoUrl) {
         if (this.mainPlayer != null && mainPlayerListener != null) {
             this.mainPlayer.removeListener(mainPlayerListener);

@@ -44,7 +44,6 @@ public class SkipDurationBottomSheet extends FlexibleBottomSheetDialog {
 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.bs_skip_duration, null);
         setContentView(view);
-        com.example.animelib.util.FloatingBottomSheetUtils.setupFloatingStyle(this);
 
         digitalTimeText = view.findViewById(R.id.digitalTimeText);
         digitalTimeSubtext = view.findViewById(R.id.digitalTimeSubtext);

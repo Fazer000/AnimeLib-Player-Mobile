@@ -3,7 +3,6 @@ package com.example.animelib.data;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.animelib.data.entity.PlayerPreferences;
 import com.example.animelib.data.entity.VideoPlaybackHistoryEntity;
 
 import java.util.ArrayList;
@@ -361,35 +360,6 @@ public class DatabaseManager {
             AppSettings s = db.appSettingsDao().getSettingsSync();
             return s != null ? s.getSubtitleEdgeColor() : 0xFF000000;
         } catch (Exception e) { return 0xFF000000; }
-    }
-
-    public void savePlayerPreferences(String player, Integer teamId, String preferredQuality) {
-        executor.execute(() -> {
-            try {
-                PlayerPreferences preferences = db.playerPreferencesDao().getPreferencesSync();
-                if (preferences == null) {
-                    preferences = new PlayerPreferences(player, teamId, preferredQuality);
-                } else {
-                    preferences.setPlayer(player);
-                    preferences.setTeamId(teamId);
-                    if (preferredQuality != null) {
-                        preferences.setPreferredQuality(preferredQuality);
-                    }
-                }
-                db.playerPreferencesDao().upsert(preferences);
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to save player preferences", e);
-            }
-        });
-    }
-
-    public PlayerPreferences loadPlayerPreferences() {
-        try {
-            return db.playerPreferencesDao().getPreferencesSync();
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to load player preferences", e);
-            return null;
-        }
     }
 
     // ========== Video Playback History Operations ==========
