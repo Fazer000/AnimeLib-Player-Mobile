@@ -3,7 +3,6 @@ package com.example.animelib.ui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -38,12 +37,12 @@ public class UpdateActivity extends AppCompatActivity {
     private static final String GITHUB_RELEASES_PAGE = "https://github.com/" + GITHUB_REPO + "/releases";
 
     private ImageView btnBack;
-    private TextView tvInstalledVersion;
     private LinearLayout layoutLoading;
     private LinearLayout layoutUpToDate;
     private TextView tvUpToDateSub;
     private LinearLayout layoutUpdateAvailable;
     private TextView tvNewVersionTag;
+    private TextView tvVersionComparison;
     private TextView tvReleaseDate;
     private TextView tvReleaseNotes;
 
@@ -64,7 +63,6 @@ public class UpdateActivity extends AppCompatActivity {
     private String latestTag = "";
 
     private boolean isDownloading = false;
-    private File downloadedApk = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,18 +72,17 @@ public class UpdateActivity extends AppCompatActivity {
         initViews();
         setupListeners();
 
-        tvInstalledVersion.setText("Установленная версия: " + getInstalledVersion());
         checkForUpdates();
     }
 
     private void initViews() {
         btnBack = findViewById(R.id.btnBack);
-        tvInstalledVersion = findViewById(R.id.tvInstalledVersion);
         layoutLoading = findViewById(R.id.layoutLoading);
         layoutUpToDate = findViewById(R.id.layoutUpToDate);
         tvUpToDateSub = findViewById(R.id.tvUpToDateSub);
         layoutUpdateAvailable = findViewById(R.id.layoutUpdateAvailable);
         tvNewVersionTag = findViewById(R.id.tvNewVersionTag);
+        tvVersionComparison = findViewById(R.id.tvVersionComparison);
         tvReleaseDate = findViewById(R.id.tvReleaseDate);
         tvReleaseNotes = findViewById(R.id.tvReleaseNotes);
 
@@ -116,9 +113,7 @@ public class UpdateActivity extends AppCompatActivity {
         });
 
         btnDownloadUpdate.setOnClickListener(v -> {
-            if (downloadedApk != null && downloadedApk.exists()) {
-                installApk(downloadedApk);
-            } else if (!isDownloading) {
+            if (!isDownloading) {
                 startInAppDownload();
             }
         });
@@ -131,7 +126,7 @@ public class UpdateActivity extends AppCompatActivity {
                 return versionName;
             }
         } catch (Exception ignored) {}
-        return "1.0.0";
+        return "1.8.8";
     }
 
     private void checkForUpdates() {
@@ -179,7 +174,6 @@ public class UpdateActivity extends AppCompatActivity {
                         targetHtmlUrl = json.getString("html_url");
                     }
 
-                    // Look for .apk asset in release assets
                     if (json.has("assets")) {
                         JSONArray assets = json.getJSONArray("assets");
                         for (int i = 0; i < assets.length(); i++) {
@@ -223,13 +217,6 @@ public class UpdateActivity extends AppCompatActivity {
                     directApkUrl = finalTargetApkUrl;
                     githubHtmlUrl = finalTargetHtmlUrl;
 
-                    File apkFile = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "animelib_update_" + finalTag + ".apk");
-                    if (apkFile.exists() && apkFile.length() > 0) {
-                        downloadedApk = apkFile;
-                    } else {
-                        downloadedApk = null;
-                    }
-
                     showStateUpdateAvailable(finalTag, finalReleaseBody, finalPublishedAt);
                 } else {
                     showStateUpToDate();
@@ -246,13 +233,14 @@ public class UpdateActivity extends AppCompatActivity {
 
         isDownloading = true;
         btnDownloadUpdate.setEnabled(false);
-        btnDownloadUpdate.setText("Скачивание...");
+        btnDownloadUpdate.setText("СКАЧИВАНИЕ...");
         layoutDownloadProgress.setVisibility(View.VISIBLE);
         downloadProgressBar.setProgress(0);
         tvDownloadPercent.setText("0%");
         tvDownloadStatus.setText("Подключение...");
 
-        File targetFile = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "animelib_update_" + latestTag + ".apk");
+        // Download to internal cache directory (not permanent storage; if installation cancelled, user must download again)
+        File targetFile = new File(getCacheDir(), "animelib_update_" + System.currentTimeMillis() + ".apk");
 
         new Thread(() -> {
             boolean success = false;
@@ -319,21 +307,13 @@ public class UpdateActivity extends AppCompatActivity {
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 isDownloading = false;
+                btnDownloadUpdate.setEnabled(true);
+                btnDownloadUpdate.setText("СКАЧАТЬ И УСТАНОВИТЬ APK");
+                layoutDownloadProgress.setVisibility(View.GONE);
+
                 if (finalSuccess && targetFile.exists()) {
-                    downloadedApk = targetFile;
-                    tvDownloadPercent.setText("100%");
-                    tvDownloadStatus.setText("Загрузка завершена!");
-                    downloadProgressBar.setProgress(100);
-
-                    btnDownloadUpdate.setEnabled(true);
-                    btnDownloadUpdate.setText("Установить");
-                    btnDownloadUpdate.setIconResource(R.drawable.ic_check);
-
                     installApk(targetFile);
                 } else {
-                    btnDownloadUpdate.setEnabled(true);
-                    btnDownloadUpdate.setText("Скачать и установить");
-                    layoutDownloadProgress.setVisibility(View.GONE);
                     CustomToast.showError(UpdateActivity.this, finalErrorMsg != null ? finalErrorMsg : "Не удалось скачать обновление");
                 }
             });
@@ -365,7 +345,7 @@ public class UpdateActivity extends AppCompatActivity {
         layoutUpToDate.setVisibility(View.GONE);
         layoutUpdateAvailable.setVisibility(View.GONE);
         layoutError.setVisibility(View.GONE);
-        btnCheckAgain.setEnabled(false);
+        btnDownloadUpdate.setVisibility(View.GONE);
     }
 
     private void showStateUpToDate() {
@@ -373,7 +353,7 @@ public class UpdateActivity extends AppCompatActivity {
         layoutUpToDate.setVisibility(View.VISIBLE);
         layoutUpdateAvailable.setVisibility(View.GONE);
         layoutError.setVisibility(View.GONE);
-        btnCheckAgain.setEnabled(true);
+        btnDownloadUpdate.setVisibility(View.GONE);
 
         tvUpToDateSub.setText("Версия " + getInstalledVersion() + " является актуальной.");
     }
@@ -383,33 +363,22 @@ public class UpdateActivity extends AppCompatActivity {
         layoutUpToDate.setVisibility(View.GONE);
         layoutUpdateAvailable.setVisibility(View.VISIBLE);
         layoutError.setVisibility(View.GONE);
-        btnCheckAgain.setEnabled(true);
+        btnDownloadUpdate.setVisibility(View.VISIBLE);
 
-        tvNewVersionTag.setText("Доступно обновление " + tag);
+        tvNewVersionTag.setText("Доступна версия " + tag);
+        String currentVer = getInstalledVersion();
+        tvVersionComparison.setText("У вас: v" + currentVer + " → Новая: " + tag);
 
         if (publishedAt != null && publishedAt.length() >= 10) {
-            tvReleaseDate.setText("Дата релиза: " + publishedAt.substring(0, 10));
+            tvReleaseDate.setText("Дата публикации: " + publishedAt.substring(0, 10));
         } else {
-            tvReleaseDate.setText("Опубликовано на GitHub");
+            tvReleaseDate.setText("Дата публикации: 13.10.2026");
         }
 
         if (body != null && !body.trim().isEmpty()) {
             tvReleaseNotes.setText(body.trim());
         } else {
-            tvReleaseNotes.setText("• Обновления компонентов и исправления ошибок");
-        }
-
-        if (downloadedApk != null && downloadedApk.exists()) {
-            layoutDownloadProgress.setVisibility(View.VISIBLE);
-            tvDownloadPercent.setText("100%");
-            tvDownloadStatus.setText("Файл загружен");
-            downloadProgressBar.setProgress(100);
-            btnDownloadUpdate.setText("Установить");
-            btnDownloadUpdate.setIconResource(R.drawable.ic_check);
-        } else {
-            layoutDownloadProgress.setVisibility(View.GONE);
-            btnDownloadUpdate.setText("Скачать и установить");
-            btnDownloadUpdate.setIconResource(R.drawable.ic_download);
+            tvReleaseNotes.setText("- Добавлена функция блокировки плеера\n- Добавлены настройки комментариев\n- Некоторые улучшения комментариев");
         }
     }
 
@@ -418,7 +387,7 @@ public class UpdateActivity extends AppCompatActivity {
         layoutUpToDate.setVisibility(View.GONE);
         layoutUpdateAvailable.setVisibility(View.GONE);
         layoutError.setVisibility(View.VISIBLE);
-        btnCheckAgain.setEnabled(true);
+        btnDownloadUpdate.setVisibility(View.GONE);
 
         tvErrorText.setText(errorMsg);
     }

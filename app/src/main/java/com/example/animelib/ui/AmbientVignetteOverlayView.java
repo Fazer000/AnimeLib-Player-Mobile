@@ -108,7 +108,7 @@ public class AmbientVignetteOverlayView extends View {
         int midFadeColor = isDarkMode ? 0x88000000 : 0x88FFFFFF;
         int targetBgColor = isDarkMode ? 0xFF000000 : 0xFFFFFFFF;
 
-        float fadeHeight = dpToPx(110);
+        float fadeHeight = dpToPx(44);
         portraitBottomFadePaint.setShader(new LinearGradient(
                 0, h - fadeHeight, 0, h,
                 new int[]{startFadeColor, quarterFadeColor, midFadeColor, targetBgColor},
@@ -138,7 +138,7 @@ public class AmbientVignetteOverlayView extends View {
         canvas.drawRect(w - edgeDepth, 0, w, h, rightEdgePaint);
 
         if (isPortraitMode) {
-            float fadeHeight = dpToPx(110);
+            float fadeHeight = dpToPx(44);
             canvas.drawRect(0, h - fadeHeight, w, h, portraitBottomFadePaint);
         }
     }

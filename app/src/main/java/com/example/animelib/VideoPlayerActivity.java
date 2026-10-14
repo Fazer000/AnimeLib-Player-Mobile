@@ -860,7 +860,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 int topMargin = statusBarHeight > 0 ? statusBarHeight + dpToPx(6) : dpToPx(32);
 
                 ambParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-                ambParams.height = topMargin + playerHeight + dpToPx(64);
+                ambParams.height = topMargin + playerHeight + dpToPx(44);
                 ambParams.topMargin = 0;
                 ambParams.leftMargin = 0;
                 ambParams.rightMargin = 0;
