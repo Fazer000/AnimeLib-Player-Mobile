@@ -13,8 +13,8 @@ import androidx.annotation.Nullable;
 
 /**
  * Overlay View для фоновой подсветки (Ambilight).
- * Создаёт мягкое угасание подсветки исключительно у внешних краев экрана.
- * Не рисует никаких полос и градиентов внутри экрана или поверх видеоплеера.
+ * Создаёт мягкое угасание подсветки исключительно у внешних краев экрана в ландшафтном режиме,
+ * и плавный размытый градиент снизу в вертикальном режиме.
  */
 public class AmbientVignetteOverlayView extends View {
 
@@ -22,9 +22,11 @@ public class AmbientVignetteOverlayView extends View {
     private final Paint bottomEdgePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint leftEdgePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint rightEdgePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    private final Paint portraitBottomFadePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
     private int lastWidth = 0;
     private int lastHeight = 0;
+    private boolean isPortraitMode = false;
 
     private static final int[] EDGE_FALLOFF_COLORS = new int[]{
             0x40000000, // 25% soft dark at extreme screen edge
@@ -49,8 +51,16 @@ public class AmbientVignetteOverlayView extends View {
         super(context, attrs, defStyleAttr);
     }
 
+    public void setPortraitMode(boolean portraitMode) {
+        this.isPortraitMode = portraitMode;
+        if (lastWidth > 0 && lastHeight > 0) {
+            rebuildShaders(lastWidth, lastHeight);
+        }
+        invalidate();
+    }
+
     public void setVideoBounds(float left, float top, float right, float bottom) {
-        // Safe no-op: do not draw dynamic gradients around video bounds
+        // Safe no-op
     }
 
     public void clearCustomVideoBounds() {
@@ -70,27 +80,36 @@ public class AmbientVignetteOverlayView extends View {
     private void rebuildShaders(int w, int h) {
         if (w <= 0 || h <= 0) return;
 
-        float edgeDepth = dpToPx(16);
+        if (isPortraitMode) {
+            portraitBottomFadePaint.setShader(new LinearGradient(
+                    0, 0, 0, h,
+                    new int[]{0x00000000, 0x50000000, 0xAA000000, 0xFF000000},
+                    new float[]{0.0f, 0.4f, 0.75f, 1.0f},
+                    Shader.TileMode.CLAMP
+            ));
+        } else {
+            float edgeDepth = dpToPx(16);
 
-        topEdgePaint.setShader(new LinearGradient(
-                0, 0, 0, edgeDepth,
-                EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
-        ));
+            topEdgePaint.setShader(new LinearGradient(
+                    0, 0, 0, edgeDepth,
+                    EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
+            ));
 
-        bottomEdgePaint.setShader(new LinearGradient(
-                0, h, 0, h - edgeDepth,
-                EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
-        ));
+            bottomEdgePaint.setShader(new LinearGradient(
+                    0, h, 0, h - edgeDepth,
+                    EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
+            ));
 
-        leftEdgePaint.setShader(new LinearGradient(
-                0, 0, edgeDepth, 0,
-                EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
-        ));
+            leftEdgePaint.setShader(new LinearGradient(
+                    0, 0, edgeDepth, 0,
+                    EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
+            ));
 
-        rightEdgePaint.setShader(new LinearGradient(
-                w, 0, w - edgeDepth, 0,
-                EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
-        ));
+            rightEdgePaint.setShader(new LinearGradient(
+                    w, 0, w - edgeDepth, 0,
+                    EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
+            ));
+        }
     }
 
     private float dpToPx(float dp) {
@@ -105,12 +124,16 @@ public class AmbientVignetteOverlayView extends View {
         int h = getHeight();
         if (w <= 0 || h <= 0) return;
 
-        float edgeDepth = dpToPx(16);
+        if (isPortraitMode) {
+            canvas.drawRect(0, 0, w, h, portraitBottomFadePaint);
+        } else {
+            float edgeDepth = dpToPx(16);
 
-        // Draw soft vignette gradients ONLY along the outer screen edges
-        canvas.drawRect(0, 0, w, edgeDepth, topEdgePaint);
-        canvas.drawRect(0, h - edgeDepth, w, h, bottomEdgePaint);
-        canvas.drawRect(0, 0, edgeDepth, h, leftEdgePaint);
-        canvas.drawRect(w - edgeDepth, 0, w, h, rightEdgePaint);
+            // Draw soft vignette gradients ONLY along the outer screen edges
+            canvas.drawRect(0, 0, w, edgeDepth, topEdgePaint);
+            canvas.drawRect(0, h - edgeDepth, w, h, bottomEdgePaint);
+            canvas.drawRect(0, 0, edgeDepth, h, leftEdgePaint);
+            canvas.drawRect(w - edgeDepth, 0, w, h, rightEdgePaint);
+        }
     }
 }

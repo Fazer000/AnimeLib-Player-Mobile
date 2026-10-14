@@ -802,6 +802,38 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 systemUiController.showSystemUI();
             }
         }
+
+        AmbientVignetteOverlayView ambientVignetteOverlay = findViewById(R.id.ambientVignetteOverlay);
+
+        if (ambientVignetteOverlay != null) {
+            ambientVignetteOverlay.setPortraitMode(!isLandscape);
+        }
+
+        if (ambientContainer != null) {
+            FrameLayout.LayoutParams ambParams = (FrameLayout.LayoutParams) ambientContainer.getLayoutParams();
+            if (isLandscape) {
+                ambParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+                ambParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
+                ambParams.topMargin = 0;
+                ambParams.leftMargin = 0;
+                ambParams.rightMargin = 0;
+                ambParams.bottomMargin = 0;
+            } else {
+                int screenWidth = getResources().getDisplayMetrics().widthPixels;
+                int horizontalPadding = dpToPx(12);
+                int playerWidth = screenWidth - (horizontalPadding * 2);
+                int playerHeight = (int) (playerWidth * (9.0f / 16.0f));
+                int topMargin = statusBarHeight > 0 ? statusBarHeight + dpToPx(6) : dpToPx(32);
+
+                ambParams.width = playerWidth;
+                ambParams.height = dpToPx(140);
+                ambParams.topMargin = topMargin + playerHeight;
+                ambParams.leftMargin = horizontalPadding;
+                ambParams.rightMargin = horizontalPadding;
+                ambParams.bottomMargin = 0;
+            }
+            ambientContainer.setLayoutParams(ambParams);
+        }
     }
 
     private int dpToPx(int dp) {
