@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/playerRootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_color"
@@ -348,13 +349,38 @@
 
         </com.example.animelib.ui.RoundedCornerFrameLayout>
 
-        <!-- Empty Container below Player for Portrait Mode -->
+        <!-- Bottom Content below Player for Portrait Mode with title overlay -->
         <FrameLayout
             android:id="@+id/portraitBottomContent"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:visibility="gone" />
+            android:paddingHorizontal="16dp"
+            android:paddingTop="12dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvPortraitAnimeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Загрузка..."
+                    android:textColor="@color/white_color"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/open_sans_semibold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:shadowColor="#99000000"
+                    android:shadowDx="0"
+                    android:shadowDy="2"
+                    android:shadowRadius="6" />
+
+            </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
 

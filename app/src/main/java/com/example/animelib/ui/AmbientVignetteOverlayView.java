@@ -80,36 +80,41 @@ public class AmbientVignetteOverlayView extends View {
     private void rebuildShaders(int w, int h) {
         if (w <= 0 || h <= 0) return;
 
-        if (isPortraitMode) {
-            portraitBottomFadePaint.setShader(new LinearGradient(
-                    0, 0, 0, h,
-                    new int[]{0x00000000, 0x50000000, 0xAA000000, 0xFF000000},
-                    new float[]{0.0f, 0.4f, 0.75f, 1.0f},
-                    Shader.TileMode.CLAMP
-            ));
-        } else {
-            float edgeDepth = dpToPx(16);
+        float edgeDepth = dpToPx(16);
 
-            topEdgePaint.setShader(new LinearGradient(
-                    0, 0, 0, edgeDepth,
-                    EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
-            ));
+        topEdgePaint.setShader(new LinearGradient(
+                0, 0, 0, edgeDepth,
+                EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
+        ));
 
-            bottomEdgePaint.setShader(new LinearGradient(
-                    0, h, 0, h - edgeDepth,
-                    EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
-            ));
+        bottomEdgePaint.setShader(new LinearGradient(
+                0, h, 0, h - edgeDepth,
+                EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
+        ));
 
-            leftEdgePaint.setShader(new LinearGradient(
-                    0, 0, edgeDepth, 0,
-                    EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
-            ));
+        leftEdgePaint.setShader(new LinearGradient(
+                0, 0, edgeDepth, 0,
+                EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
+        ));
 
-            rightEdgePaint.setShader(new LinearGradient(
-                    w, 0, w - edgeDepth, 0,
-                    EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
-            ));
-        }
+        rightEdgePaint.setShader(new LinearGradient(
+                w, 0, w - edgeDepth, 0,
+                EDGE_FALLOFF_COLORS, EDGE_STOPS, Shader.TileMode.CLAMP
+        ));
+
+        boolean isDarkMode = (getContext().getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+        int startFadeColor = isDarkMode ? 0x00000000 : 0x00FFFFFF;
+        int quarterFadeColor = isDarkMode ? 0x33000000 : 0x33FFFFFF;
+        int midFadeColor = isDarkMode ? 0x88000000 : 0x88FFFFFF;
+        int targetBgColor = isDarkMode ? 0xFF000000 : 0xFFFFFFFF;
+
+        float fadeHeight = dpToPx(110);
+        portraitBottomFadePaint.setShader(new LinearGradient(
+                0, h - fadeHeight, 0, h,
+                new int[]{startFadeColor, quarterFadeColor, midFadeColor, targetBgColor},
+                new float[]{0.0f, 0.3f, 0.7f, 1.0f},
+                Shader.TileMode.CLAMP
+        ));
     }
 
     private float dpToPx(float dp) {
@@ -124,16 +129,17 @@ public class AmbientVignetteOverlayView extends View {
         int h = getHeight();
         if (w <= 0 || h <= 0) return;
 
-        if (isPortraitMode) {
-            canvas.drawRect(0, 0, w, h, portraitBottomFadePaint);
-        } else {
-            float edgeDepth = dpToPx(16);
+        float edgeDepth = dpToPx(16);
 
-            // Draw soft vignette gradients ONLY along the outer screen edges
-            canvas.drawRect(0, 0, w, edgeDepth, topEdgePaint);
-            canvas.drawRect(0, h - edgeDepth, w, h, bottomEdgePaint);
-            canvas.drawRect(0, 0, edgeDepth, h, leftEdgePaint);
-            canvas.drawRect(w - edgeDepth, 0, w, h, rightEdgePaint);
+        // Draw soft vignette gradients along the outer screen edges
+        canvas.drawRect(0, 0, w, edgeDepth, topEdgePaint);
+        canvas.drawRect(0, h - edgeDepth, w, h, bottomEdgePaint);
+        canvas.drawRect(0, 0, edgeDepth, h, leftEdgePaint);
+        canvas.drawRect(w - edgeDepth, 0, w, h, rightEdgePaint);
+
+        if (isPortraitMode) {
+            float fadeHeight = dpToPx(110);
+            canvas.drawRect(0, h - fadeHeight, w, h, portraitBottomFadePaint);
         }
     }
 }

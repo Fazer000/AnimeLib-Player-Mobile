@@ -30,10 +30,14 @@ import androidx.media3.common.PlaybackException;
 import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.util.UnstableApi;
+import androidx.media3.datasource.okhttp.OkHttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
+
+import okhttp3.OkHttpClient;
 
 import com.example.animelib.controller.PlayerGestureController;
 import com.example.animelib.controller.PlayerLockController;
@@ -69,6 +73,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     private DatabaseManager databaseManager;
 
     private TextView tvAnimeTitle;
+    private TextView tvPortraitAnimeTitle;
     private ImageButton btnClose;
     private ImageButton btnSettings;
     private ImageButton btnPip;
@@ -110,6 +115,17 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         setTheme(R.style.Theme_AnimeLIB_VideoPlayer);
         setContentView(R.layout.activity_video_player);
 
+        View rootLayout = findViewById(R.id.playerRootLayout);
+        View loadingOverlay = findViewById(R.id.loadingOverlay);
+        boolean isDarkMode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        int bgColor = isDarkMode ? android.graphics.Color.BLACK : android.graphics.Color.WHITE;
+        if (rootLayout != null) {
+            rootLayout.setBackgroundColor(bgColor);
+        }
+        if (loadingOverlay != null) {
+            loadingOverlay.setBackgroundColor(bgColor);
+        }
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         systemUiController = new PlayerSystemUiController(this);
@@ -144,6 +160,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     private void initViews() {
         playerView = findViewById(R.id.playerView);
         tvAnimeTitle = findViewById(R.id.animeTitle);
+        tvPortraitAnimeTitle = findViewById(R.id.tvPortraitAnimeTitle);
         btnClose = findViewById(R.id.ibClosePlayer);
         btnSettings = findViewById(R.id.settingsButton);
         btnPip = findViewById(R.id.pipButton);
@@ -276,7 +293,21 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 .setPrioritizeTimeOverSizeThresholds(true)
                 .build();
 
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    okhttp3.Request original = chain.request();
+                    okhttp3.Request request = original.newBuilder()
+                            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                            .build();
+                    return chain.proceed(request);
+                })
+                .build();
+        OkHttpDataSource.Factory okHttpDataSourceFactory = new OkHttpDataSource.Factory(okHttpClient);
+        DefaultMediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(this)
+                .setDataSourceFactory(okHttpDataSourceFactory);
+
         player = new ExoPlayer.Builder(this, renderersFactory)
+                .setMediaSourceFactory(mediaSourceFactory)
                 .setLoadControl(loadControl)
                 .setSeekBackIncrementMs(10000)
                 .setSeekForwardIncrementMs(10000)
@@ -348,6 +379,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
         if (tvAnimeTitle != null) {
             tvAnimeTitle.setText(playlistManager.getCurrentTitle());
+        }
+        if (tvPortraitAnimeTitle != null) {
+            tvPortraitAnimeTitle.setText(playlistManager.getCurrentTitle());
         }
 
         Uri videoUri;
@@ -825,11 +859,11 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 int playerHeight = (int) (playerWidth * (9.0f / 16.0f));
                 int topMargin = statusBarHeight > 0 ? statusBarHeight + dpToPx(6) : dpToPx(32);
 
-                ambParams.width = playerWidth;
-                ambParams.height = dpToPx(140);
-                ambParams.topMargin = topMargin + playerHeight;
-                ambParams.leftMargin = horizontalPadding;
-                ambParams.rightMargin = horizontalPadding;
+                ambParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+                ambParams.height = topMargin + playerHeight + dpToPx(64);
+                ambParams.topMargin = 0;
+                ambParams.leftMargin = 0;
+                ambParams.rightMargin = 0;
                 ambParams.bottomMargin = 0;
             }
             ambientContainer.setLayoutParams(ambParams);

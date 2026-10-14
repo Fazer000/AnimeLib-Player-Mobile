@@ -24,11 +24,14 @@ import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.TrackSelectionParameters;
 import androidx.media3.datasource.DataSource;
+import androidx.media3.datasource.okhttp.OkHttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
+
+import okhttp3.OkHttpClient;
 
 import com.example.animelib.ui.AmbientVignetteOverlayView;
 import com.example.animelib.util.MediaCacheManager;
@@ -385,6 +388,18 @@ public class AmbientLightManager {
 
                 if (cacheDataSourceFactory != null) {
                     builder.setMediaSourceFactory(new DefaultMediaSourceFactory(cacheDataSourceFactory));
+                } else {
+                    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                            .addInterceptor(chain -> {
+                                okhttp3.Request original = chain.request();
+                                okhttp3.Request request = original.newBuilder()
+                                        .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                                        .build();
+                                return chain.proceed(request);
+                            })
+                            .build();
+                    OkHttpDataSource.Factory okHttpDataSourceFactory = new OkHttpDataSource.Factory(okHttpClient);
+                    builder.setMediaSourceFactory(new DefaultMediaSourceFactory(context).setDataSourceFactory(okHttpDataSourceFactory));
                 }
 
                 ambientPlayer = builder.build();
