@@ -239,6 +239,11 @@ public class DatabaseManager {
     }
 
     public void saveThemeSetting(int themeMode) {
+        saveThemeSettingInternal(themeMode);
+        com.example.animelib.util.ThemeUtils.saveThemePreference(context, themeMode);
+    }
+
+    public void saveThemeSettingInternal(int themeMode) {
         executor.execute(() -> {
             try {
                 AppSettings settings = db.appSettingsDao().getSettingsSync();
@@ -253,13 +258,17 @@ public class DatabaseManager {
         });
     }
 
-    public int loadThemeSetting() {
+    public int loadThemeSettingFromDb() {
         try {
             AppSettings settings = db.appSettingsDao().getSettingsSync();
-            return settings != null ? settings.getThemeMode() : 1; // Default to dark theme
+            return settings != null ? settings.getThemeMode() : 0;
         } catch (Exception e) {
-            return 1;
+            return 0;
         }
+    }
+
+    public int loadThemeSetting() {
+        return com.example.animelib.util.ThemeUtils.getSavedThemePreference(context);
     }
 
     public void saveTestModeSetting(boolean enabled) {

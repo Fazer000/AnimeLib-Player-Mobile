@@ -41,7 +41,7 @@
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <!-- Live Real-Time Texture View Sampler (Zero-lag Ambilight) -->
         <ImageView
@@ -347,6 +347,14 @@
             </FrameLayout>
 
         </com.example.animelib.ui.RoundedCornerFrameLayout>
+
+        <!-- Empty Container below Player for Portrait Mode -->
+        <FrameLayout
+            android:id="@+id/portraitBottomContent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone" />
 
     </LinearLayout>
 

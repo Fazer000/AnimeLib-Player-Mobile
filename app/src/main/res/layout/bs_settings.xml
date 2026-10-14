@@ -79,48 +79,7 @@
 
 
 
-                <!-- 2. Video Server -->
-                <LinearLayout
-                    android:id="@+id/videoServerOption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/bg_m3_item_top"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp"
-                    android:layout_marginBottom="3dp">
-
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_server"
-                        app:tint="@color/primary_text_color"
-                        android:layout_marginEnd="12dp"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Сервер видео"
-                        android:textColor="@color/primary_text_color"
-                        android:textSize="15.5sp"
-                        android:fontFamily="@font/open_sans_bold"/>
-
-                    <TextView
-                        android:id="@+id/currentVideoServerText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/accent_text_color"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/open_sans"
-                        android:text="Основной"/>
-                </LinearLayout>
-
-                <!-- 3. Speed -->
+                <!-- 1. Speed -->
                 <LinearLayout
                     android:id="@+id/speedOption"
                     android:layout_width="match_parent"
@@ -128,7 +87,7 @@
                     android:minHeight="52dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:background="@drawable/bg_m3_item_middle"
+                    android:background="@drawable/bg_m3_item_top"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"

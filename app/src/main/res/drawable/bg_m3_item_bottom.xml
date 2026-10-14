@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="?attr/colorControlHighlight">
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <corners
+                android:topLeftRadius="6dp"
+                android:topRightRadius="6dp"
+                android:bottomLeftRadius="20dp"
+                android:bottomRightRadius="20dp" />
+        </shape>
+    </item>
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/dialog_card_bg" />

@@ -139,10 +139,6 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
             exitBtn.setOnClickListener(v -> dismiss());
         }
 
-        // Hide video server option (not applicable for local files)
-        View videoServerOption = view.findViewById(R.id.videoServerOption);
-        if (videoServerOption != null) videoServerOption.setVisibility(View.GONE);
-
         // Speed option
         View speedOption = view.findViewById(R.id.speedOption);
         TextView currentSpeedText = view.findViewById(R.id.currentSpeedText);

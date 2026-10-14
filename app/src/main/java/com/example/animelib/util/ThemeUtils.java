@@ -79,20 +79,26 @@ public class ThemeUtils {
         }
     }
 
+    public static void initTheme(Context context) {
+        if (context == null) return;
+        int themeMode = getSavedThemePreference(context);
+        applyTheme(themeMode);
+    }
+
     public static boolean isDarkTheme(Context context) {
         if (context == null) return false;
+        int savedMode = getSavedThemePreference(context);
+        if (savedMode == THEME_DARK) {
+            return true;
+        } else if (savedMode == THEME_LIGHT) {
+            return false;
+        }
         int nightMode = context.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
         return nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES;
     }
 
     /**
      * Возвращает цвет шапки/системного статус-бара для сайта.
-     * В светлой теме:
-     * - AnimeLib: по умолчанию (как есть - #ede7f6)
-     * - MangaLib: #fff3e0
-     * - RanobeLib: #e0f2ff
-     * В темной теме:
-     * - Все сайты: как есть (#1C1C1E)
      */
     public static int getSiteHeaderColor(Context context, String url) {
         if (context == null) return 0xFFEDE7F6;
@@ -103,12 +109,25 @@ public class ThemeUtils {
     }
 
     public static void saveThemePreference(Context context, int themeMode) {
+        if (context == null) return;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        preferences.edit().putInt(THEME_MODE, themeMode).commit();
+        preferences.edit().putInt(THEME_MODE, themeMode).apply();
+
+        try {
+            com.example.animelib.data.DatabaseManager.getInstance(context).saveThemeSettingInternal(themeMode);
+        } catch (Exception ignored) {}
     }
 
     public static int getSavedThemePreference(Context context) {
+        if (context == null) return THEME_LIGHT;
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!preferences.contains(THEME_MODE)) {
+            try {
+                int dbTheme = com.example.animelib.data.DatabaseManager.getInstance(context).loadThemeSettingFromDb();
+                preferences.edit().putInt(THEME_MODE, dbTheme).apply();
+                return dbTheme;
+            } catch (Exception ignored) {}
+        }
         return preferences.getInt(THEME_MODE, THEME_LIGHT); // по умолчанию светлая тема
     }
 }

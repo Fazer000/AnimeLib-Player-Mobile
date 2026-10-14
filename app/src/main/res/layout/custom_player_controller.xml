@@ -329,7 +329,7 @@
                 android:text="Пропустить сегмент"
                 android:textColor="@color/gray_color"
                 android:textSize="11sp"
-                app:rippleColor="@color/dt_line_color"
+                app:rippleColor="?attr/colorControlHighlight"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:backgroundTint="?attr/alphaPrimaryColor"
                 app:strokeColor="?attr/alphaBorderColor"

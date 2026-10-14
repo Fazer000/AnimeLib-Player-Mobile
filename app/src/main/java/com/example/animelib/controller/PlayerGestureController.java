@@ -114,7 +114,7 @@ public class PlayerGestureController {
     private void setupGestureListeners() {
         GestureDetector gestureDetector = new GestureDetector(activity, new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
+            public boolean onSingleTapUp(@NonNull MotionEvent e) {
                 if (!callback.isLocked()) {
                     callback.onSingleTap();
                 }

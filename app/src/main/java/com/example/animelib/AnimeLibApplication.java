@@ -11,6 +11,7 @@ public class AnimeLibApplication extends Application {
         super.onCreate();
         instance = this;
         ImageLoader.init(this);
+        com.example.animelib.util.ThemeUtils.initTheme(this);
     }
 
     public static AnimeLibApplication getInstance() {

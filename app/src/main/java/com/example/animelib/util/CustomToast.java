@@ -228,12 +228,12 @@ public class CustomToast {
             // Темная тема: темный плавающий пилл с изящной контрастной рамкой
             pillBg.setColor(android.graphics.Color.parseColor("#25242D"));
             pillBg.setStroke(strokeWidth, android.graphics.Color.parseColor("#3D3C48"));
-            textView.setTextColor(androidx.core.content.ContextCompat.getColor(activity, R.color.app_text_primary));
+            textView.setTextColor(android.graphics.Color.parseColor("#F1F5F9"));
         } else {
             // Светлая тема: чистый белый пилл с мягкой рамкой и темным текстом
             pillBg.setColor(android.graphics.Color.parseColor("#FFFFFF"));
-            pillBg.setStroke(strokeWidth, android.graphics.Color.parseColor("#E2E8F0"));
-            textView.setTextColor(androidx.core.content.ContextCompat.getColor(activity, R.color.app_text_primary));
+            pillBg.setStroke(strokeWidth, android.graphics.Color.parseColor("#CBD5E1"));
+            textView.setTextColor(android.graphics.Color.parseColor("#1E1B26"));
         }
         toastView.setBackground(pillBg);
 
@@ -431,29 +431,13 @@ public class CustomToast {
     }
 
     public static boolean isDarkTheme(Context context) {
-        if (context == null) return true;
+        if (context == null) return false;
         if (context instanceof Activity && context.getClass().getSimpleName().contains("VideoPlayerActivity")) {
-            return true;
+            int orientation = context.getResources().getConfiguration().orientation;
+            if (orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+                return true;
+            }
         }
-
-        try {
-            int themeSetting = DatabaseManager.getInstance(context).loadThemeSetting();
-            if (themeSetting == ThemeUtils.THEME_DARK) {
-                return true;
-            } else if (themeSetting == ThemeUtils.THEME_LIGHT) {
-                return false;
-            }
-        } catch (Exception ignored) {}
-
-        try {
-            int nightMode = context.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
-            if (nightMode == android.content.res.Configuration.UI_MODE_NIGHT_NO) {
-                return false;
-            } else if (nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
-                return true;
-            }
-        } catch (Exception ignored) {}
-
-        return true;
+        return ThemeUtils.isDarkTheme(context);
     }
 }

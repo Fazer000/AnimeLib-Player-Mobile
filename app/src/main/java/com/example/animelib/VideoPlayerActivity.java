@@ -12,6 +12,10 @@ import android.os.Looper;
 import android.util.Rational;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -121,6 +125,19 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         setupControllers();
         setupClickListeners();
 
+        View mainVideoLayout = findViewById(R.id.mainVideoLayout);
+        if (mainVideoLayout != null) {
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(mainVideoLayout, (v, insets) -> {
+                int topInset = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars()).top;
+                if (topInset > 0) {
+                    statusBarHeight = topInset;
+                }
+                updateLayoutForOrientation(getResources().getConfiguration().orientation);
+                return insets;
+            });
+        }
+        updateLayoutForOrientation(getResources().getConfiguration().orientation);
+
         playCurrentVideo(true);
     }
 
@@ -157,10 +174,11 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         ImageView ambientImageView = findViewById(R.id.ambientImageView);
         AmbientVignetteOverlayView ambientVignette = findViewById(R.id.ambientVignetteOverlay);
 
-        if (ambientContainer != null && databaseManager.loadAmbientLightSetting()) {
+        if (ambientContainer != null) {
             ambientLightManager = new AmbientLightManager(this, playerView, ambientContainer,
                     ambientPlayerView, ambientImageView, ambientVignette);
             ambientLightManager.setEnabled(true);
+            databaseManager.saveAmbientLightSetting(true);
         }
     }
 
@@ -270,17 +288,14 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         playerView.setControllerHideOnTouch(true);
         playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) visibility -> {
             boolean isVisible = (visibility == View.VISIBLE);
-            View topBar = findViewById(R.id.topBarContainer);
-            View bottomBar = findViewById(R.id.playersControlBar);
-            View centerBar = findViewById(R.id.centerControlsContainer);
+            animateControlsVisibility(isVisible);
 
-            if (topBar != null) topBar.setAlpha(isVisible ? 1f : 0f);
-            if (bottomBar != null) bottomBar.setAlpha(isVisible ? 1f : 0f);
-            if (centerBar != null) centerBar.setAlpha(isVisible ? 1f : 0f);
-
-            // Always enforce sticky immersive mode so status bar / navigation bar NEVER pop up
             if (systemUiController != null) {
-                systemUiController.hideSystemUI();
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    systemUiController.hideSystemUI();
+                } else {
+                    systemUiController.showSystemUI();
+                }
             }
         });
 
@@ -409,9 +424,95 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     }
 
     private void updatePlayPauseButtons(boolean isPlaying) {
-        if (btnPlay != null && btnPause != null) {
-            btnPlay.setVisibility(isPlaying ? View.GONE : View.VISIBLE);
-            btnPause.setVisibility(isPlaying ? View.VISIBLE : View.GONE);
+        if (btnPlay == null || btnPause == null) return;
+
+        View showView = isPlaying ? btnPause : btnPlay;
+        View hideView = isPlaying ? btnPlay : btnPause;
+
+        if (showView.getVisibility() == View.VISIBLE && showView.getAlpha() == 1.0f && hideView.getVisibility() == View.GONE) {
+            return;
+        }
+
+        hideView.animate().cancel();
+        showView.animate().cancel();
+
+        hideView.animate()
+                .alpha(0f)
+                .scaleX(0.5f)
+                .scaleY(0.5f)
+                .setDuration(150)
+                .setInterpolator(new AccelerateInterpolator())
+                .withEndAction(() -> {
+                    hideView.setVisibility(View.GONE);
+                    hideView.setScaleX(1f);
+                    hideView.setScaleY(1f);
+                    hideView.setAlpha(1f);
+                })
+                .start();
+
+        showView.setVisibility(View.VISIBLE);
+        showView.setAlpha(0f);
+        showView.setScaleX(0.5f);
+        showView.setScaleY(0.5f);
+        showView.animate()
+                .alpha(1f)
+                .scaleX(1.0f)
+                .scaleY(1.0f)
+                .setDuration(220)
+                .setInterpolator(new OvershootInterpolator(1.4f))
+                .start();
+    }
+
+    private void animateControlsVisibility(boolean isVisible) {
+        View topBar = findViewById(R.id.topBarContainer);
+        View bottomBar = findViewById(R.id.playersControlBar);
+        View centerBar = findViewById(R.id.centerControlsContainer);
+        View btnLock = findViewById(R.id.btnLockScreen);
+
+        long duration = isVisible ? 220L : 180L;
+        Interpolator interpolator = isVisible 
+                ? new DecelerateInterpolator(1.2f) 
+                : new AccelerateInterpolator(1.2f);
+
+        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+
+        View[] viewsToAnimate = new View[]{topBar, bottomBar, centerBar, isPortrait ? null : btnLock};
+
+        for (View view : viewsToAnimate) {
+            if (view == null) continue;
+
+            view.animate().cancel();
+            view.setTranslationX(0f);
+            view.setTranslationY(0f);
+            view.setScaleX(1f);
+            view.setScaleY(1f);
+
+            if (isVisible) {
+                if (view.getVisibility() != View.VISIBLE) {
+                    view.setVisibility(View.VISIBLE);
+                    view.setAlpha(0f);
+                }
+                view.animate()
+                        .alpha(1f)
+                        .setDuration(duration)
+                        .setInterpolator(interpolator)
+                        .start();
+            } else {
+                view.animate()
+                        .alpha(0f)
+                        .setDuration(duration)
+                        .setInterpolator(interpolator)
+                        .withEndAction(() -> {
+                            view.setVisibility(View.GONE);
+                            view.setAlpha(1f);
+                        })
+                        .start();
+            }
+        }
+
+        if (btnLock != null && isPortrait) {
+            btnLock.animate().cancel();
+            btnLock.setVisibility(View.GONE);
         }
     }
 
@@ -556,10 +657,166 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     }
 
     @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateLayoutForOrientation(newConfig.orientation);
+        if (ambientLightManager != null) {
+            ambientLightManager.onConfigurationChanged();
+        }
+    }
+
+    private int statusBarHeight = 0;
+
+    private void updateLayoutForOrientation(int orientation) {
+        View playerContainer = findViewById(R.id.playerContainer);
+        View portraitBottomContent = findViewById(R.id.portraitBottomContent);
+        View ambientContainer = findViewById(R.id.ambientContainer);
+        View animeInfoContainer = findViewById(R.id.animeInfoContainer);
+        View btnLock = findViewById(R.id.btnLockScreen);
+        View topBar = findViewById(R.id.topBarContainer);
+        View timeAndControls = findViewById(R.id.timeAndControlsContainer);
+        View timeBarContainer = findViewById(R.id.timeBarContainer);
+
+        if (playerContainer == null) return;
+
+        boolean isLandscape = (orientation == Configuration.ORIENTATION_LANDSCAPE);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerContainer.getLayoutParams();
+
+        if (isLandscape) {
+            params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            params.height = LinearLayout.LayoutParams.MATCH_PARENT;
+            params.topMargin = 0;
+            params.leftMargin = 0;
+            params.rightMargin = 0;
+            params.bottomMargin = 0;
+            playerContainer.setLayoutParams(params);
+
+            if (playerContainer instanceof com.example.animelib.ui.RoundedCornerFrameLayout) {
+                ((com.example.animelib.ui.RoundedCornerFrameLayout) playerContainer).setCornerRadius(0f);
+            }
+
+            if (portraitBottomContent != null) {
+                portraitBottomContent.setVisibility(View.GONE);
+            }
+
+            if (animeInfoContainer != null) {
+                animeInfoContainer.setVisibility(View.VISIBLE);
+            }
+
+            if (btnLock != null) {
+                btnLock.setVisibility(View.VISIBLE);
+            }
+
+            if (topBar != null && topBar.getLayoutParams() instanceof android.view.ViewGroup.MarginLayoutParams) {
+                android.view.ViewGroup.MarginLayoutParams topBarParams = (android.view.ViewGroup.MarginLayoutParams) topBar.getLayoutParams();
+                topBarParams.topMargin = dpToPx(16);
+                topBarParams.leftMargin = dpToPx(16);
+                topBarParams.rightMargin = dpToPx(16);
+                topBar.setLayoutParams(topBarParams);
+            }
+
+            if (timeAndControls != null && timeAndControls.getLayoutParams() instanceof android.view.ViewGroup.MarginLayoutParams) {
+                android.view.ViewGroup.MarginLayoutParams tcParams = (android.view.ViewGroup.MarginLayoutParams) timeAndControls.getLayoutParams();
+                tcParams.leftMargin = dpToPx(16);
+                tcParams.rightMargin = dpToPx(16);
+                timeAndControls.setLayoutParams(tcParams);
+            }
+
+            if (timeBarContainer != null && timeBarContainer.getLayoutParams() instanceof android.view.ViewGroup.MarginLayoutParams) {
+                android.view.ViewGroup.MarginLayoutParams tbParams = (android.view.ViewGroup.MarginLayoutParams) timeBarContainer.getLayoutParams();
+                tbParams.leftMargin = dpToPx(8);
+                tbParams.rightMargin = dpToPx(8);
+                tbParams.bottomMargin = dpToPx(16);
+                timeBarContainer.setLayoutParams(tbParams);
+            }
+
+            if (systemUiController != null) {
+                systemUiController.hideSystemUI();
+            }
+        } else {
+            int screenWidth = getResources().getDisplayMetrics().widthPixels;
+            int horizontalPadding = dpToPx(12);
+            int playerWidth = screenWidth - (horizontalPadding * 2);
+            int playerHeight = (int) (playerWidth * (9.0f / 16.0f));
+
+            int topMargin = statusBarHeight > 0 ? statusBarHeight + dpToPx(6) : dpToPx(32);
+
+            params.width = playerWidth;
+            params.height = playerHeight;
+            params.topMargin = topMargin;
+            params.leftMargin = horizontalPadding;
+            params.rightMargin = horizontalPadding;
+            params.bottomMargin = dpToPx(12);
+            playerContainer.setLayoutParams(params);
+
+            if (playerContainer instanceof com.example.animelib.ui.RoundedCornerFrameLayout) {
+                ((com.example.animelib.ui.RoundedCornerFrameLayout) playerContainer).setCornerRadius(dpToPx(16));
+            }
+
+            if (portraitBottomContent != null) {
+                portraitBottomContent.setVisibility(View.VISIBLE);
+            }
+
+            // Hide Title and Lock Button in Portrait Mode
+            if (animeInfoContainer != null) {
+                animeInfoContainer.setVisibility(View.GONE);
+            }
+
+            if (btnLock != null) {
+                btnLock.setVisibility(View.GONE);
+            }
+
+            // Compact control margins in portrait mode
+            if (topBar != null && topBar.getLayoutParams() instanceof android.view.ViewGroup.MarginLayoutParams) {
+                android.view.ViewGroup.MarginLayoutParams topBarParams = (android.view.ViewGroup.MarginLayoutParams) topBar.getLayoutParams();
+                topBarParams.topMargin = dpToPx(6);
+                topBarParams.leftMargin = dpToPx(8);
+                topBarParams.rightMargin = dpToPx(8);
+                topBar.setLayoutParams(topBarParams);
+            }
+
+            if (timeAndControls != null && timeAndControls.getLayoutParams() instanceof android.view.ViewGroup.MarginLayoutParams) {
+                android.view.ViewGroup.MarginLayoutParams tcParams = (android.view.ViewGroup.MarginLayoutParams) timeAndControls.getLayoutParams();
+                tcParams.leftMargin = dpToPx(8);
+                tcParams.rightMargin = dpToPx(8);
+                timeAndControls.setLayoutParams(tcParams);
+            }
+
+            if (timeBarContainer != null && timeBarContainer.getLayoutParams() instanceof android.view.ViewGroup.MarginLayoutParams) {
+                android.view.ViewGroup.MarginLayoutParams tbParams = (android.view.ViewGroup.MarginLayoutParams) timeBarContainer.getLayoutParams();
+                tbParams.leftMargin = dpToPx(4);
+                tbParams.rightMargin = dpToPx(4);
+                tbParams.bottomMargin = dpToPx(4);
+                timeBarContainer.setLayoutParams(tbParams);
+            }
+
+            if (ambientContainer != null) {
+                ambientContainer.setVisibility(View.VISIBLE);
+            }
+            if (ambientLightManager != null) {
+                ambientLightManager.setEnabled(true);
+            }
+
+            if (systemUiController != null) {
+                systemUiController.showSystemUI();
+            }
+        }
+    }
+
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus && systemUiController != null) {
-            systemUiController.hideSystemUI();
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                systemUiController.hideSystemUI();
+            } else {
+                systemUiController.showSystemUI();
+            }
         }
     }
 
@@ -567,7 +824,11 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     protected void onResume() {
         super.onResume();
         if (systemUiController != null) {
-            systemUiController.hideSystemUI();
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                systemUiController.hideSystemUI();
+            } else {
+                systemUiController.showSystemUI();
+            }
         }
     }
 
