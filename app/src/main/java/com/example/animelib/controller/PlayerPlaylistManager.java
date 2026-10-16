@@ -112,6 +112,10 @@ public class PlayerPlaylistManager {
         return playlistPaths;
     }
 
+    public List<String> getPlaylistTitles() {
+        return playlistTitles;
+    }
+
     public int getCurrentIndex() {
         return currentPlaylistIndex;
     }

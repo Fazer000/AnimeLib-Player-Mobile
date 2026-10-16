@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/card_bg_color"
+    app:strokeColor="?attr/alphaBorderColor"
+    app:strokeWidth="0.5dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_episodes"
+            app:tint="@color/purple_primary"
+            android:contentDescription="Playlist" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvPlaylistName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary_text_color"
+                android:textSize="16sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="Название плейлиста" />
+
+            <TextView
+                android:id="@+id/tvPlaylistVideoCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/player_item_inactive_text"
+                android:textSize="12.5sp"
+                android:fontFamily="@font/open_sans"
+                android:text="Видео: 5" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnDeletePlaylist"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_trash_delete"
+            app:tint="@color/player_item_inactive_text"
+            android:padding="8dp"
+            android:contentDescription="Удалить" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

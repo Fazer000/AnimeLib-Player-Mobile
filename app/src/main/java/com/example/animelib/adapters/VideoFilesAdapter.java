@@ -1,10 +1,8 @@
 package com.example.animelib.adapters;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,6 +23,7 @@ import com.example.animelib.R;
 import com.example.animelib.models.VideoItem;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +36,9 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
 
     private final List<VideoItem> videos;
     private final OnVideoClickListener listener;
+
+    private boolean isSelectionMode = false;
+    private final List<VideoItem> selectedVideos = new ArrayList<>();
 
     private static final int CACHE_SIZE = 40 * 1024 * 1024; // 40MB memory cache
     private static final LruCache<String, Bitmap> thumbnailCache = new LruCache<String, Bitmap>(CACHE_SIZE) {
@@ -52,6 +54,39 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
     public VideoFilesAdapter(List<VideoItem> videos, OnVideoClickListener listener) {
         this.videos = videos;
         this.listener = listener;
+    }
+
+    public void setSelectionMode(boolean selectionMode) {
+        this.isSelectionMode = selectionMode;
+        if (!selectionMode) {
+            selectedVideos.clear();
+        }
+        notifyDataSetChanged();
+    }
+
+    public boolean isSelectionMode() {
+        return isSelectionMode;
+    }
+
+    public List<VideoItem> getSelectedVideos() {
+        return selectedVideos;
+    }
+
+    public void toggleSelection(VideoItem video) {
+        int index = -1;
+        for (int i = 0; i < selectedVideos.size(); i++) {
+            VideoItem item = selectedVideos.get(i);
+            if (item.getId() == video.getId() || (item.getPath() != null && item.getPath().equals(video.getPath()))) {
+                index = i;
+                break;
+            }
+        }
+        if (index >= 0) {
+            selectedVideos.remove(index);
+        } else {
+            selectedVideos.add(video);
+        }
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -78,6 +113,30 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
         } else {
             holder.pbWatchProgress.setVisibility(View.GONE);
             holder.tvWatchProgressStatus.setVisibility(View.GONE);
+        }
+
+        int selectionIndex = -1;
+        if (isSelectionMode) {
+            for (int i = 0; i < selectedVideos.size(); i++) {
+                VideoItem item = selectedVideos.get(i);
+                if (item.getId() == video.getId() || (item.getPath() != null && item.getPath().equals(video.getPath()))) {
+                    selectionIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (selectionIndex >= 0) {
+            holder.tvSelectionBadge.setVisibility(View.VISIBLE);
+            holder.tvSelectionBadge.setText(String.valueOf(selectionIndex + 1));
+            holder.itemView.setAlpha(1.0f);
+        } else if (isSelectionMode) {
+            holder.tvSelectionBadge.setVisibility(View.VISIBLE);
+            holder.tvSelectionBadge.setText("");
+            holder.itemView.setAlpha(0.6f);
+        } else {
+            holder.tvSelectionBadge.setVisibility(View.GONE);
+            holder.itemView.setAlpha(1.0f);
         }
 
         // Thumbnail loading
@@ -152,6 +211,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
         TextView tvVideoFolder;
         TextView tvVideoSize;
         TextView tvWatchProgressStatus;
+        TextView tvSelectionBadge;
         ProgressBar pbWatchProgress;
 
         VideoViewHolder(@NonNull View itemView) {
@@ -162,6 +222,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
             tvVideoFolder = itemView.findViewById(R.id.tvVideoFolder);
             tvVideoSize = itemView.findViewById(R.id.tvVideoSize);
             tvWatchProgressStatus = itemView.findViewById(R.id.tvWatchProgressStatus);
+            tvSelectionBadge = itemView.findViewById(R.id.tvSelectionBadge);
             pbWatchProgress = itemView.findViewById(R.id.pbWatchProgress);
         }
     }

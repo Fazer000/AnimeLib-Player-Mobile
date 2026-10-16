@@ -10,13 +10,16 @@ import com.example.animelib.data.entity.VideoPlaybackHistoryEntity;
 
 @Database(entities = {
         AppSettings.class,
-        VideoPlaybackHistoryEntity.class
-}, version = 30, exportSchema = false)
+        VideoPlaybackHistoryEntity.class,
+        com.example.animelib.data.entity.PlaylistEntity.class,
+        com.example.animelib.data.entity.PlaylistVideoEntity.class
+}, version = 31, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
 
     public abstract AppSettingsDao appSettingsDao();
     public abstract VideoPlaybackHistoryDao videoPlaybackHistoryDao();
+    public abstract com.example.animelib.data.dao.PlaylistDao playlistDao();
 
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.animelib.data.entity.VideoPlaybackHistoryEntity;
+import com.example.animelib.models.VideoItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -452,6 +453,55 @@ public class DatabaseManager {
                 db.videoPlaybackHistoryDao().clearAllHistory();
             } catch (Exception e) {
                 Log.e(TAG, "Error clearing video history", e);
+            }
+        });
+    }
+
+    // ========== Playlist Operations ==========
+
+    public long createPlaylist(String name, List<VideoItem> selectedVideos) {
+        try {
+            com.example.animelib.data.entity.PlaylistEntity playlist = new com.example.animelib.data.entity.PlaylistEntity(name, System.currentTimeMillis());
+            long playlistId = db.playlistDao().insertPlaylist(playlist);
+            List<com.example.animelib.data.entity.PlaylistVideoEntity> videoEntities = new ArrayList<>();
+            for (int i = 0; i < selectedVideos.size(); i++) {
+                VideoItem item = selectedVideos.get(i);
+                String path = item.getPath() != null && !item.getPath().isEmpty() ? item.getPath() : item.getUriString();
+                videoEntities.add(new com.example.animelib.data.entity.PlaylistVideoEntity(playlistId, path, item.getTitle(), i));
+            }
+            db.playlistDao().insertPlaylistVideos(videoEntities);
+            return playlistId;
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating playlist", e);
+            return -1;
+        }
+    }
+
+    public List<com.example.animelib.data.entity.PlaylistEntity> getAllPlaylists() {
+        try {
+            return db.playlistDao().getAllPlaylists();
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting playlists", e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<com.example.animelib.data.entity.PlaylistVideoEntity> getVideosForPlaylist(long playlistId) {
+        try {
+            return db.playlistDao().getVideosForPlaylist(playlistId);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting playlist videos", e);
+            return new ArrayList<>();
+        }
+    }
+
+    public void deletePlaylist(long playlistId) {
+        executor.execute(() -> {
+            try {
+                db.playlistDao().deleteVideosForPlaylist(playlistId);
+                db.playlistDao().deletePlaylist(playlistId);
+            } catch (Exception e) {
+                Log.e(TAG, "Error deleting playlist", e);
             }
         });
     }

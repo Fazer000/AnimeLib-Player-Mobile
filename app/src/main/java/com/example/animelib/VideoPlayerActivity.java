@@ -36,6 +36,9 @@ import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.AspectRatioFrameLayout;
 import androidx.media3.ui.PlayerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.animelib.adapters.PlaylistEpisodesAdapter;
 
 import okhttp3.OkHttpClient;
 
@@ -74,6 +77,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
     private TextView tvAnimeTitle;
     private TextView tvPortraitAnimeTitle;
+    private TextView tvPortraitPlaylistInfo;
+    private RecyclerView rvPlaylistEpisodes;
+    private PlaylistEpisodesAdapter playlistEpisodesAdapter;
     private ImageButton btnClose;
     private ImageButton btnSettings;
     private ImageButton btnPip;
@@ -176,6 +182,18 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
         if (btnLockScreen != null) {
             btnLockScreen.setVisibility(View.VISIBLE);
+        }
+
+        rvPlaylistEpisodes = findViewById(R.id.rvPlaylistEpisodes);
+        tvPortraitPlaylistInfo = findViewById(R.id.tvPortraitPlaylistInfo);
+        if (rvPlaylistEpisodes != null) {
+            rvPlaylistEpisodes.setLayoutManager(new LinearLayoutManager(this));
+            playlistEpisodesAdapter = new PlaylistEpisodesAdapter(
+                    playlistManager.getPlaylistTitles(),
+                    playlistManager.getCurrentIndex(),
+                    position -> playVideoAtIndex(position, true)
+            );
+            rvPlaylistEpisodes.setAdapter(playlistEpisodesAdapter);
         }
 
         // Initialize Managers
@@ -383,6 +401,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         if (tvPortraitAnimeTitle != null) {
             tvPortraitAnimeTitle.setText(playlistManager.getCurrentTitle());
         }
+        if (tvPortraitPlaylistInfo != null) {
+            tvPortraitPlaylistInfo.setText("Плейлист: " + playlistManager.getCurrentFolderName() + " • Серия " + (playlistManager.getCurrentIndex() + 1) + " из " + playlistManager.getPlaylistPaths().size());
+        }
+        if (playlistEpisodesAdapter != null) {
+            playlistEpisodesAdapter.setCurrentIndex(playlistManager.getCurrentIndex());
+        }
 
         Uri videoUri;
         if (videoPath.startsWith("content://") || videoPath.startsWith("http://") || videoPath.startsWith("https://")) {
@@ -420,6 +444,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         saveCurrentPosition();
         playlistManager.setCurrentIndex(index);
         playCurrentVideo(shouldResume);
+        if (playlistEpisodesAdapter != null) {
+            playlistEpisodesAdapter.setCurrentIndex(index);
+        }
+        if (tvPortraitPlaylistInfo != null) {
+            tvPortraitPlaylistInfo.setText("Плейлист: " + playlistManager.getCurrentFolderName() + " • Серия " + (index + 1) + " из " + playlistManager.getPlaylistPaths().size());
+        }
     }
 
     private void playNextVideo() {

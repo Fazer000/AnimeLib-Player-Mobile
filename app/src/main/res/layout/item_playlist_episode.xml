@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="12dp"
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <TextView
+        android:id="@+id/tvEpisodeNumber"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:gravity="center"
+        android:background="@drawable/bg_m3_unselected_circle"
+        android:textColor="@color/primary_text_color"
+        android:textSize="12sp"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="1" />
+
+    <TextView
+        android:id="@+id/tvEpisodeTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/primary_text_color"
+        android:textSize="14sp"
+        android:fontFamily="@font/open_sans"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="Название серии" />
+
+    <ImageView
+        android:id="@+id/ivPlayingIndicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_play"
+        app:tint="@color/purple_primary"
+        android:visibility="gone"
+        android:contentDescription="Playing" />
+
+</LinearLayout>

@@ -111,10 +111,10 @@
     <color name="accent_text_color">@color/app_text_secondary</color>
     <color name="comment_input_bg">#F3F4F6</color>
     <color name="comment_input_stroke">#E5E7EB</color>
-    <color name="chip_selected_bg">@color/purple_secondary</color>
+    <color name="chip_selected_bg">@color/purple_primary</color>
     <color name="chip_selected_stroke">@color/purple_primary</color>
-    <color name="chip_unselected_bg">#F3F4F6</color>
-    <color name="chip_unselected_stroke">#E5E7EB</color>
+    <color name="chip_unselected_bg">#E5E7EB</color>
+    <color name="chip_unselected_stroke">#D1D5DB</color>
     <color name="close_btn_bg">#1A000000</color>
     <color name="placeholder_bg">#E5E7EB</color>
     <color name="stop_btn_bg">#FEE2E2</color>
@@ -125,7 +125,7 @@
 
     <!-- Player Episodes, Timecode, and Player Download Progress Colors -->
     <color name="player_glass_bg">#4D0F121A</color>
-    <color name="player_item_inactive_text">@color/app_text_secondary</color>
+    <color name="player_item_inactive_text">#374151</color>
     <color name="player_item_inactive_stroke">#33FFFFFF</color>
     <color name="player_item_active_text">#FFFFFF</color>
     <color name="player_item_active_stroke">@color/purple_primary</color>

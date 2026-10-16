@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,10 +20,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
+import com.example.animelib.adapters.PlaylistsAdapter;
 import com.example.animelib.adapters.VideoFilesAdapter;
 import com.example.animelib.adapters.VideoFoldersAdapter;
 import com.example.animelib.data.DatabaseManager;
@@ -32,6 +37,7 @@ import com.example.animelib.models.VideoItem;
 import com.example.animelib.repository.LocalVideoRepository;
 import com.example.animelib.repository.VideoRepository;
 import com.example.animelib.util.ThemeUtils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -52,12 +58,21 @@ public class MainActivity extends AppCompatActivity {
     private final ExecutorService scanExecutor = Executors.newSingleThreadExecutor();
 
     // UI Components
-    private TextView tvVideoCount;
     private ImageButton btnSort;
-    private ImageButton btnRefresh;
-    private ImageButton btnTestMode;
+    private ImageButton btnCreatePlaylist;
+    private ImageButton btnSearchToggle;
+    private ImageButton btnCloseSearch;
+    private CardView layoutExpandedSearch;
+    private View tabExplorer, tabPlaylists;
+    private TextView tvTabExplorerText, tvTabPlaylistsText;
+    private ImageView ivTabExplorerIcon, ivTabPlaylistsIcon;
+    private boolean isPlaylistsTabSelected = false;
+    private CardView layoutPlaylistCreationBar;
+    private TextView tvPlaylistSelectionCount;
+    private MaterialButton btnCancelPlaylist, btnDonePlaylist;
+    private boolean isPlaylistCreationMode = false;
     private EditText etSearchVideos;
-    private ImageButton btnClearSearch;
+
     private RecyclerView rvFolders;
     private RecyclerView rvVideos;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -66,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvEmptyTitle;
     private TextView tvEmptySubtitle;
     private MaterialButton btnEmptyAction;
-    private MaterialButton btnLaunchTestMode;
+
 
     // Data
     private final List<VideoItem> allVideos = new ArrayList<>();
@@ -96,6 +111,17 @@ public class MainActivity extends AppCompatActivity {
         setupSearchAndListeners();
         setupPermissionLauncher();
 
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, windowInsets) -> {
+            int imeHeight = windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            boolean isImeVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
+            if (isImeVisible && layoutExpandedSearch != null && layoutExpandedSearch.getVisibility() == View.VISIBLE) {
+                layoutExpandedSearch.setTranslationY(-imeHeight + 80f);
+            } else if (layoutExpandedSearch != null) {
+                layoutExpandedSearch.setTranslationY(0f);
+            }
+            return windowInsets;
+        });
+
         checkAndRequestStoragePermissions();
     }
 
@@ -108,12 +134,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        tvVideoCount = findViewById(R.id.tvVideoCount);
         btnSort = findViewById(R.id.btnSort);
-        btnRefresh = findViewById(R.id.btnRefresh);
-        btnTestMode = findViewById(R.id.btnTestMode);
+        btnCreatePlaylist = findViewById(R.id.btnCreatePlaylist);
+        btnSearchToggle = findViewById(R.id.btnSearchToggle);
+        layoutExpandedSearch = findViewById(R.id.layoutExpandedSearch);
+        tabExplorer = findViewById(R.id.tabExplorer);
+        tabPlaylists = findViewById(R.id.tabPlaylists);
+        tvTabExplorerText = findViewById(R.id.tvTabExplorerText);
+        tvTabPlaylistsText = findViewById(R.id.tvTabPlaylistsText);
+        ivTabExplorerIcon = findViewById(R.id.ivTabExplorerIcon);
+        ivTabPlaylistsIcon = findViewById(R.id.ivTabPlaylistsIcon);
+        layoutPlaylistCreationBar = findViewById(R.id.layoutPlaylistCreationBar);
+        tvPlaylistSelectionCount = findViewById(R.id.tvPlaylistSelectionCount);
+        btnCancelPlaylist = findViewById(R.id.btnCancelPlaylist);
+        btnDonePlaylist = findViewById(R.id.btnDonePlaylist);
         etSearchVideos = findViewById(R.id.etSearchVideos);
-        btnClearSearch = findViewById(R.id.btnClearSearch);
+
+        btnCloseSearch = findViewById(R.id.btnCloseSearch);
         rvFolders = findViewById(R.id.rvFolders);
         rvVideos = findViewById(R.id.rvVideos);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -122,10 +159,52 @@ public class MainActivity extends AppCompatActivity {
         tvEmptyTitle = findViewById(R.id.tvEmptyTitle);
         tvEmptySubtitle = findViewById(R.id.tvEmptySubtitle);
         btnEmptyAction = findViewById(R.id.btnEmptyAction);
-        btnLaunchTestMode = findViewById(R.id.btnLaunchTestMode);
+
 
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(this, R.color.purple_primary));
         swipeRefreshLayout.setOnRefreshListener(this::loadVideosFromStorage);
+
+        if (tabExplorer != null && tabPlaylists != null) {
+            tabExplorer.setOnClickListener(v -> selectExplorerTab());
+            tabPlaylists.setOnClickListener(v -> selectPlaylistsTab());
+        }
+    }
+
+    private void selectExplorerTab() {
+        isPlaylistsTabSelected = false;
+        rvFolders.setVisibility(View.VISIBLE);
+        if (rvVideos.getAdapter() != videoFilesAdapter) {
+            rvVideos.setAdapter(videoFilesAdapter);
+        }
+        filterAndDisplayVideos();
+
+        tabExplorer.animate().scaleX(1.05f).scaleY(1.05f).setDuration(150).withEndAction(() -> tabExplorer.animate().scaleX(1f).scaleY(1f).setDuration(150).start()).start();
+
+        tabExplorer.setBackgroundResource(R.drawable.bg_tab_selected);
+        ivTabExplorerIcon.setColorFilter(ContextCompat.getColor(this, R.color.white_color));
+        tvTabExplorerText.setVisibility(View.VISIBLE);
+        tvTabExplorerText.setTextColor(ContextCompat.getColor(this, R.color.white_color));
+
+        tabPlaylists.setBackgroundResource(android.R.color.transparent);
+        ivTabPlaylistsIcon.setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
+        tvTabPlaylistsText.setVisibility(View.GONE);
+    }
+
+    private void selectPlaylistsTab() {
+        isPlaylistsTabSelected = true;
+        rvFolders.setVisibility(View.GONE);
+        loadAndDisplayPlaylists();
+
+        tabPlaylists.animate().scaleX(1.05f).scaleY(1.05f).setDuration(150).withEndAction(() -> tabPlaylists.animate().scaleX(1f).scaleY(1f).setDuration(150).start()).start();
+
+        tabPlaylists.setBackgroundResource(R.drawable.bg_tab_selected);
+        ivTabPlaylistsIcon.setColorFilter(ContextCompat.getColor(this, R.color.white_color));
+        tvTabPlaylistsText.setVisibility(View.VISIBLE);
+        tvTabPlaylistsText.setTextColor(ContextCompat.getColor(this, R.color.white_color));
+
+        tabExplorer.setBackgroundResource(android.R.color.transparent);
+        ivTabExplorerIcon.setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
+        tvTabExplorerText.setVisibility(View.GONE);
     }
 
     private void setupRecyclerViews() {
@@ -137,19 +216,51 @@ public class MainActivity extends AppCompatActivity {
         rvFolders.setAdapter(videoFoldersAdapter);
 
         rvVideos.setLayoutManager(new LinearLayoutManager(this));
-        videoFilesAdapter = new VideoFilesAdapter(displayedVideos, (video, position) -> openVideoInPlayer(video));
+        videoFilesAdapter = new VideoFilesAdapter(displayedVideos, (video, position) -> {
+            if (isPlaylistCreationMode) {
+                videoFilesAdapter.toggleSelection(video);
+                updatePlaylistSelectionBar();
+            } else {
+                openVideoInPlayer(video);
+            }
+        });
         rvVideos.setAdapter(videoFilesAdapter);
     }
 
     private void setupSearchAndListeners() {
-        btnRefresh.setOnClickListener(v -> loadVideosFromStorage());
         btnSort.setOnClickListener(v -> showSortDialog());
-        if (btnTestMode != null) {
-            btnTestMode.setOnClickListener(v -> showTestModeMenu());
+        if (btnCreatePlaylist != null) {
+            btnCreatePlaylist.setOnClickListener(v -> startPlaylistCreationMode());
         }
-        if (btnLaunchTestMode != null) {
-            btnLaunchTestMode.setOnClickListener(v -> launchTestPlayerWithDemoPlaylist());
+        if (btnSearchToggle != null) {
+            btnSearchToggle.setOnClickListener(v -> {
+                btnSearchToggle.setVisibility(View.GONE);
+                layoutExpandedSearch.setVisibility(View.VISIBLE);
+                etSearchVideos.requestFocus();
+                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(etSearchVideos, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+                }
+            });
         }
+        if (btnCloseSearch != null) {
+            btnCloseSearch.setOnClickListener(v -> {
+                etSearchVideos.setText("");
+                layoutExpandedSearch.setVisibility(View.GONE);
+                btnSearchToggle.setVisibility(View.VISIBLE);
+                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(etSearchVideos.getWindowToken(), 0);
+                }
+            });
+        }
+        if (btnCancelPlaylist != null) {
+            btnCancelPlaylist.setOnClickListener(v -> exitPlaylistCreationMode());
+        }
+        if (btnDonePlaylist != null) {
+            btnDonePlaylist.setOnClickListener(v -> promptForPlaylistNameAndSave());
+        }
+
 
         etSearchVideos.addTextChangedListener(new TextWatcher() {
             @Override
@@ -158,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 currentSearchQuery = s != null ? s.toString().trim() : "";
-                btnClearSearch.setVisibility(currentSearchQuery.isEmpty() ? View.GONE : View.VISIBLE);
                 filterAndDisplayVideos();
             }
 
@@ -166,7 +276,17 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        btnClearSearch.setOnClickListener(v -> etSearchVideos.setText(""));
+        if (btnCloseSearch != null) {
+            btnCloseSearch.setOnClickListener(v -> {
+                etSearchVideos.setText("");
+                layoutExpandedSearch.setVisibility(View.GONE);
+                btnSearchToggle.setVisibility(View.VISIBLE);
+                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(etSearchVideos.getWindowToken(), 0);
+                }
+            });
+        }
 
         btnEmptyAction.setOnClickListener(v -> {
             if (!hasStoragePermission()) {
@@ -175,6 +295,230 @@ public class MainActivity extends AppCompatActivity {
                 loadVideosFromStorage();
             }
         });
+    }
+
+    private void showPlaylistMenuDialog() {
+        String[] options = new String[]{
+                "Создать новый плейлист",
+                "Мои плейлисты"
+        };
+        new AlertDialog.Builder(this)
+                .setTitle("Управление плейлистами")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        startPlaylistCreationMode();
+                    } else if (which == 1) {
+                        showSavedPlaylistsDialog();
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
+    }
+
+    private void startPlaylistCreationMode() {
+        isPlaylistCreationMode = true;
+        if (layoutPlaylistCreationBar != null) {
+            layoutPlaylistCreationBar.setVisibility(View.VISIBLE);
+        }
+        if (btnSort != null) btnSort.setVisibility(View.GONE);
+        if (btnCreatePlaylist != null) btnCreatePlaylist.setVisibility(View.GONE);
+        if (videoFilesAdapter != null) {
+            videoFilesAdapter.setSelectionMode(true);
+        }
+        updatePlaylistSelectionBar();
+        com.example.animelib.util.CustomToast.showInfo(this, "Выберите видео по порядку для создания плейлиста");
+    }
+
+    private void exitPlaylistCreationMode() {
+        isPlaylistCreationMode = false;
+        if (layoutPlaylistCreationBar != null) {
+            layoutPlaylistCreationBar.setVisibility(View.GONE);
+        }
+        if (btnSort != null) btnSort.setVisibility(View.VISIBLE);
+        if (btnCreatePlaylist != null) btnCreatePlaylist.setVisibility(View.VISIBLE);
+        if (videoFilesAdapter != null) {
+            videoFilesAdapter.setSelectionMode(false);
+        }
+    }
+
+    private void loadAndDisplayPlaylists() {
+        List<com.example.animelib.data.entity.PlaylistEntity> playlists = databaseManager.getAllPlaylists();
+        if (playlists.isEmpty()) {
+            layoutEmptyState.setVisibility(View.VISIBLE);
+            rvVideos.setVisibility(View.GONE);
+            tvEmptyTitle.setText("Нет сохраненных плейлистов");
+            tvEmptySubtitle.setText("Создайте свой первый плейлист, нажав кнопку плейлиста внизу");
+            btnEmptyAction.setText("Создать плейлист");
+            btnEmptyAction.setOnClickListener(v -> startPlaylistCreationMode());
+            return;
+        }
+
+        layoutEmptyState.setVisibility(View.GONE);
+        rvVideos.setVisibility(View.VISIBLE);
+
+        com.example.animelib.adapters.PlaylistsAdapter adapter = new com.example.animelib.adapters.PlaylistsAdapter(playlists, new com.example.animelib.adapters.PlaylistsAdapter.OnPlaylistListener() {
+            @Override
+            public void onPlaylistClick(com.example.animelib.data.entity.PlaylistEntity playlist) {
+                loadAndPlaySavedPlaylist(playlist);
+            }
+
+            @Override
+            public void onPlaylistDelete(com.example.animelib.data.entity.PlaylistEntity playlist) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Удалить плейлист")
+                        .setMessage("Удалить плейлист «" + playlist.getName() + "»?")
+                        .setPositiveButton("Удалить", (d, w) -> {
+                            databaseManager.deletePlaylist(playlist.getId());
+                            com.example.animelib.util.CustomToast.showSuccess(MainActivity.this, "Плейлист удален");
+                            loadAndDisplayPlaylists();
+                        })
+                        .setNegativeButton("Отмена", null)
+                        .show();
+            }
+        });
+        rvVideos.setAdapter(adapter);
+    }
+
+    private void updatePlaylistSelectionBar() {
+        if (videoFilesAdapter == null || tvPlaylistSelectionCount == null) return;
+        int count = videoFilesAdapter.getSelectedVideos().size();
+        tvPlaylistSelectionCount.setText("Выбрано видео: " + count);
+        if (btnDonePlaylist != null) {
+            btnDonePlaylist.setEnabled(count > 0);
+            btnDonePlaylist.setAlpha(count > 0 ? 1.0f : 0.5f);
+        }
+    }
+
+    private void promptForPlaylistNameAndSave() {
+        if (videoFilesAdapter == null) return;
+        List<VideoItem> selected = videoFilesAdapter.getSelectedVideos();
+        if (selected.isEmpty()) {
+            com.example.animelib.util.CustomToast.showWarning(this, "Выберите хотя бы одно видео");
+            return;
+        }
+
+        EditText input = new EditText(this);
+        input.setHint("Название плейлиста");
+        input.setText("Плейлист " + new java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()).format(new java.util.Date()));
+        input.setSelection(input.getText().length());
+        int padding = dpToPx(16);
+        input.setPadding(padding, padding, padding, padding);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Создание плейлиста")
+                .setMessage("Укажите название для плейлиста (" + selected.size() + " видео по порядку):")
+                .setView(input)
+                .setPositiveButton("Создать", (dialog, which) -> {
+                    String name = input.getText().toString().trim();
+                    if (name.isEmpty()) name = "Мой плейлист";
+                    final String playlistName = name;
+                    final List<VideoItem> selectedCopy = new ArrayList<>(selected);
+
+                    long playlistId = databaseManager.createPlaylist(playlistName, selectedCopy);
+                    if (playlistId != -1) {
+                        com.example.animelib.util.CustomToast.showSuccess(this, "Плейлист «" + playlistName + "» успешно создан!");
+                        exitPlaylistCreationMode();
+
+                        new AlertDialog.Builder(this)
+                                .setTitle("Плейлист создан")
+                                .setMessage("Воспроизвести созданный плейлист сейчас?")
+                                .setPositiveButton("Да", (d, w) -> playCustomPlaylist(selectedCopy, playlistName))
+                                .setNegativeButton("Позже", null)
+                                .show();
+                    } else {
+                        com.example.animelib.util.CustomToast.showWarning(this, "Не удалось создать плейлист");
+                    }
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
+    }
+
+    private void showSavedPlaylistsDialog() {
+        List<com.example.animelib.data.entity.PlaylistEntity> playlists = databaseManager.getAllPlaylists();
+        if (playlists.isEmpty()) {
+            com.example.animelib.util.CustomToast.showInfo(this, "У вас пока нет сохраненных плейлистов");
+            return;
+        }
+
+        String[] names = new String[playlists.size()];
+        for (int i = 0; i < playlists.size(); i++) {
+            names[i] = playlists.get(i).getName() + " (" + databaseManager.getVideosForPlaylist(playlists.get(i).getId()).size() + " видео)";
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Мои плейлисты")
+                .setItems(names, (dialog, which) -> {
+                    com.example.animelib.data.entity.PlaylistEntity selectedPlaylist = playlists.get(which);
+                    loadAndPlaySavedPlaylist(selectedPlaylist);
+                })
+                .setNeutralButton("Удалить плейлист", (dialog, which) -> {
+                    showDeletePlaylistChooser(playlists);
+                })
+                .setNegativeButton("Закрыть", null)
+                .show();
+    }
+
+    private void showDeletePlaylistChooser(List<com.example.animelib.data.entity.PlaylistEntity> playlists) {
+        String[] names = new String[playlists.size()];
+        for (int i = 0; i < playlists.size(); i++) {
+            names[i] = playlists.get(i).getName();
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Выберите плейлист для удаления")
+                .setItems(names, (d, w) -> {
+                    com.example.animelib.data.entity.PlaylistEntity toDelete = playlists.get(w);
+                    databaseManager.deletePlaylist(toDelete.getId());
+                    com.example.animelib.util.CustomToast.showSuccess(this, "Плейлист удален");
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
+    }
+
+    private void loadAndPlaySavedPlaylist(com.example.animelib.data.entity.PlaylistEntity playlistEntity) {
+        List<com.example.animelib.data.entity.PlaylistVideoEntity> videoEntities = databaseManager.getVideosForPlaylist(playlistEntity.getId());
+        if (videoEntities.isEmpty()) {
+            com.example.animelib.util.CustomToast.showWarning(this, "В этом плейлисте нет видео");
+            return;
+        }
+
+        ArrayList<String> paths = new ArrayList<>();
+        ArrayList<String> titles = new ArrayList<>();
+        for (com.example.animelib.data.entity.PlaylistVideoEntity ve : videoEntities) {
+            paths.add(ve.getVideoPath());
+            titles.add(ve.getVideoTitle());
+        }
+
+        Intent intent = new Intent(this, VideoPlayerActivity.class);
+        intent.putExtra("EXTRA_LOCAL_FILE_PATH", paths.get(0));
+        intent.putExtra("EXTRA_VIDEO_TITLE", titles.get(0));
+        intent.putExtra("EXTRA_FOLDER_NAME", playlistEntity.getName());
+        intent.putStringArrayListExtra("EXTRA_PLAYLIST_PATHS", paths);
+        intent.putStringArrayListExtra("EXTRA_PLAYLIST_TITLES", titles);
+        intent.putExtra("EXTRA_PLAYLIST_INDEX", 0);
+        startActivity(intent);
+    }
+
+    private void playCustomPlaylist(List<VideoItem> selected, String playlistName) {
+        ArrayList<String> paths = new ArrayList<>();
+        ArrayList<String> titles = new ArrayList<>();
+        for (VideoItem item : selected) {
+            String path = item.getPath() != null && !item.getPath().isEmpty() ? item.getPath() : item.getUriString();
+            paths.add(path);
+            titles.add(item.getTitle());
+        }
+
+        Intent intent = new Intent(this, VideoPlayerActivity.class);
+        intent.putExtra("EXTRA_LOCAL_FILE_PATH", paths.get(0));
+        intent.putExtra("EXTRA_VIDEO_TITLE", titles.get(0));
+        intent.putExtra("EXTRA_FOLDER_NAME", playlistName);
+        intent.putStringArrayListExtra("EXTRA_PLAYLIST_PATHS", paths);
+        intent.putStringArrayListExtra("EXTRA_PLAYLIST_TITLES", titles);
+        intent.putExtra("EXTRA_PLAYLIST_INDEX", 0);
+        startActivity(intent);
+    }
+
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 
     private void setupPermissionLauncher() {
@@ -244,7 +588,11 @@ public class MainActivity extends AppCompatActivity {
                 allVideos.addAll(scanned);
 
                 updateFolderList();
-                filterAndDisplayVideos();
+                if (!isPlaylistsTabSelected) {
+                    filterAndDisplayVideos();
+                } else {
+                    loadAndDisplayPlaylists();
+                }
             });
         });
     }
@@ -270,6 +618,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void filterAndDisplayVideos() {
+        if (isPlaylistsTabSelected) return;
         List<VideoItem> filtered = videoListFilter.filterAndSort(
                 allVideos,
                 selectedFolder,
@@ -279,6 +628,9 @@ public class MainActivity extends AppCompatActivity {
 
         displayedVideos.clear();
         displayedVideos.addAll(filtered);
+        if (rvVideos.getAdapter() != videoFilesAdapter) {
+            rvVideos.setAdapter(videoFilesAdapter);
+        }
         videoFilesAdapter.notifyDataSetChanged();
 
         updateCountersAndEmptyState();
@@ -299,11 +651,9 @@ public class MainActivity extends AppCompatActivity {
                 btnEmptyAction.setText("Обновить список");
                 btnEmptyAction.setOnClickListener(v -> loadVideosFromStorage());
             }
-            tvVideoCount.setText("0 видео");
         } else {
             layoutEmptyState.setVisibility(View.GONE);
             rvVideos.setVisibility(View.VISIBLE);
-            tvVideoCount.setText(String.format(Locale.getDefault(), "Найдено: %d видео", displayedVideos.size()));
         }
     }
 
