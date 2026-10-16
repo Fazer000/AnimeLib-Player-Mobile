@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/statusBarColor"
+    android:background="?attr/primaryColor"
     android:fitsSystemWindows="false"
     android:clipChildren="false"
     android:clipToPadding="false">
@@ -25,9 +25,256 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:paddingTop="12dp"
-                android:paddingBottom="300dp" />
+                android:paddingBottom="260dp" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <!-- Settings Tab Container -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layoutSettingsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="16dp"
+            android:paddingBottom="260dp"
+            android:paddingHorizontal="16dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Настройки"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="22sp"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Theme Setting -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/settingThemeCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_theme"
+                            app:tint="@color/purple_primary"
+                            android:contentDescription="Theme" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Тема оформления"
+                                android:textColor="@color/primary_text_color"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/open_sans_bold" />
+
+                            <TextView
+                                android:id="@+id/tvCurrentTheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Системная"
+                                android:textColor="@color/player_item_inactive_text"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Test Mode Setting -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_test_mode"
+                            app:tint="@color/purple_primary"
+                            android:contentDescription="Test mode" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Тестовый режим"
+                                android:textColor="@color/primary_text_color"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/open_sans_bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Демонстрационные видеофайлы"
+                                android:textColor="@color/player_item_inactive_text"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchTestMode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Surround Sound Setting -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_surround_sound"
+                            app:tint="@color/purple_primary"
+                            android:contentDescription="Surround sound" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Виртуальный 5.1 звук"
+                                android:textColor="@color/primary_text_color"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/open_sans_bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Пространственное аудио"
+                                android:textColor="@color/player_item_inactive_text"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchSurroundSound"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Check Updates Setting -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/settingUpdateCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_bug_report"
+                            app:tint="@color/purple_primary"
+                            android:contentDescription="Updates" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Проверить обновления"
+                                android:textColor="@color/primary_text_color"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/open_sans_bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="AnimeLIB Player v1.0.0"
+                                android:textColor="@color/player_item_inactive_text"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -48,33 +295,32 @@
             android:visibility="gone">
 
             <ImageView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:src="@drawable/ic_tv"
-                app:tint="@color/purple_primary"
-                android:contentDescription="No Videos" />
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/ic_search"
+                app:tint="@color/player_item_inactive_text"
+                android:contentDescription="Empty" />
 
             <TextView
                 android:id="@+id/tvEmptyTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Видеофайлы не найдены"
+                android:text="Видео не найдены"
                 android:textColor="@color/primary_text_color"
-                android:textSize="17sp"
-                android:fontFamily="@font/open_sans_bold"
-                android:gravity="center" />
+                android:textSize="18sp"
+                android:fontFamily="@font/open_sans_bold" />
 
             <TextView
                 android:id="@+id/tvEmptySubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="Убедитесь, что на устройстве есть видео"
+                android:text="Проверьте наличие видеофайлов на устройстве"
                 android:textColor="@color/player_item_inactive_text"
-                android:textSize="13sp"
-                android:fontFamily="@font/open_sans" />
+                android:textSize="14sp"
+                android:gravity="center"
+                android:fontFamily="@font/open_sans_semibold" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEmptyAction"
@@ -90,267 +336,318 @@
 
     </FrameLayout>
 
-    <!-- 1. Floating Bottom Navigation Card (TikTok style custom pill tabs) -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_gravity="bottom"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        app:cardBackgroundColor="@color/card_bg_color"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="8dp"
-        app:cardPreventCornerOverlap="false">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="8dp">
-
-            <!-- Tab 1: Explorer -->
-            <LinearLayout
-                android:id="@+id/tabExplorer"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/bg_tab_selected"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingHorizontal="12dp">
-
-                <ImageView
-                    android:id="@+id/ivTabExplorerIcon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:src="@drawable/ic_tv"
-                    app:tint="@color/white_color"
-                    android:contentDescription="Проводник" />
-
-                <TextView
-                    android:id="@+id/tvTabExplorerText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Проводник"
-                    android:textColor="@color/white_color"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/open_sans_bold" />
-            </LinearLayout>
-
-            <!-- Tab 2: Playlists -->
-            <LinearLayout
-                android:id="@+id/tabPlaylists"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingHorizontal="12dp">
-
-                <ImageView
-                    android:id="@+id/ivTabPlaylistsIcon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:src="@drawable/ic_episodes"
-                    app:tint="@color/player_item_inactive_text"
-                    android:contentDescription="Плейлисты" />
-
-                <TextView
-                    android:id="@+id/tvTabPlaylistsText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Плейлисты"
-                    android:textColor="@color/player_item_inactive_text"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <!-- 2. Floating Folder Carousel Card (Uniform 18dp gap above Bottom Nav) -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardFolderCarousel"
+    <!-- Unified Bottom Floating Container grouping Control Buttons, Folder Carousel, and Bottom Nav -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="88dp"
-        app:cardBackgroundColor="@color/card_bg_color"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp"
-        app:cardPreventCornerOverlap="false">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvFolders"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="10dp"
-            android:clipToPadding="false" />
-
-    </androidx.cardview.widget.CardView>
-
-    <!-- 3. Floating Control Buttons / Search Bar Container (Uniform 18dp gap above Folder Carousel) -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="170dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
         android:clipChildren="false"
         android:clipToPadding="false">
 
-        <!-- Normal Circular Buttons (End aligned) -->
-        <LinearLayout
-            android:id="@+id/layoutNormalButtons"
+        <!-- 3. Control Buttons / Search Bar Container -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical|end"
-            android:orientation="horizontal"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
             android:clipChildren="false"
             android:clipToPadding="false">
 
-            <!-- Create Playlist Button (Individual Circle) -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_marginStart="10dp"
-                app:cardBackgroundColor="@color/card_bg_color"
-                app:cardCornerRadius="22dp"
-                app:cardElevation="6dp"
-                app:cardPreventCornerOverlap="false">
-
-                <ImageButton
-                    android:id="@+id/btnCreatePlaylist"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_episodes"
-                    app:tint="@color/purple_primary"
-                    android:padding="10dp"
-                    android:contentDescription="Создать плейлист" />
-            </androidx.cardview.widget.CardView>
-
-            <!-- Sort Button (Individual Circle) -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_marginStart="10dp"
-                app:cardBackgroundColor="@color/card_bg_color"
-                app:cardCornerRadius="22dp"
-                app:cardElevation="6dp"
-                app:cardPreventCornerOverlap="false">
-
-                <ImageButton
-                    android:id="@+id/btnSort"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_sort_arrows"
-                    app:tint="@color/primary_text_color"
-                    android:padding="10dp"
-                    android:contentDescription="Сортировка" />
-            </androidx.cardview.widget.CardView>
-
-            <!-- Search Toggle Button (Individual Circle) -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:layout_marginStart="10dp"
-                app:cardBackgroundColor="@color/card_bg_color"
-                app:cardCornerRadius="22dp"
-                app:cardElevation="6dp"
-                app:cardPreventCornerOverlap="false">
-
-                <ImageButton
-                    android:id="@+id/btnSearchToggle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/primary_text_color"
-                    android:padding="10dp"
-                    android:contentDescription="Поиск" />
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-        <!-- Expanded Search Bar (Floating Card matching full width when active) -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/layoutExpandedSearch"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            app:cardBackgroundColor="@color/card_bg_color"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="10dp"
-            android:visibility="gone">
-
+            <!-- Normal Circular Buttons (End aligned) -->
             <LinearLayout
+                android:id="@+id/layoutNormalButtons"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
+                android:gravity="center_vertical|end"
                 android:orientation="horizontal"
-                android:paddingHorizontal="14dp">
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/purple_primary"
-                    android:contentDescription="Search" />
-
-                <EditText
-                    android:id="@+id/etSearchVideos"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                <!-- Create Playlist Button (Individual Circle) -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_marginStart="10dp"
-                    android:background="@null"
-                    android:hint="Поиск видео..."
-                    android:textColor="@color/primary_text_color"
-                    android:textColorHint="@color/player_item_inactive_text"
-                    android:textSize="14sp"
-                    android:singleLine="true"
-                    android:imeOptions="actionSearch" />
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="6dp"
+                    app:cardPreventCornerOverlap="false">
 
-                <ImageButton
-                    android:id="@+id/btnCloseSearch"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_close"
-                    app:tint="@color/player_item_inactive_text"
-                    android:padding="6dp"
-                    android:contentDescription="Закрыть" />
+                    <ImageButton
+                        android:id="@+id/btnCreatePlaylist"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_episodes"
+                        app:tint="@color/purple_primary"
+                        android:padding="10dp"
+                        android:contentDescription="Создать плейлист" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Sort Button (Individual Circle) -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="6dp"
+                    app:cardPreventCornerOverlap="false">
+
+                    <ImageButton
+                        android:id="@+id/btnSort"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_sort_arrows"
+                        app:tint="@color/primary_text_color"
+                        android:padding="10dp"
+                        android:contentDescription="Сортировка" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Search Toggle Button (Individual Circle) -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="6dp"
+                    app:cardPreventCornerOverlap="false">
+
+                    <ImageButton
+                        android:id="@+id/btnSearchToggle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_search"
+                        app:tint="@color/primary_text_color"
+                        android:padding="10dp"
+                        android:contentDescription="Поиск" />
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
+            <!-- Expanded Search Bar (Floating Card matching full width when active) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layoutExpandedSearch"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="@color/card_bg_color"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_search"
+                        app:tint="@color/purple_primary"
+                        android:contentDescription="Search" />
+
+                    <EditText
+                        android:id="@+id/etSearchVideos"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:background="@null"
+                        android:hint="Поиск видео..."
+                        android:textColor="@color/primary_text_color"
+                        android:textColorHint="@color/player_item_inactive_text"
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch" />
+
+                    <ImageButton
+                        android:id="@+id/btnCloseSearch"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_close"
+                        app:tint="@color/player_item_inactive_text"
+                        android:padding="6dp"
+                        android:contentDescription="Закрыть" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </FrameLayout>
+
+        <!-- 2. Folder Carousel Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardFolderCarousel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/card_bg_color"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardPreventCornerOverlap="false">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFolders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="10dp"
+                android:clipToPadding="false" />
+
         </androidx.cardview.widget.CardView>
 
-    </FrameLayout>
+        <!-- 1. Floating Bottom Navigation Card with sliding background indicator -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:cardBackgroundColor="@color/card_bg_color"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="8dp"
+            app:cardPreventCornerOverlap="false">
 
-    <!-- 4. Playlist Creation Action Bar (Uniform 18dp gap above Control Buttons) -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="6dp">
+
+                <!-- Sliding background indicator view -->
+                <View
+                    android:id="@+id/vTabIndicator"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_tab_selected" />
+
+                <!-- Tabs container -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <!-- Tab 1: Explorer -->
+                    <LinearLayout
+                        android:id="@+id/tabExplorer"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="12dp">
+
+                        <ImageView
+                            android:id="@+id/ivTabExplorerIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_tv"
+                            app:tint="@color/white_color"
+                            android:contentDescription="Проводник" />
+
+                        <TextView
+                            android:id="@+id/tvTabExplorerText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Проводник"
+                            android:textColor="@color/white_color"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/open_sans_bold" />
+                    </LinearLayout>
+
+                    <!-- Tab 2: Playlists -->
+                    <LinearLayout
+                        android:id="@+id/tabPlaylists"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="12dp">
+
+                        <ImageView
+                            android:id="@+id/ivTabPlaylistsIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_episodes"
+                            app:tint="@color/player_item_inactive_text"
+                            android:contentDescription="Плейлисты" />
+
+                        <TextView
+                            android:id="@+id/tvTabPlaylistsText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Плейлисты"
+                            android:textColor="@color/player_item_inactive_text"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <!-- Tab 3: Settings -->
+                    <LinearLayout
+                        android:id="@+id/tabSettings"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="12dp">
+
+                        <ImageView
+                            android:id="@+id/ivTabSettingsIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_settings"
+                            app:tint="@color/player_item_inactive_text"
+                            android:contentDescription="Настройки" />
+
+                        <TextView
+                            android:id="@+id/tvTabSettingsText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Настройки"
+                            android:textColor="@color/player_item_inactive_text"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <!-- 4. Playlist Creation Action Bar -->
     <androidx.cardview.widget.CardView
         android:id="@+id/layoutPlaylistCreationBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="236dp"
+        android:layout_marginBottom="210dp"
         app:cardBackgroundColor="@color/card_bg_color"
         app:cardCornerRadius="20dp"
         app:cardElevation="12dp"
@@ -381,7 +678,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="Отмена"
-                android:textColor="@color/player_item_inactive_text" />
+                android:textColor="@color/player_item_inactive_text"
+                android:textSize="14sp"
+                android:fontFamily="@font/open_sans_semibold" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDonePlaylist"

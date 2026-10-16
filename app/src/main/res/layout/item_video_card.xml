@@ -21,24 +21,24 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="88dp"
             android:orientation="horizontal"
-            android:padding="10dp"
             android:gravity="center_vertical">
 
-            <!-- Thumbnail Container -->
+            <!-- Thumbnail Container (Borderless left & vertical, flush to edge) -->
             <FrameLayout
                 android:layout_width="120dp"
-                android:layout_height="72dp"
+                android:layout_height="match_parent"
                 android:clipChildren="false"
                 android:clipToPadding="false">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:cardCornerRadius="8dp"
+                    app:cardCornerRadius="12dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/black_color">
+                    app:cardBackgroundColor="@color/black_color"
+                    app:cardPreventCornerOverlap="false">
 
                     <ImageView
                         android:id="@+id/ivVideoThumbnail"
@@ -47,15 +47,6 @@
                         android:scaleType="centerCrop"
                         android:src="@drawable/placeholder_image"
                         android:contentDescription="Video Thumbnail" />
-
-                    <!-- Play icon watermark -->
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_play"
-                        app:tint="#CCFFFFFF"
-                        android:contentDescription="Play" />
 
                     <!-- Duration badge -->
                     <TextView
@@ -98,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -112,7 +104,7 @@
                     android:lineSpacingMultiplier="1.1"
                     android:text="Название видеофайла.mp4" />
 
-                <!-- Folder tag & File size -->
+                <!-- Folder tag & File size / Date -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -139,7 +131,7 @@
                         android:layout_marginStart="8dp"
                         android:textColor="@color/player_item_inactive_text"
                         android:textSize="11.5sp"
-                        android:text="250 МБ" />
+                        android:text="250 МБ • 14.10.2026" />
 
                 </LinearLayout>
 

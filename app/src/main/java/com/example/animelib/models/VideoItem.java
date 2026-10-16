@@ -75,4 +75,14 @@ public class VideoItem implements Serializable {
             return String.format(Locale.getDefault(), "%.0f КБ", kb);
         }
     }
+
+    public String getFormattedDate() {
+        if (dateModified <= 0) return "";
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+            return sdf.format(new java.util.Date(dateModified * 1000L));
+        } catch (Exception e) {
+            return "";
+        }
+    }
 }

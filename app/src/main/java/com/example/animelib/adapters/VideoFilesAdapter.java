@@ -103,7 +103,15 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
         holder.tvVideoTitle.setText(video.getTitle());
         holder.tvVideoDuration.setText(video.getFormattedDuration());
         holder.tvVideoFolder.setText(video.getFolderName());
-        holder.tvVideoSize.setText(video.getFormattedSize());
+        String sizeStr = video.getFormattedSize();
+        String dateStr = video.getFormattedDate();
+        if (!sizeStr.isEmpty() && !dateStr.isEmpty()) {
+            holder.tvVideoSize.setText(sizeStr + " • " + dateStr);
+        } else if (!sizeStr.isEmpty()) {
+            holder.tvVideoSize.setText(sizeStr);
+        } else {
+            holder.tvVideoSize.setText(dateStr);
+        }
 
         if (video.getProgressPercent() > 0) {
             holder.pbWatchProgress.setVisibility(View.VISIBLE);
