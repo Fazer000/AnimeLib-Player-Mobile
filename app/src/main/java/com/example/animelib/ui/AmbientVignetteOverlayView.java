@@ -129,17 +129,16 @@ public class AmbientVignetteOverlayView extends View {
         int h = getHeight();
         if (w <= 0 || h <= 0) return;
 
-        float edgeDepth = dpToPx(16);
-
-        // Draw soft vignette gradients along the outer screen edges
-        canvas.drawRect(0, 0, w, edgeDepth, topEdgePaint);
-        canvas.drawRect(0, h - edgeDepth, w, h, bottomEdgePaint);
-        canvas.drawRect(0, 0, edgeDepth, h, leftEdgePaint);
-        canvas.drawRect(w - edgeDepth, 0, w, h, rightEdgePaint);
-
         if (isPortraitMode) {
-            float fadeHeight = dpToPx(44);
-            canvas.drawRect(0, h - fadeHeight, w, h, portraitBottomFadePaint);
+            float topDepth = dpToPx(48);
+            canvas.drawRect(0, 0, w, topDepth, topEdgePaint);
+        } else {
+            float edgeDepth = dpToPx(16);
+            // Draw soft vignette gradients along the outer screen edges in landscape
+            canvas.drawRect(0, 0, w, edgeDepth, topEdgePaint);
+            canvas.drawRect(0, h - edgeDepth, w, h, bottomEdgePaint);
+            canvas.drawRect(0, 0, edgeDepth, h, leftEdgePaint);
+            canvas.drawRect(w - edgeDepth, 0, w, h, rightEdgePaint);
         }
     }
 }

@@ -375,6 +375,9 @@ public class AmbientLightManager {
 
     private void ensureAmbientPlayerInitialized() {
         if (!isEnabled || mainPlayer == null || isErrorState || isSuspended || ambientPlayerView == null || isDirectSamplerActive) return;
+        if (currentVideoUrl != null && (currentVideoUrl.startsWith("content://") || currentVideoUrl.startsWith("file://") || !currentVideoUrl.startsWith("http"))) {
+            return;
+        }
 
         if (ambientPlayer == null) {
             try {

@@ -432,7 +432,7 @@
 
         </LinearLayout>
 
-        <FrameLayout
+        <com.example.animelib.ui.RoundedCornerFrameLayout
             android:id="@+id/timeBarContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -464,7 +464,7 @@
                 app:scrubber_dragged_size="16dp"
                 app:scrubber_disabled_size="0dp" />
 
-        </FrameLayout>
+        </com.example.animelib.ui.RoundedCornerFrameLayout>
 
     </LinearLayout>
 

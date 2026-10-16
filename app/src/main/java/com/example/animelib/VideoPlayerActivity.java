@@ -710,6 +710,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         View topBar = findViewById(R.id.topBarContainer);
         View timeAndControls = findViewById(R.id.timeAndControlsContainer);
         View timeBarContainer = findViewById(R.id.timeBarContainer);
+        if (timeBarContainer instanceof com.example.animelib.ui.RoundedCornerFrameLayout) {
+            ((com.example.animelib.ui.RoundedCornerFrameLayout) timeBarContainer).setCornerRadius(dpToPx(6));
+        }
 
         if (playerContainer == null) return;
 
@@ -770,22 +773,21 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             }
         } else {
             int screenWidth = getResources().getDisplayMetrics().widthPixels;
-            int horizontalPadding = dpToPx(12);
-            int playerWidth = screenWidth - (horizontalPadding * 2);
+            int playerWidth = screenWidth;
             int playerHeight = (int) (playerWidth * (9.0f / 16.0f));
 
-            int topMargin = statusBarHeight > 0 ? statusBarHeight + dpToPx(6) : dpToPx(32);
+            int topMargin = statusBarHeight > 0 ? statusBarHeight : dpToPx(24);
 
             params.width = playerWidth;
             params.height = playerHeight;
             params.topMargin = topMargin;
-            params.leftMargin = horizontalPadding;
-            params.rightMargin = horizontalPadding;
-            params.bottomMargin = dpToPx(12);
+            params.leftMargin = 0;
+            params.rightMargin = 0;
+            params.bottomMargin = 0;
             playerContainer.setLayoutParams(params);
 
             if (playerContainer instanceof com.example.animelib.ui.RoundedCornerFrameLayout) {
-                ((com.example.animelib.ui.RoundedCornerFrameLayout) playerContainer).setCornerRadius(dpToPx(16));
+                ((com.example.animelib.ui.RoundedCornerFrameLayout) playerContainer).setCornerRadius(0f);
             }
 
             if (portraitBottomContent != null) {
@@ -853,14 +855,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 ambParams.rightMargin = 0;
                 ambParams.bottomMargin = 0;
             } else {
-                int screenWidth = getResources().getDisplayMetrics().widthPixels;
-                int horizontalPadding = dpToPx(12);
-                int playerWidth = screenWidth - (horizontalPadding * 2);
-                int playerHeight = (int) (playerWidth * (9.0f / 16.0f));
-                int topMargin = statusBarHeight > 0 ? statusBarHeight + dpToPx(6) : dpToPx(32);
+                int topMargin = statusBarHeight > 0 ? statusBarHeight : dpToPx(24);
 
                 ambParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-                ambParams.height = topMargin + playerHeight + dpToPx(44);
+                ambParams.height = topMargin + dpToPx(48);
                 ambParams.topMargin = 0;
                 ambParams.leftMargin = 0;
                 ambParams.rightMargin = 0;
