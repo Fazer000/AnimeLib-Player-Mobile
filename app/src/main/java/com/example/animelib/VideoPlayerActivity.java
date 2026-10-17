@@ -31,7 +31,6 @@ import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.DefaultDataSource;
-import androidx.media3.datasource.okhttp.OkHttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
@@ -41,7 +40,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.animelib.adapters.PlaylistEpisodesAdapter;
 
-import okhttp3.OkHttpClient;
+
 
 import com.example.animelib.controller.PlayerGestureController;
 import com.example.animelib.controller.PlayerLockController;
@@ -319,17 +318,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 .setPrioritizeTimeOverSizeThresholds(true)
                 .build();
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(chain -> {
-                    okhttp3.Request original = chain.request();
-                    okhttp3.Request request = original.newBuilder()
-                            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-                            .build();
-                    return chain.proceed(request);
-                })
-                .build();
-        OkHttpDataSource.Factory okHttpDataSourceFactory = new OkHttpDataSource.Factory(okHttpClient);
-        DefaultDataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(this, okHttpDataSourceFactory);
+        DefaultDataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(this);
         DefaultMediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(this)
                 .setDataSourceFactory(dataSourceFactory);
 

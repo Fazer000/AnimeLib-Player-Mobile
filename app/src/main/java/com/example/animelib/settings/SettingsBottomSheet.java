@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.example.animelib.R;
 import com.example.animelib.models.SubtitleData;
-import com.example.animelib.ui.UpdateActivity;
+
 import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.FlexibleBottomSheetDialog;
 import com.example.animelib.util.ThemeUtils;
@@ -239,21 +239,7 @@ public class SettingsBottomSheet extends FlexibleBottomSheetDialog {
             });
         }
 
-        // Check for Updates via GitHub
-        TextView appVersionText = view.findViewById(R.id.appVersionText);
-        if (appVersionText != null) appVersionText.setText("Версия 1.0.0 (Fazer000)");
-        View checkForUpdatesOption = view.findViewById(R.id.checkForUpdatesOption);
-        if (checkForUpdatesOption != null) {
-            checkForUpdatesOption.setOnClickListener(v -> {
-                try {
-                    Intent intent = new Intent(getContext(), UpdateActivity.class);
-                    getContext().startActivity(intent);
-                    dismiss();
-                } catch (Exception e) {
-                    CustomToast.showError(getContext(), "Не удалось открыть страницу обновлений");
-                }
-            });
-        }
+
 
         setCancelable(true);
         setCanceledOnTouchOutside(true);

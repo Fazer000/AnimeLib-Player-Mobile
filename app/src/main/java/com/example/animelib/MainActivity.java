@@ -32,7 +32,7 @@ import com.example.animelib.adapters.PlaylistsAdapter;
 import com.example.animelib.adapters.VideoFilesAdapter;
 import com.example.animelib.adapters.VideoFoldersAdapter;
 import com.example.animelib.data.DatabaseManager;
-import com.example.animelib.ui.UpdateActivity;
+
 import com.example.animelib.util.ThemeUtils;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.example.animelib.domain.VideoListFilter;
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTabExplorerText, tvTabPlaylistsText, tvTabSettingsText;
     private ImageView ivTabExplorerIcon, ivTabPlaylistsIcon, ivTabSettingsIcon;
     private View layoutSettingsContainer;
-    private MaterialSwitch switchTestMode, switchSurroundSound;
+    private MaterialSwitch switchSurroundSound;
     private LinearLayout settingThemeCard, settingUpdateCard;
     private TextView tvCurrentTheme;
     private boolean isPlaylistsTabSelected = false;
@@ -173,10 +173,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         layoutSettingsContainer = findViewById(R.id.layoutSettingsContainer);
-        switchTestMode = findViewById(R.id.switchTestMode);
+
         switchSurroundSound = findViewById(R.id.switchSurroundSound);
         settingThemeCard = findViewById(R.id.settingThemeCard);
-        settingUpdateCard = findViewById(R.id.settingUpdateCard);
+
         tvCurrentTheme = findViewById(R.id.tvCurrentTheme);
 
         layoutPlaylistCreationBar = findViewById(R.id.layoutPlaylistCreationBar);
@@ -205,12 +205,7 @@ public class MainActivity extends AppCompatActivity {
             tabSettings.setOnClickListener(v -> selectSettingsTab());
         }
 
-        if (switchTestMode != null) {
-            switchTestMode.setChecked(databaseManager.loadTestModeSetting());
-            switchTestMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                databaseManager.saveTestModeSetting(isChecked);
-            });
-        }
+
 
         if (switchSurroundSound != null) {
             switchSurroundSound.setChecked(true);
@@ -230,11 +225,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        if (settingUpdateCard != null) {
-            settingUpdateCard.setOnClickListener(v -> {
-                startActivity(new Intent(this, UpdateActivity.class));
-            });
-        }
+
         updateThemeText();
     }
 
@@ -829,33 +820,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showTestModeMenu() {
-        boolean isTestModeOn = databaseManager.loadTestModeSetting();
-        String toggleText = isTestModeOn ? "Скрыть тестовые видео в списке" : "Показывать тестовые видео в списке";
 
-        String[] options = new String[]{
-                "Запустить тест плеера (демо-видео)",
-                toggleText
-        };
-
-        DialogUtils.showListDialog(this, "Тест-режим плеера", options, which -> {
-            if (which == 0) {
-                launchTestPlayerWithDemoPlaylist();
-            } else if (which == 1) {
-                databaseManager.saveTestModeSetting(!isTestModeOn);
-                loadVideosFromStorage();
-                com.example.animelib.util.CustomToast.showInfo(MainActivity.this,
-                        !isTestModeOn ? "Тестовые видео добавлены в список" : "Тестовые видео скрыты");
-            }
-        });
-    }
-
-    private void launchTestPlayerWithDemoPlaylist() {
-        List<VideoItem> testItems = videoRepository.getTestVideos();
-        if (testItems.isEmpty()) return;
-        VideoItem first = testItems.get(0);
-        openVideoInPlayer(first, testItems);
-    }
 
     private void openVideoInPlayer(VideoItem video) {
         openVideoInPlayer(video, displayedVideos);

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="dt_primary_color">#131316</color>
+    <color name="dt_header_color">#131316</color>
+    <color name="dt_card_background">#1C1C1E</color>
+    <color name="dt_player_item_background">#1C1C1E</color>
+    <color name="dt_related_panel_background">#1C1C1E</color>
+    <color name="dt_bookmark_card_bg">#1C1C1E</color>
     <!-- Unified Text Colors (Dark Mode Overrides) -->
     <color name="app_text_primary">#BFBFBF</color>
     <color name="app_text_secondary">#8A8A8E</color>
