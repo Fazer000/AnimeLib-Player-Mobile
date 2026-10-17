@@ -125,12 +125,16 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         View rootLayout = findViewById(R.id.playerRootLayout);
         View loadingOverlay = findViewById(R.id.loadingOverlay);
         boolean isDarkMode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-        int bgColor = isDarkMode ? android.graphics.Color.BLACK : android.graphics.Color.WHITE;
+        int bgColor = isDarkMode ? getResources().getColor(R.color.dt_primary_color, getTheme()) : android.graphics.Color.WHITE;
         if (rootLayout != null) {
             rootLayout.setBackgroundColor(bgColor);
         }
         if (loadingOverlay != null) {
             loadingOverlay.setBackgroundColor(bgColor);
+        }
+        View portraitBottomContent = findViewById(R.id.portraitBottomContent);
+        if (portraitBottomContent != null) {
+            portraitBottomContent.setBackgroundColor(bgColor);
         }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -191,6 +195,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             rvPlaylistEpisodes.setLayoutManager(new LinearLayoutManager(this));
             playlistEpisodesAdapter = new PlaylistEpisodesAdapter(
                     playlistManager.getPlaylistTitles(),
+                    playlistManager.getPlaylistPaths(),
                     playlistManager.getCurrentIndex(),
                     position -> playVideoAtIndex(position, true)
             );

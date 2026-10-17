@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background Track -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="6dp" />
+            <solid android:color="@color/bs_divider_color" />
+        </shape>
+    </item>
+
+    <!-- Progress Fill with rounding and right padding (gap) -->
+    <item android:id="@android:id/progress">
+        <clip android:clipOrientation="horizontal" android:gravity="left">
+            <shape android:shape="rectangle">
+                <corners android:radius="6dp" />
+                <solid android:color="@color/purple_primary" />
+                <padding android:right="6dp" />
+            </shape>
+        </clip>
+    </item>
+
+    <!-- Circle indicator at the leading edge inside -->
+    <item>
+        <scale android:scaleWidth="100%" android:gravity="left|center_vertical">
+            <layer-list>
+                <item android:gravity="right|center_vertical">
+                    <shape android:shape="oval">
+                        <size android:width="12dp" android:height="12dp" />
+                        <solid android:color="@color/white_color" />
+                    </shape>
+                </item>
+            </layer-list>
+        </scale>
+    </item>
+</layer-list>

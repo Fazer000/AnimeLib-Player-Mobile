@@ -1,50 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?attr/primaryColor"
+    android:background="@color/toolbar_header_bg"
     android:fitsSystemWindows="true">
 
-    <!-- Top Toolbar Header -->
+    <!-- Top Toolbar -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
+        android:layout_height="48dp"
         android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="12dp"
         android:background="@color/toolbar_header_bg">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:padding="4dp"
-            android:src="@drawable/ic_arrow_back"
-            app:tint="?attr/primaryTextColor"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/primary_text_color"
             android:contentDescription="Назад" />
 
         <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
             android:text="Обновление приложения"
-            android:textColor="?attr/primaryTextColor"
+            android:textColor="@color/primary_text_color"
             android:textSize="18sp"
-            android:fontFamily="@font/open_sans_bold" />
+            android:fontFamily="@font/open_sans_bold"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
-    <!-- Content Area -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/bs_divider_color" />
+
+    <!-- Content ScrollView -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:background="@color/bs_bg_color"
+        android:fillViewport="true"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,264 +62,140 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Loading State -->
+            <!-- Release Header Card -->
             <LinearLayout
-                android:id="@+id/layoutLoading"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    app:indicatorColor="@color/purple_primary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="Проверка обновлений с GitHub..."
-                    android:textColor="?attr/secondaryTextColor"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/open_sans" />
-            </LinearLayout>
-
-            <!-- Error State -->
-            <LinearLayout
-                android:id="@+id/layoutError"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/tvErrorText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Не удалось проверить обновления"
-                    android:textColor="#EF4444"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/open_sans"
-                    android:gravity="center" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCheckAgain"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    style="@style/Widget.AnimeLIB.Button.Outlined"
-                    android:text="Повторить" />
-            </LinearLayout>
-
-            <!-- Up to Date State -->
-            <LinearLayout
-                android:id="@+id/layoutUpToDate"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_check"
-                    app:tint="#10B981" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="У вас установлена последняя версия"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:layout_marginTop="12dp" />
-
-                <TextView
-                    android:id="@+id/tvUpToDateSub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Приложение не требует обновления"
-                    android:textColor="?attr/secondaryTextColor"
-                    android:textSize="13sp"
-                    android:fontFamily="@font/open_sans"
-                    android:layout_marginTop="4dp" />
-            </LinearLayout>
-
-            <!-- Update Available Content (Card 1 & Card 2) -->
-            <LinearLayout
-                android:id="@+id/layoutUpdateAvailable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:padding="16dp"
+                android:background="@drawable/card_bg_rounded"
+                android:gravity="center_horizontal"
+                android:elevation="0dp">
 
-                <!-- Card 1: Version Details Card -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:background="@color/card_bg_color"
-                    android:padding="24dp"
-                    android:layout_marginBottom="16dp">
+                <ImageView
+                    android:id="@+id/ivUpdateLogo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="?attr/logoDrawable"
+                    android:layout_marginBottom="10dp"
+                    android:contentDescription="AnimeLib Logo" />
 
-                    <ImageView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:src="@drawable/animelib_logo"
-                        android:contentDescription="Logo" />
-
-                    <TextView
-                        android:id="@+id/tvNewVersionTag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Доступна версия v1.8.9"
-                        android:textColor="?attr/primaryTextColor"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:layout_marginTop="16dp" />
-
-                    <TextView
-                        android:id="@+id/tvVersionComparison"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="У вас: v1.8.8 → Новая: v1.8.9"
-                        android:textColor="@color/purple_primary"
-                        android:textSize="13.5sp"
-                        android:fontFamily="@font/open_sans_semibold"
-                        android:layout_marginTop="6dp" />
-
-                    <TextView
-                        android:id="@+id/tvReleaseDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Дата публикации: 13.10.2026"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="12sp"
-                        android:fontFamily="@font/open_sans"
-                        android:layout_marginTop="6dp" />
-                </LinearLayout>
-
-                <!-- Section Header -->
                 <TextView
+                    android:id="@+id/tvVersionTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Что нового в этой версии:"
-                    android:textColor="?attr/primaryTextColor"
-                    android:textSize="15sp"
+                    android:text="Доступна версия v1.8.5"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="20sp"
                     android:fontFamily="@font/open_sans_bold"
-                    android:layout_marginBottom="10dp" />
+                    android:textStyle="bold"
+                    android:gravity="center" />
 
-                <!-- Card 2: Release Notes Card -->
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tvCurrentVsNew"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@color/card_bg_color"
-                    android:padding="20dp"
-                    android:layout_marginBottom="16dp">
+                    android:text="У вас: v1.8.4  ➔  Новая: v1.8.5"
+                    android:textColor="@color/purple_primary"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center" />
 
-                    <TextView
-                        android:id="@+id/tvReleaseNotes"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="- Добавлена функция блокировки плеера\n- Добавлены настройки комментариев\n- Некоторые улучшения комментариев"
-                        android:textColor="?attr/secondaryTextColor"
-                        android:textSize="13.5sp"
-                        android:fontFamily="@font/open_sans"
-                        android:lineSpacingMultiplier="1.3" />
-
-                    <!-- Download Progress -->
-                    <LinearLayout
-                        android:id="@+id/layoutDownloadProgress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="16dp"
-                        android:visibility="gone">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:id="@+id/tvDownloadStatus"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Загрузка обновления..."
-                                android:textColor="?attr/primaryTextColor"
-                                android:textSize="13sp"
-                                android:fontFamily="@font/open_sans" />
-
-                            <TextView
-                                android:id="@+id/tvDownloadPercent"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0%"
-                                android:textColor="@color/purple_primary"
-                                android:textSize="13sp"
-                                android:fontFamily="@font/open_sans_bold" />
-                        </LinearLayout>
-
-                        <com.google.android.material.progressindicator.LinearProgressIndicator
-                            android:id="@+id/downloadProgressBar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:indeterminate="false"
-                            android:max="100"
-                            android:progress="0"
-                            app:indicatorColor="@color/purple_primary"
-                            app:trackColor="#33808080"
-                            app:trackCornerRadius="4dp"
-                            app:trackThickness="8dp" />
-                    </LinearLayout>
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/tvReleaseDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Опубликовано: 06.08.2026"
+                    android:textColor="@color/accent_text_color"
+                    android:textSize="12sp"
+                    android:layout_marginTop="6dp" />
 
             </LinearLayout>
 
+            <!-- Changes / Changelog Card -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Что нового в этой версии:"
+                android:textColor="@color/primary_text_color"
+                android:textSize="16sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/card_bg_rounded">
+
+                <TextView
+                    android:id="@+id/tvChangelog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="4dp"
+                    android:textIsSelectable="true"
+                    tools:text="- Исправлены ошибки плеера\n- Добавлены новые настройки\n- Оптимизация загрузок" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="16dp" />
+
+            <!-- Progress & Status -->
+            <com.example.animelib.ui.M3LinearProgressIndicator
+                android:id="@+id/progressDownload"
+                android:layout_width="match_parent"
+                android:layout_height="14dp"
+                android:layout_marginTop="16dp"
+                android:max="100"
+                android:progress="0"
+                app:m3TrackHeight="8dp"
+                app:m3GapSize="4dp"
+                app:m3StopDotSize="4dp"
+                app:m3ShowStopDot="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvDownloadStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/accent_text_color"
+                android:textSize="13sp"
+                android:layout_marginTop="6dp"
+                android:visibility="gone" />
+
+            <!-- Download Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDownload"
+                style="@style/Widget.AnimeLIB.Button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height_large"
+                android:layout_marginTop="16dp"
+                android:text="@string/btn_download_apk"
+                android:textAllCaps="true"
+                app:icon="@drawable/ic_download"
+                app:iconGravity="textStart"
+                app:iconTint="@color/white_color" />
+
+            <!-- GitHub Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOpenGithub"
+                style="@style/Widget.AnimeLIB.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height_standard"
+                android:layout_marginTop="8dp"
+                android:text="@string/btn_open_github" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <!-- Bottom Action Buttons Container -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:background="?attr/primaryColor">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDownloadUpdate"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            style="@style/Widget.AnimeLIB.Button"
-            android:text="СКАЧАТЬ И УСТАНОВИТЬ APK"
-            app:icon="@drawable/ic_download"
-            app:iconGravity="textStart"
-            android:textSize="14sp"
-            android:fontFamily="@font/open_sans_bold"
-            android:visibility="gone" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOpenGithub"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.AnimeLIB.Button.Outlined"
-            android:text="Открыть страницу на GitHub"
-            app:icon="@drawable/ic_github"
-            app:iconGravity="textStart"
-            android:textSize="13.5sp"
-            android:fontFamily="@font/open_sans_semibold" />
-    </LinearLayout>
 
 </LinearLayout>

@@ -43,7 +43,7 @@
         <item name="android:iconTint">@color/lt_primary_color</item>
 
         <!-- Status Bar -->
-        <item name="android:statusBarColor">@color/lt_header_color</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
 
         <!-- Global font family -->
