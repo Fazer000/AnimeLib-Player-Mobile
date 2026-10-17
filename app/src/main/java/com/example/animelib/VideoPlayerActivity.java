@@ -919,13 +919,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             }
 
             if (animeInfoContainer != null) {
-                animeInfoContainer.setVisibility(View.VISIBLE);
-                if (animeInfoContainer.getLayoutParams() instanceof android.widget.RelativeLayout.LayoutParams) {
-                    android.widget.RelativeLayout.LayoutParams aParams = (android.widget.RelativeLayout.LayoutParams) animeInfoContainer.getLayoutParams();
-                    aParams.leftMargin = dpToPx(48);
-                    aParams.rightMargin = dpToPx(84);
-                    animeInfoContainer.setLayoutParams(aParams);
-                }
+                animeInfoContainer.setVisibility(View.GONE);
             }
 
             if (btnLock != null) {

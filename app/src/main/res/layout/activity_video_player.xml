@@ -357,7 +357,7 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:background="?attr/primaryColor"
-            android:paddingHorizontal="16dp"
+            android:paddingHorizontal="0dp"
             android:paddingTop="12dp"
             android:visibility="gone">
 
@@ -365,6 +365,7 @@
                 android:id="@+id/tvPortraitAnimeTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:text="Загрузка..."
                 android:textColor="@color/primary_text_color"
                 android:textSize="17sp"
@@ -376,12 +377,19 @@
                 android:id="@+id/tvPortraitPlaylistInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:text="Список серий плейлиста"
                 android:textColor="@color/player_item_inactive_text"
                 android:textSize="12sp"
                 android:fontFamily="@font/open_sans" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:background="@drawable/bg_tab_shadow" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPlaylistEpisodes"
@@ -390,6 +398,7 @@
                 android:layout_weight="1"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:paddingHorizontal="16dp"
                 android:paddingBottom="16dp" />
 
         </LinearLayout>
