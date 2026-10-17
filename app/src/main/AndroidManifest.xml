@@ -53,7 +53,7 @@
         </activity>
 
         <activity
-            android:name="com.example.animelib.ui.UpdateActivity"
+            android:name="com.example.animelib.UpdateActivity"
             android:exported="true"
             android:theme="@style/Theme.AnimeLIB"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
