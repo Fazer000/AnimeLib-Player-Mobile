@@ -31,16 +31,25 @@ import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.DefaultDataSource;
+import androidx.media3.datasource.okhttp.OkHttpDataSource;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.AspectRatioFrameLayout;
+import androidx.media3.ui.DefaultTimeBar;
 import androidx.media3.ui.PlayerView;
+import androidx.media3.ui.TimeBar;
+import com.example.animelib.views.TimebarSegmentsView;
+import android.graphics.CornerPathEffect;
+import android.graphics.Paint;
+import android.graphics.Outline;
+import android.view.ViewOutlineProvider;
+import java.lang.reflect.Field;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.animelib.adapters.PlaylistEpisodesAdapter;
 
-
+import okhttp3.OkHttpClient;
 
 import com.example.animelib.controller.PlayerGestureController;
 import com.example.animelib.controller.PlayerLockController;
@@ -110,6 +119,21 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         public void run() {
             saveCurrentPosition();
             progressHandler.postDelayed(this, 2000);
+        }
+    };
+
+    // TimeBar & Progress State
+    private TimebarSegmentsView timebarSegmentsView;
+    private DefaultTimeBar timeBar;
+    private boolean isScrubbing = false;
+    private final Handler timebarUpdateHandler = new Handler(Looper.getMainLooper());
+    private final Runnable timebarUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateTimebarProgress();
+            if (player != null && player.isPlaying()) {
+                timebarUpdateHandler.postDelayed(this, 100);
+            }
         }
     };
 
@@ -299,6 +323,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 if (player != null) {
                     long targetPos = Math.min(player.getDuration(), player.getCurrentPosition() + (skipDurationSeconds * 1000L));
                     player.seekTo(targetPos);
+                    updateTimebarProgress();
                     gestureController.showDoubleTapSkipIndicator(true, skipDurationSeconds);
                     if (playerView != null) playerView.showController();
                 }
@@ -318,7 +343,17 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 .setPrioritizeTimeOverSizeThresholds(true)
                 .build();
 
-        DefaultDataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(this);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+                    okhttp3.Request original = chain.request();
+                    okhttp3.Request request = original.newBuilder()
+                            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                            .build();
+                    return chain.proceed(request);
+                })
+                .build();
+        OkHttpDataSource.Factory okHttpDataSourceFactory = new OkHttpDataSource.Factory(okHttpClient);
+        DefaultDataSource.Factory dataSourceFactory = new DefaultDataSource.Factory(this, okHttpDataSourceFactory);
         DefaultMediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(this)
                 .setDataSourceFactory(dataSourceFactory);
 
@@ -330,12 +365,16 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 .build();
 
         playerView.setPlayer(player);
+        currentResizeMode = databaseManager.loadResizeModeSetting();
         playerView.setResizeMode(currentResizeMode);
         playerView.setControllerShowTimeoutMs(3000);
         playerView.setControllerHideOnTouch(true);
         playerView.setControllerVisibilityListener((PlayerView.ControllerVisibilityListener) visibility -> {
             boolean isVisible = (visibility == View.VISIBLE);
             animateControlsVisibility(isVisible);
+            if (isVisible && timeBar == null) {
+                setupTimeBar();
+            }
 
             if (systemUiController != null) {
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -351,6 +390,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         }
 
         surroundSoundManager.attachPlayer(player);
+        setupTimeBar();
 
         player.addListener(new Player.Listener() {
             @Override
@@ -360,6 +400,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 } else {
                     if (bufferingIndicator != null) bufferingIndicator.setVisibility(View.GONE);
                     if (loadingOverlay != null) loadingOverlay.setVisibility(View.GONE);
+                }
+
+                if (playbackState == Player.STATE_READY) {
+                    updateTimebarProgress();
                 }
 
                 if (playbackState == Player.STATE_ENDED) {
@@ -372,10 +416,23 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 updatePlayPauseButtons(isPlaying);
                 if (isPlaying) {
                     progressHandler.post(progressRunnable);
+                    startTimebarUpdates();
                 } else {
                     saveCurrentPosition();
                     progressHandler.removeCallbacks(progressRunnable);
+                    stopTimebarUpdates();
+                    updateTimebarProgress();
                 }
+            }
+
+            @Override
+            public void onPositionDiscontinuity(@NonNull Player.PositionInfo oldPosition, @NonNull Player.PositionInfo newPosition, int reason) {
+                updateTimebarProgress();
+            }
+
+            @Override
+            public void onTimelineChanged(@NonNull androidx.media3.common.Timeline timeline, int reason) {
+                updateTimebarProgress();
             }
 
             @Override
@@ -466,6 +523,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             player.seekTo(resumePosition);
         }
         player.play();
+        updateTimebarProgress();
 
         updatePlaylistNavigationButtons();
     }
@@ -717,6 +775,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     public void onSeekCommit(long targetPositionMs) {
         if (player != null) {
             player.seekTo(targetPositionMs);
+            updateTimebarProgress();
         }
     }
 
@@ -768,9 +827,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         View topBar = findViewById(R.id.topBarContainer);
         View timeAndControls = findViewById(R.id.timeAndControlsContainer);
         View timeBarContainer = findViewById(R.id.timeBarContainer);
-        if (timeBarContainer instanceof com.example.animelib.ui.RoundedCornerFrameLayout) {
-            ((com.example.animelib.ui.RoundedCornerFrameLayout) timeBarContainer).setCornerRadius(dpToPx(8));
+        if (timeBar != null) {
+            applyRoundedCornersToTimeBar(timeBar);
         }
+        updateTimebarProgress();
 
         if (playerContainer == null) return;
 
@@ -939,6 +999,96 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         updatePlayerTitles();
     }
 
+    private void setupTimeBar() {
+        timebarSegmentsView = findViewById(R.id.timebarSegmentsView);
+        timeBar = findViewById(R.id.exo_progress);
+        if (timebarSegmentsView == null && playerView != null) {
+            timebarSegmentsView = playerView.findViewById(R.id.timebarSegmentsView);
+        }
+        if (timeBar == null && playerView != null) {
+            timeBar = playerView.findViewById(R.id.exo_progress);
+        }
+
+        if (timeBar != null) {
+            applyRoundedCornersToTimeBar(timeBar);
+            timeBar.addListener(new TimeBar.OnScrubListener() {
+                @Override
+                public void onScrubStart(@NonNull TimeBar timeBar, long position) {
+                    isScrubbing = true;
+                    if (timebarSegmentsView != null && player != null) {
+                        timebarSegmentsView.setProgress(position, player.getBufferedPosition(), player.getDuration());
+                    }
+                }
+
+                @Override
+                public void onScrubMove(@NonNull TimeBar timeBar, long position) {
+                    isScrubbing = true;
+                    if (timebarSegmentsView != null && player != null) {
+                        timebarSegmentsView.setProgress(position, player.getBufferedPosition(), player.getDuration());
+                    }
+                }
+
+                @Override
+                public void onScrubStop(@NonNull TimeBar timeBar, long position, boolean canceled) {
+                    isScrubbing = false;
+                    if (timebarSegmentsView != null && player != null) {
+                        timebarSegmentsView.setProgress(position, player.getBufferedPosition(), player.getDuration());
+                    }
+                }
+            });
+        }
+    }
+
+    private void applyRoundedCornersToTimeBar(View timeBarView) {
+        if (timeBarView == null) return;
+        try {
+            float density = getResources().getDisplayMetrics().density;
+            if (timeBarView instanceof com.example.animelib.views.RoundedTimeBar) {
+                ((com.example.animelib.views.RoundedTimeBar) timeBarView).setCornerRadius(-1f);
+            }
+            float radiusPx = 3f * density;
+            CornerPathEffect pathEffect = new CornerPathEffect(radiusPx);
+            Class<?> clazz = timeBarView.getClass();
+            while (clazz != null && clazz != View.class) {
+                Field[] fields = clazz.getDeclaredFields();
+                for (Field field : fields) {
+                    if (Paint.class.isAssignableFrom(field.getType())) {
+                        field.setAccessible(true);
+                        Paint paint = (Paint) field.get(timeBarView);
+                        if (paint != null) {
+                            paint.setPathEffect(pathEffect);
+                            paint.setStrokeCap(Paint.Cap.ROUND);
+                            paint.setStrokeJoin(Paint.Join.ROUND);
+                        }
+                    }
+                }
+                clazz = clazz.getSuperclass();
+            }
+            timeBarView.invalidate();
+        } catch (Exception e) {
+            android.util.Log.e(TAG, "Failed to round timebar corners", e);
+        }
+    }
+
+    private void updateTimebarProgress() {
+        if (player != null && timebarSegmentsView != null && !isScrubbing) {
+            long duration = player.getDuration();
+            if (duration > 0) {
+                timebarSegmentsView.setDuration(duration);
+                timebarSegmentsView.setProgress(player.getCurrentPosition(), player.getBufferedPosition(), duration);
+            }
+        }
+    }
+
+    private void startTimebarUpdates() {
+        stopTimebarUpdates();
+        timebarUpdateHandler.post(timebarUpdateRunnable);
+    }
+
+    private void stopTimebarUpdates() {
+        timebarUpdateHandler.removeCallbacks(timebarUpdateRunnable);
+    }
+
     private int dpToPx(int dp) {
         return Math.round(dp * getResources().getDisplayMetrics().density);
     }
@@ -970,6 +1120,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     @Override
     protected void onPause() {
         super.onPause();
+        stopTimebarUpdates();
         saveCurrentPosition();
         if (player != null && !isInPictureInPictureMode()) {
             player.pause();
@@ -985,8 +1136,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopTimebarUpdates();
         saveCurrentPosition();
         progressHandler.removeCallbacksAndMessages(null);
+        timebarUpdateHandler.removeCallbacksAndMessages(null);
 
         if (gestureController != null) {
             gestureController.release();

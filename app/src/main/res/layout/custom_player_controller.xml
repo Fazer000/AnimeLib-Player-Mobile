@@ -448,7 +448,7 @@
 
         </LinearLayout>
 
-        <com.example.animelib.ui.RoundedCornerFrameLayout
+        <FrameLayout
             android:id="@+id/timeBarContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -460,27 +460,28 @@
                 android:id="@+id/timebarSegmentsView"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:visibility="gone" />
 
-            <androidx.media3.ui.DefaultTimeBar
+            <com.example.animelib.views.RoundedTimeBar
                 android:id="@+id/exo_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                app:played_color="#A855F7"
+                app:played_color="@color/purple_primary"
                 app:scrubber_color="@color/white_color"
-                app:bar_height="4dp"
-                app:touch_target_height="24dp"
+                app:bar_height="6dp"
+                app:touch_target_height="32dp"
                 app:buffered_color="#80FFFFFF"
                 app:unplayed_color="#4DFFFFFF"
                 app:ad_marker_color="@android:color/transparent"
                 app:played_ad_marker_color="@android:color/transparent"
                 app:scrubber_drawable="@drawable/custom_scrubber"
-                app:scrubber_enabled_size="12dp"
-                app:scrubber_dragged_size="16dp"
+                app:scrubber_enabled_size="14dp"
+                app:scrubber_dragged_size="18dp"
                 app:scrubber_disabled_size="0dp" />
 
-        </com.example.animelib.ui.RoundedCornerFrameLayout>
+        </FrameLayout>
 
     </LinearLayout>
 

@@ -146,10 +146,6 @@ public class TimebarSegmentsView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (durationMs <= 0) {
-            return;
-        }
-
         float density = getResources().getDisplayMetrics().density;
         float defaultPadding = 8f * density;
         float paddingLeft = getPaddingLeft() > 0 ? getPaddingLeft() : defaultPadding;
@@ -165,6 +161,12 @@ public class TimebarSegmentsView extends View {
         float bottom = centerY + barHeight / 2f;
         float cornerRadius = barHeight / 2f; // Скругление концов сегмента (полный pill)
         float gapWidth = 3f * density; // Прозрачный разделитель между сегментами
+
+        if (durationMs <= 0) {
+            rectF.set(paddingLeft, top, paddingLeft + width, bottom);
+            canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, unplayedPaint);
+            return;
+        }
 
         List<Interval> intervals = buildIntervals();
         int count = intervals.size();
@@ -190,24 +192,20 @@ public class TimebarSegmentsView extends View {
             // 2. Отрисовка забуферизованной части
             if (bufferedMs > interval.fromMs) {
                 float bufX = paddingLeft + ((float) Math.min(bufferedMs, durationMs) / durationMs) * width;
-                float clipRight = Math.min(right, bufX);
-                if (clipRight > left) {
-                    canvas.save();
-                    canvas.clipRect(left, top, clipRight, bottom);
+                float segBufRight = Math.min(right, bufX);
+                if (segBufRight > left) {
+                    rectF.set(left, top, segBufRight, bottom);
                     canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, bufferedPaint);
-                    canvas.restore();
                 }
             }
 
             // 3. Отрисовка сыгранной части
             if (playedMs > interval.fromMs) {
                 float playX = paddingLeft + ((float) Math.min(playedMs, durationMs) / durationMs) * width;
-                float clipRight = Math.min(right, playX);
-                if (clipRight > left) {
-                    canvas.save();
-                    canvas.clipRect(left, top, clipRight, bottom);
+                float segPlayedRight = Math.min(right, playX);
+                if (segPlayedRight > left) {
+                    rectF.set(left, top, segPlayedRight, bottom);
                     canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, playedPaint);
-                    canvas.restore();
                 }
             }
         }

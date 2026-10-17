@@ -83,15 +83,13 @@
                 <LinearLayout
                     android:id="@+id/speedOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_top"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -124,15 +122,13 @@
                 <LinearLayout
                     android:id="@+id/resizeModeOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_bottom"
                     android:clickable="true"
                     android:focusable="true"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp">
+                    android:paddingHorizontal="18dp">
 
                     <ImageView
                         android:layout_width="22dp"
@@ -182,15 +178,13 @@
                 <LinearLayout
                     android:id="@+id/subtitlesOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_top"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="12dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -237,15 +231,13 @@
                 <LinearLayout
                     android:id="@+id/ambientLightOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_middle"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="12dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -278,15 +270,13 @@
                 <LinearLayout
                     android:id="@+id/autoPlayOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_middle"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="12dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -319,15 +309,13 @@
                 <LinearLayout
                     android:id="@+id/surroundSoundOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_middle"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="12dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -394,15 +382,13 @@
                 <LinearLayout
                     android:id="@+id/videoFiltersOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_middle"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -435,15 +421,13 @@
                 <LinearLayout
                     android:id="@+id/skipDurationOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_bottom"
                     android:clickable="true"
                     android:focusable="true"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp">
+                    android:paddingHorizontal="18dp">
 
                     <ImageView
                         android:layout_width="22dp"
@@ -493,15 +477,13 @@
                 <LinearLayout
                     android:id="@+id/themeOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_top"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -535,15 +517,13 @@
                 <LinearLayout
                     android:id="@+id/faqOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_middle"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -573,15 +553,13 @@
                 <LinearLayout
                     android:id="@+id/bugReportOption"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="52dp"
+                    android:layout_height="56dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:background="@drawable/bg_m3_item_middle"
                     android:clickable="true"
                     android:focusable="true"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="14dp"
                     android:layout_marginBottom="3dp">
 
                     <ImageView
@@ -607,7 +585,49 @@
                         app:tint="@color/accent_text_color"/>
                 </LinearLayout>
 
+                <!-- 3. Check for Updates -->
+                <LinearLayout
+                    android:id="@+id/checkForUpdatesOption"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_m3_item_bottom"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="18dp">
 
+                    <ImageView
+                        android:id="@+id/ivUpdateIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_refresh"
+                        app:tint="@color/primary_text_color"
+                        android:layout_marginEnd="12dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Проверить обновления"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold"/>
+
+                    <ProgressBar
+                        android:id="@+id/updateProgressBar"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:indeterminateTint="@color/accent_text_color"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/ivUpdateArrow"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="@color/accent_text_color"/>
+                </LinearLayout>
             </LinearLayout>
 
             <TextView

@@ -32,7 +32,16 @@ import com.example.animelib.adapters.PlaylistsAdapter;
 import com.example.animelib.adapters.VideoFilesAdapter;
 import com.example.animelib.adapters.VideoFoldersAdapter;
 import com.example.animelib.data.DatabaseManager;
-
+import com.example.animelib.settings.CreateIssueBottomSheet;
+import com.example.animelib.settings.FaqBottomSheet;
+import com.example.animelib.settings.ResizeModeBottomSheet;
+import com.example.animelib.settings.SkipDurationBottomSheet;
+import com.example.animelib.settings.SubtitlesBottomSheet;
+import com.example.animelib.settings.SurroundSoundBottomSheet;
+import com.example.animelib.settings.ThemeSelectionBottomSheet;
+import com.example.animelib.settings.VideoFiltersBottomSheet;
+import com.example.animelib.ui.UpdateActivity;
+import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.ThemeUtils;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.example.animelib.domain.VideoListFilter;
@@ -40,7 +49,6 @@ import com.example.animelib.models.VideoFolder;
 import com.example.animelib.models.VideoItem;
 import com.example.animelib.repository.LocalVideoRepository;
 import com.example.animelib.repository.VideoRepository;
-import com.example.animelib.util.ThemeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 
@@ -71,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTabExplorerText, tvTabPlaylistsText, tvTabSettingsText;
     private ImageView ivTabExplorerIcon, ivTabPlaylistsIcon, ivTabSettingsIcon;
     private View layoutSettingsContainer;
-    private MaterialSwitch switchSurroundSound;
-    private LinearLayout settingThemeCard, settingUpdateCard;
-    private TextView tvCurrentTheme;
+    private MaterialSwitch switchTestMode, switchSurroundSound, switchSubtitles, switchAmbientLight, switchAutoPlay;
+    private LinearLayout settingThemeCard, settingUpdateCard, settingResizeModeCard, settingSubtitlesCard, settingAmbientLightCard, settingAutoPlayCard, settingSurroundSoundCard, settingVideoFiltersCard, settingSkipDurationCard, settingTestModeCard, settingFaqCard, settingBugReportCard;
+    private TextView tvCurrentTheme, tvCurrentResizeMode, tvCurrentSubtitleTag, tvCurrentSurroundSound, tvCurrentVideoFilters, tvCurrentSkipDuration;
     private boolean isPlaylistsTabSelected = false;
     private CardView layoutPlaylistCreationBar;
     private TextView tvPlaylistSelectionCount;
@@ -173,10 +181,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         layoutSettingsContainer = findViewById(R.id.layoutSettingsContainer);
-
+        switchTestMode = findViewById(R.id.switchTestMode);
         switchSurroundSound = findViewById(R.id.switchSurroundSound);
         settingThemeCard = findViewById(R.id.settingThemeCard);
-
+        settingUpdateCard = findViewById(R.id.settingUpdateCard);
         tvCurrentTheme = findViewById(R.id.tvCurrentTheme);
 
         layoutPlaylistCreationBar = findViewById(R.id.layoutPlaylistCreationBar);
@@ -205,28 +213,281 @@ public class MainActivity extends AppCompatActivity {
             tabSettings.setOnClickListener(v -> selectSettingsTab());
         }
 
+        initSettingsViews();
+    }
 
+    private void initSettingsViews() {
+        layoutSettingsContainer = findViewById(R.id.layoutSettingsContainer);
 
-        if (switchSurroundSound != null) {
-            switchSurroundSound.setChecked(true);
-            switchSurroundSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                // Surround sound setting saved/toggled
+        // Group 1: Resize Mode
+        settingResizeModeCard = findViewById(R.id.settingResizeModeCard);
+        tvCurrentResizeMode = findViewById(R.id.tvCurrentResizeMode);
+        if (settingResizeModeCard != null) {
+            settingResizeModeCard.setOnClickListener(v -> {
+                ResizeModeBottomSheet dialog = new ResizeModeBottomSheet(this, databaseManager.loadResizeModeSetting(), mode -> {
+                    databaseManager.saveResizeModeSetting(mode);
+                    if (tvCurrentResizeMode != null) {
+                        tvCurrentResizeMode.setText(getResizeModeName(mode));
+                    }
+                });
+                dialog.show();
             });
         }
 
+        // Group 2: Subtitles
+        settingSubtitlesCard = findViewById(R.id.settingSubtitlesCard);
+        tvCurrentSubtitleTag = findViewById(R.id.tvCurrentSubtitleTag);
+        switchSubtitles = findViewById(R.id.switchSubtitles);
+        if (settingSubtitlesCard != null) {
+            settingSubtitlesCard.setOnClickListener(v -> {
+                SubtitlesBottomSheet dialog = new SubtitlesBottomSheet(
+                        this,
+                        databaseManager.loadSubtitlesEnabledSetting(),
+                        databaseManager.loadSubtitleFormatSetting(),
+                        new ArrayList<>(),
+                        enabled -> {
+                            databaseManager.saveSubtitlesEnabledSetting(enabled);
+                            if (switchSubtitles != null) switchSubtitles.setChecked(enabled);
+                        },
+                        format -> {
+                            databaseManager.saveSubtitleFormatSetting(format);
+                            if (tvCurrentSubtitleTag != null) tvCurrentSubtitleTag.setText(format.toUpperCase(Locale.US));
+                        }
+                );
+                dialog.setStyleSettings(
+                        databaseManager.loadSubtitleTextSizeSetting(),
+                        databaseManager.loadSubtitleTextColorSetting(),
+                        databaseManager.loadSubtitleBackgroundColorSetting(),
+                        databaseManager.loadSubtitleEdgeTypeSetting(),
+                        databaseManager.loadSubtitleEdgeColorSetting(),
+                        (size, col, bg, edge, edgeCol) -> {
+                            databaseManager.saveSubtitleStyleSettings(size, col, bg, edge, edgeCol);
+                        }
+                );
+                dialog.show();
+            });
+        }
+        if (switchSubtitles != null) {
+            switchSubtitles.setChecked(databaseManager.loadSubtitlesEnabledSetting());
+            switchSubtitles.setOnCheckedChangeListener((btn, isChecked) -> {
+                databaseManager.saveSubtitlesEnabledSetting(isChecked);
+            });
+        }
+
+        // Ambient Light
+        settingAmbientLightCard = findViewById(R.id.settingAmbientLightCard);
+        switchAmbientLight = findViewById(R.id.switchAmbientLight);
+        if (switchAmbientLight != null) {
+            switchAmbientLight.setChecked(databaseManager.loadAmbientLightSetting());
+            switchAmbientLight.setOnCheckedChangeListener((btn, isChecked) -> {
+                databaseManager.saveAmbientLightSetting(isChecked);
+            });
+        }
+
+        // AutoPlay
+        settingAutoPlayCard = findViewById(R.id.settingAutoPlayCard);
+        switchAutoPlay = findViewById(R.id.switchAutoPlay);
+        if (switchAutoPlay != null) {
+            switchAutoPlay.setChecked(databaseManager.loadAutoPlaySetting());
+            switchAutoPlay.setOnCheckedChangeListener((btn, isChecked) -> {
+                databaseManager.saveAutoPlaySetting(isChecked);
+            });
+        }
+
+        // Surround Sound
+        settingSurroundSoundCard = findViewById(R.id.settingSurroundSoundCard);
+        tvCurrentSurroundSound = findViewById(R.id.tvCurrentSurroundSound);
+        switchSurroundSound = findViewById(R.id.switchSurroundSound);
+        if (settingSurroundSoundCard != null) {
+            settingSurroundSoundCard.setOnClickListener(v -> {
+                SurroundSoundBottomSheet dialog = new SurroundSoundBottomSheet(
+                        this,
+                        databaseManager.loadSurroundSoundSetting(),
+                        databaseManager.loadSurround3DMode(),
+                        databaseManager.loadSurroundSpatialWidth(),
+                        databaseManager.loadSurroundDialogueBoost(),
+                        databaseManager.loadSurroundBassBoost(),
+                        databaseManager.loadSurroundTrebleBoost(),
+                        (enabled, mode, spatial, dialogue, bass, treble) -> {
+                            databaseManager.saveSurroundSoundSetting(enabled);
+                            databaseManager.saveSurround3DSettings(mode, spatial, dialogue, bass, treble);
+                            if (switchSurroundSound != null) switchSurroundSound.setChecked(enabled);
+                            if (tvCurrentSurroundSound != null) tvCurrentSurroundSound.setText(getSurroundModeName(mode));
+                        }
+                );
+                dialog.show();
+            });
+        }
+        if (switchSurroundSound != null) {
+            switchSurroundSound.setChecked(databaseManager.loadSurroundSoundSetting());
+            switchSurroundSound.setOnCheckedChangeListener((btn, isChecked) -> {
+                databaseManager.saveSurroundSoundSetting(isChecked);
+            });
+        }
+
+        // Video Filters
+        settingVideoFiltersCard = findViewById(R.id.settingVideoFiltersCard);
+        tvCurrentVideoFilters = findViewById(R.id.tvCurrentVideoFilters);
+        if (settingVideoFiltersCard != null) {
+            settingVideoFiltersCard.setOnClickListener(v -> {
+                float[] filters = databaseManager.loadVideoFilters();
+                VideoFiltersBottomSheet dialog = new VideoFiltersBottomSheet(
+                        this,
+                        filters[0], filters[1], filters[2], filters[3], filters[4],
+                        (b, c, s, g, h) -> {
+                            databaseManager.saveVideoFilters(b, c, s, g, h);
+                            if (tvCurrentVideoFilters != null) {
+                                boolean isDef = (b == 0f && c == 100f && s == 100f && g == 1.0f && h == 0f);
+                                tvCurrentVideoFilters.setText(isDef ? "По умолчанию" : "Настроено");
+                            }
+                        }
+                );
+                dialog.show();
+            });
+        }
+
+        // Skip Duration
+        settingSkipDurationCard = findViewById(R.id.settingSkipDurationCard);
+        tvCurrentSkipDuration = findViewById(R.id.tvCurrentSkipDuration);
+        if (settingSkipDurationCard != null) {
+            settingSkipDurationCard.setOnClickListener(v -> {
+                SkipDurationBottomSheet dialog = new SkipDurationBottomSheet(
+                        this,
+                        databaseManager.loadLongSkipDurationSetting(),
+                        duration -> {
+                            databaseManager.saveLongSkipDurationSetting(duration);
+                            if (tvCurrentSkipDuration != null) {
+                                int min = duration / 60;
+                                int sec = duration % 60;
+                                tvCurrentSkipDuration.setText(String.format(Locale.US, "%d сек (%d:%02d)", duration, min, sec));
+                            }
+                        }
+                );
+                dialog.show();
+            });
+        }
+
+        // Test Mode
+        settingTestModeCard = findViewById(R.id.settingTestModeCard);
+        switchTestMode = findViewById(R.id.switchTestMode);
+        if (switchTestMode != null) {
+            switchTestMode.setChecked(databaseManager.loadTestModeSetting());
+            switchTestMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                databaseManager.saveTestModeSetting(isChecked);
+                loadVideosFromStorage();
+            });
+        }
+
+        // Group 3: Theme
+        settingThemeCard = findViewById(R.id.settingThemeCard);
+        tvCurrentTheme = findViewById(R.id.tvCurrentTheme);
         if (settingThemeCard != null) {
             settingThemeCard.setOnClickListener(v -> {
-                int currentTheme = ThemeUtils.getSavedThemePreference(this);
-                int nextTheme = (currentTheme == ThemeUtils.THEME_DARK) ? ThemeUtils.THEME_LIGHT : ThemeUtils.THEME_DARK;
-                ThemeUtils.saveThemePreference(this, nextTheme);
-                ThemeUtils.applyTheme(nextTheme);
-                updateThemeText();
-                recreate();
+                ThemeSelectionBottomSheet dialog = new ThemeSelectionBottomSheet(
+                        this,
+                        databaseManager.loadThemeSetting(),
+                        theme -> {
+                            databaseManager.saveThemeSetting(theme);
+                            ThemeUtils.applyTheme(theme);
+                            updateThemeText();
+                            recreate();
+                        }
+                );
+                dialog.show();
             });
         }
 
+        // FAQ & Help
+        settingFaqCard = findViewById(R.id.settingFaqCard);
+        if (settingFaqCard != null) {
+            settingFaqCard.setOnClickListener(v -> {
+                FaqBottomSheet dialog = new FaqBottomSheet(this);
+                dialog.show();
+            });
+        }
 
+        // Bug Report
+        settingBugReportCard = findViewById(R.id.settingBugReportCard);
+        if (settingBugReportCard != null) {
+            settingBugReportCard.setOnClickListener(v -> {
+                CreateIssueBottomSheet dialog = new CreateIssueBottomSheet(this);
+                dialog.show();
+            });
+        }
+
+        // Check for Updates
+        settingUpdateCard = findViewById(R.id.settingUpdateCard);
+        if (settingUpdateCard != null) {
+            settingUpdateCard.setOnClickListener(v -> {
+                try {
+                    startActivity(new Intent(this, UpdateActivity.class));
+                } catch (Exception e) {
+                    CustomToast.showError(this, "Не удалось открыть страницу обновлений");
+                }
+            });
+        }
+
+        refreshSettingsUi();
+    }
+
+    private void refreshSettingsUi() {
+        if (tvCurrentResizeMode != null) {
+            int mode = databaseManager.loadResizeModeSetting();
+            tvCurrentResizeMode.setText(getResizeModeName(mode));
+        }
+        if (switchSubtitles != null) {
+            switchSubtitles.setChecked(databaseManager.loadSubtitlesEnabledSetting());
+        }
+        if (tvCurrentSubtitleTag != null) {
+            String format = databaseManager.loadSubtitleFormatSetting();
+            tvCurrentSubtitleTag.setText(format.toUpperCase(Locale.US));
+        }
+        if (switchAmbientLight != null) {
+            switchAmbientLight.setChecked(databaseManager.loadAmbientLightSetting());
+        }
+        if (switchAutoPlay != null) {
+            switchAutoPlay.setChecked(databaseManager.loadAutoPlaySetting());
+        }
+        if (switchSurroundSound != null) {
+            switchSurroundSound.setChecked(databaseManager.loadSurroundSoundSetting());
+        }
+        if (tvCurrentSurroundSound != null) {
+            tvCurrentSurroundSound.setText(getSurroundModeName(databaseManager.loadSurround3DMode()));
+        }
+        if (tvCurrentVideoFilters != null) {
+            float[] f = databaseManager.loadVideoFilters();
+            boolean isDefault = (f[0] == 0f && f[1] == 100f && f[2] == 100f && f[3] == 1.0f && f[4] == 0f);
+            tvCurrentVideoFilters.setText(isDefault ? "По умолчанию" : "Настроено");
+        }
+        if (tvCurrentSkipDuration != null) {
+            int duration = databaseManager.loadLongSkipDurationSetting();
+            int min = duration / 60;
+            int sec = duration % 60;
+            tvCurrentSkipDuration.setText(String.format(Locale.US, "%d сек (%d:%02d)", duration, min, sec));
+        }
+        if (switchTestMode != null) {
+            switchTestMode.setChecked(databaseManager.loadTestModeSetting());
+        }
         updateThemeText();
+    }
+
+    private String getResizeModeName(int mode) {
+        switch (mode) {
+            case 3: return "По размеру экрана"; // ZOOM
+            case 4: return "Растянуть"; // FILL
+            default: return "Вписать (Оригинал)"; // FIT
+        }
+    }
+
+    private String getSurroundModeName(int mode) {
+        switch (mode) {
+            case 0: return "🎬 Кинотеатр 3D";
+            case 1: return "🎧 Концерт 3D";
+            case 2: return "🗣 Голос 3D";
+            case 3: return "🔊 Классический 5.1";
+            case 4: return "⚡ Экстрим 3D";
+            default: return "🎬 Кинотеатр 3D";
+        }
     }
 
     private void updateThemeText() {
@@ -275,6 +536,7 @@ public class MainActivity extends AppCompatActivity {
         if (layoutEmptyState != null) layoutEmptyState.setVisibility(View.GONE);
         if (layoutSettingsContainer != null) {
             layoutSettingsContainer.setVisibility(View.VISIBLE);
+            refreshSettingsUi();
         }
         updateTabSelection(2);
     }
@@ -820,7 +1082,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void showTestModeMenu() {
+        boolean isTestModeOn = databaseManager.loadTestModeSetting();
+        String toggleText = isTestModeOn ? "Скрыть тестовые видео в списке" : "Показывать тестовые видео в списке";
 
+        String[] options = new String[]{
+                "Запустить тест плеера (демо-видео)",
+                toggleText
+        };
+
+        DialogUtils.showListDialog(this, "Тест-режим плеера", options, which -> {
+            if (which == 0) {
+                launchTestPlayerWithDemoPlaylist();
+            } else if (which == 1) {
+                databaseManager.saveTestModeSetting(!isTestModeOn);
+                loadVideosFromStorage();
+                com.example.animelib.util.CustomToast.showInfo(MainActivity.this,
+                        !isTestModeOn ? "Тестовые видео добавлены в список" : "Тестовые видео скрыты");
+            }
+        });
+    }
+
+    private void launchTestPlayerWithDemoPlaylist() {
+        List<VideoItem> testItems = videoRepository.getTestVideos();
+        if (testItems.isEmpty()) return;
+        VideoItem first = testItems.get(0);
+        openVideoInPlayer(first, testItems);
+    }
 
     private void openVideoInPlayer(VideoItem video) {
         openVideoInPlayer(video, displayedVideos);

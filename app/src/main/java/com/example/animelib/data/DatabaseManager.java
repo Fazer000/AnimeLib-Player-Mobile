@@ -396,6 +396,16 @@ public class DatabaseManager {
         } catch (Exception e) { return 0xFF000000; }
     }
 
+    public void saveResizeModeSetting(int mode) {
+        context.getSharedPreferences("app_settings_prefs", Context.MODE_PRIVATE)
+                .edit().putInt("resize_mode", mode).apply();
+    }
+
+    public int loadResizeModeSetting() {
+        return context.getSharedPreferences("app_settings_prefs", Context.MODE_PRIVATE)
+                .getInt("resize_mode", 0);
+    }
+
     // ========== Video Playback History Operations ==========
 
     public void saveVideoProgress(String filePath, String title, long durationMs, long lastPositionMs, String folderName) {
