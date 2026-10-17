@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/toolbar_header_bg"
+    android:fitsSystemWindows="true">
+
+    <!-- Top Toolbar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="12dp"
+        android:background="@color/toolbar_header_bg">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/primary_text_color"
+            android:contentDescription="Назад" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="Обновление приложения"
+            android:textColor="@color/primary_text_color"
+            android:textSize="18sp"
+            android:fontFamily="@font/open_sans_bold"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/bs_divider_color" />
+
+    <!-- Content ScrollView -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/bs_bg_color"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Release Header Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/card_bg_rounded"
+                android:gravity="center_horizontal"
+                android:elevation="0dp">
+
+                <ImageView
+                    android:id="@+id/ivUpdateLogo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="?attr/logoDrawable"
+                    android:layout_marginBottom="10dp"
+                    android:contentDescription="AnimeLib Logo" />
+
+                <TextView
+                    android:id="@+id/tvVersionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Доступна версия v1.8.5"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textStyle="bold"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/tvCurrentVsNew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="У вас: v1.8.4  ➔  Новая: v1.8.5"
+                    android:textColor="@color/purple_primary"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/tvReleaseDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Опубликовано: 06.08.2026"
+                    android:textColor="@color/accent_text_color"
+                    android:textSize="12sp"
+                    android:layout_marginTop="6dp" />
+
+            </LinearLayout>
+
+            <!-- Changes / Changelog Card -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Что нового в этой версии:"
+                android:textColor="@color/primary_text_color"
+                android:textSize="16sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/card_bg_rounded">
+
+                <TextView
+                    android:id="@+id/tvChangelog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="4dp"
+                    android:textIsSelectable="true"
+                    tools:text="- Исправлены ошибки плеера\n- Добавлены новые настройки\n- Оптимизация загрузок" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="16dp" />
+
+            <!-- Progress & Status -->
+            <com.example.animelib.ui.M3LinearProgressIndicator
+                android:id="@+id/progressDownload"
+                android:layout_width="match_parent"
+                android:layout_height="14dp"
+                android:layout_marginTop="16dp"
+                android:max="100"
+                android:progress="0"
+                app:m3TrackHeight="8dp"
+                app:m3GapSize="4dp"
+                app:m3StopDotSize="4dp"
+                app:m3ShowStopDot="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvDownloadStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/accent_text_color"
+                android:textSize="13sp"
+                android:layout_marginTop="6dp"
+                android:visibility="gone" />
+
+            <!-- Download Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDownload"
+                style="@style/Widget.AnimeLIB.Button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height_large"
+                android:layout_marginTop="16dp"
+                android:text="@string/btn_download_apk"
+                android:textAllCaps="true"
+                app:icon="@drawable/ic_download"
+                app:iconGravity="textStart"
+                app:iconTint="@color/white_color" />
+
+            <!-- GitHub Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOpenGithub"
+                style="@style/Widget.AnimeLIB.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height_standard"
+                android:layout_marginTop="8dp"
+                android:text="@string/btn_open_github" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

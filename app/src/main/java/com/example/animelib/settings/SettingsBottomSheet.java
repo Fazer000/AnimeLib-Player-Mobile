@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.example.animelib.R;
 import com.example.animelib.models.SubtitleData;
-import com.example.animelib.ui.UpdateActivity;
+import com.example.animelib.UpdateActivity;
 import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.FlexibleBottomSheetDialog;
 import com.example.animelib.util.ThemeUtils;

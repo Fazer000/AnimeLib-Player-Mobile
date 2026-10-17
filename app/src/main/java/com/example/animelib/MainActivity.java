@@ -40,7 +40,7 @@ import com.example.animelib.settings.SubtitlesBottomSheet;
 import com.example.animelib.settings.SurroundSoundBottomSheet;
 import com.example.animelib.settings.ThemeSelectionBottomSheet;
 import com.example.animelib.settings.VideoFiltersBottomSheet;
-import com.example.animelib.ui.UpdateActivity;
+import com.example.animelib.UpdateActivity;
 import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.ThemeUtils;
 import com.google.android.material.materialswitch.MaterialSwitch;
