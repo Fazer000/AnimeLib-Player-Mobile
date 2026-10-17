@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Video List SwipeRefresh -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVideos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="12dp"
+            android:paddingBottom="220dp" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- Empty State (Encapsulated exclusively in Explorer) -->
+    <LinearLayout
+        android:id="@+id/layoutEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_search"
+            app:tint="@color/player_item_inactive_text"
+            android:contentDescription="Empty" />
+
+        <TextView
+            android:id="@+id/tvEmptyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Видео не найдены"
+            android:textColor="@color/primary_text_color"
+            android:textSize="18sp"
+            android:fontFamily="@font/open_sans_bold" />
+
+        <TextView
+            android:id="@+id/tvEmptySubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Проверьте наличие видеофайлов на устройстве"
+            android:textColor="@color/player_item_inactive_text"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:fontFamily="@font/open_sans_semibold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEmptyAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Обновить"
+            android:textColor="@color/white_color"
+            app:backgroundTint="@color/purple_primary"
+            app:cornerRadius="10dp" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/purple_primary"
+        android:visibility="gone" />
+
+    <!-- Control Buttons & Folder Carousel Floating Bar -->
+    <LinearLayout
+        android:id="@+id/layoutFloatingExplorerControls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="80dp"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <!-- Playlist Creation Bar -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layoutPlaylistCreationBar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/card_bg_color"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="10dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="14dp">
+
+                <TextView
+                    android:id="@+id/tvPlaylistSelectionCount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Выбрано: 0 видео"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/open_sans_bold" />
+
+                <ImageButton
+                    android:id="@+id/btnCancelPlaylist"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/player_item_inactive_text"
+                    android:padding="6dp"
+                    android:contentDescription="Отмена" />
+
+                <ImageButton
+                    android:id="@+id/btnDonePlaylist"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_check"
+                    app:tint="@color/purple_primary"
+                    android:padding="4dp"
+                    android:contentDescription="Готово" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Search & Action Buttons Container -->
+        <FrameLayout
+            android:id="@+id/layoutControlButtonsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:id="@+id/layoutNormalButtons"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <!-- Create Playlist Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="6dp"
+                    app:cardPreventCornerOverlap="false">
+
+                    <ImageButton
+                        android:id="@+id/btnCreatePlaylist"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_episodes"
+                        app:tint="@color/purple_primary"
+                        android:padding="10dp"
+                        android:contentDescription="Создать плейлист" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Sort Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="6dp"
+                    app:cardPreventCornerOverlap="false">
+
+                    <ImageButton
+                        android:id="@+id/btnSort"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_sort_arrows"
+                        app:tint="@color/primary_text_color"
+                        android:padding="10dp"
+                        android:contentDescription="Сортировка" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Search Toggle Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    app:cardBackgroundColor="@color/card_bg_color"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="6dp"
+                    app:cardPreventCornerOverlap="false">
+
+                    <ImageButton
+                        android:id="@+id/btnSearchToggle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_search"
+                        app:tint="@color/primary_text_color"
+                        android:padding="10dp"
+                        android:contentDescription="Поиск" />
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- Expanded Search Bar -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layoutExpandedSearch"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="@color/card_bg_color"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="14dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_search"
+                        app:tint="@color/purple_primary"
+                        android:contentDescription="Search" />
+
+                    <EditText
+                        android:id="@+id/etSearchVideos"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:background="@null"
+                        android:hint="Поиск видео..."
+                        android:textColor="@color/primary_text_color"
+                        android:textColorHint="@color/player_item_inactive_text"
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        android:imeOptions="actionSearch" />
+
+                    <ImageButton
+                        android:id="@+id/btnCloseSearch"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_close"
+                        app:tint="@color/player_item_inactive_text"
+                        android:padding="6dp"
+                        android:contentDescription="Закрыть" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </FrameLayout>
+
+        <!-- Folder Carousel Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardFolderCarousel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/card_bg_color"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardPreventCornerOverlap="false">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFolders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="10dp"
+                android:clipToPadding="false" />
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</FrameLayout>

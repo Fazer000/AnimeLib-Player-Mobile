@@ -7,8 +7,9 @@
     <color name="purple_secondary_dark">#241E38</color>
     <color name="purple_alpha_10">#1A8852DE</color>
     <color name="purple_alpha_25">#408852DE</color>
-    <color name="switch_track_unchecked">#E5E7EB</color>
-    <color name="switch_thumb_unchecked">#9CA3AF</color>
+    <color name="switch_track_unchecked">#E3E2E6</color>
+    <color name="switch_thumb_unchecked">#79747E</color>
+    <color name="switch_track_outline_unchecked">#79747E</color>
 
     <color name="white_color">#FFFFFF</color>
     <color name="gray_color">#D8D8D8</color>
@@ -131,6 +132,7 @@
     <color name="player_item_active_stroke">@color/purple_primary</color>
 
     <!-- Dialog Colors (Unified Defaults) -->
+    <color name="m3_item_bg">#12000000</color>
     <color name="dialog_bg">#FFFFFF</color>
     <color name="dialog_card_bg">#12000000</color>
     <color name="dialog_input_bg">#F9FAFB</color>

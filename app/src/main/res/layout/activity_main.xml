@@ -4,1228 +4,147 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/primaryColor"
-    android:fitsSystemWindows="false"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:fitsSystemWindows="false">
 
-    <!-- Main Content Area (Videos list scrolling edge-to-edge behind status bar and under floating bottom blocks) -->
+    <!-- Fragment Container -->
     <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="false">
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvVideos"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingTop="12dp"
-                android:paddingBottom="260dp" />
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <!-- Settings Tab Container -->
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/layoutSettingsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="16dp"
-            android:paddingBottom="260dp"
-            android:paddingHorizontal="16dp"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Настройки"
-                    android:textColor="@color/primary_text_color"
-                    android:textSize="22sp"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- GROUP 1: Основное -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Основное"
-                    android:textColor="@color/primary_text_color"
-                    android:textSize="14.5sp"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginStart="14dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- Resize Mode (Single item since speed is omitted) -->
-                    <LinearLayout
-                        android:id="@+id/settingResizeModeCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_single"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_resize_mode_fit"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Resize Mode" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Заполнение экрана"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:id="@+id/tvCurrentResizeMode"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="По умолчанию"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/accent_text_color" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- GROUP 2: Дополнительно -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Дополнительно"
-                    android:textColor="@color/primary_text_color"
-                    android:textSize="14.5sp"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginStart="14dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- 1. Subtitles -->
-                    <LinearLayout
-                        android:id="@+id/settingSubtitlesCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_top"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_subtitles"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Subtitles" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Субтитры"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="Стили и формат отображения"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/tvCurrentSubtitleTag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:paddingHorizontal="5dp"
-                            android:paddingVertical="1.5dp"
-                            android:background="@drawable/tag_fhd_background"
-                            android:text="ASS"
-                            android:textStyle="bold"
-                            android:textSize="9.5sp"
-                            android:textColor="#FFFFFF" />
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchSubtitles"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:showText="false"
-                            app:trackTint="@color/switch_track_tint"
-                            app:thumbTint="@color/switch_thumb_tint"
-                            android:checked="true" />
-                    </LinearLayout>
-
-                    <!-- 2. Ambient Light -->
-                    <LinearLayout
-                        android:id="@+id/settingAmbientLightCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_middle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_light"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Ambient Light" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Ambient подсветка"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="Свечение по краям видео"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchAmbientLight"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:showText="false"
-                            app:trackTint="@color/switch_track_tint"
-                            app:thumbTint="@color/switch_thumb_tint"
-                            android:checked="true" />
-                    </LinearLayout>
-
-                    <!-- 3. AutoPlay -->
-                    <LinearLayout
-                        android:id="@+id/settingAutoPlayCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_middle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_play"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="AutoPlay" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Автовоспроизведение"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="Следующий эпизод из списка"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchAutoPlay"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:showText="false"
-                            app:trackTint="@color/switch_track_tint"
-                            app:thumbTint="@color/switch_thumb_tint"
-                            android:checked="true" />
-                    </LinearLayout>
-
-                    <!-- 4. Surround Sound -->
-                    <LinearLayout
-                        android:id="@+id/settingSurroundSoundCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_middle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_surround_sound"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Surround Sound" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Объемный звук"
-                                    android:textColor="@color/primary_text_color"
-                                    android:textSize="15.5sp"
-                                    android:fontFamily="@font/open_sans_bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="6dp"
-                                    android:paddingHorizontal="5dp"
-                                    android:paddingVertical="1dp"
-                                    android:background="@drawable/tag_3d_background"
-                                    android:text="3D"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="9.5sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:id="@+id/tvCurrentSurroundSound"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="🎬 Кинотеатр 3D"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchSurroundSound"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:showText="false"
-                            app:trackTint="@color/switch_track_tint"
-                            app:thumbTint="@color/switch_thumb_tint"
-                            android:checked="false" />
-                    </LinearLayout>
-
-                    <!-- 5. Video Filters -->
-                    <LinearLayout
-                        android:id="@+id/settingVideoFiltersCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_middle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_tune_sliders"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Filters" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Фильтры видео"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:id="@+id/tvCurrentVideoFilters"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="По умолчанию"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/accent_text_color" />
-                    </LinearLayout>
-
-                    <!-- 6. Skip Duration -->
-                    <LinearLayout
-                        android:id="@+id/settingSkipDurationCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_middle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_skip"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Skip" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Пропуск сегмента"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:id="@+id/tvCurrentSkipDuration"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="85 сек (1:25)"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/accent_text_color" />
-                    </LinearLayout>
-
-                    <!-- 7. Test Mode -->
-                    <LinearLayout
-                        android:id="@+id/settingTestModeCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_bottom"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_test_mode"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Test mode" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Тестовый режим"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="Демонстрационные видеофайлы"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchTestMode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:showText="false"
-                            app:trackTint="@color/switch_track_tint"
-                            app:thumbTint="@color/switch_thumb_tint" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <!-- GROUP 3: Прочее -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Прочее"
-                    android:textColor="@color/primary_text_color"
-                    android:textSize="14.5sp"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginStart="14dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- 1. Theme -->
-                    <LinearLayout
-                        android:id="@+id/settingThemeCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_top"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_theme"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Theme" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Тема оформления"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:id="@+id/tvCurrentTheme"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="Системная"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/accent_text_color" />
-                    </LinearLayout>
-
-                    <!-- 2. FAQ & Help -->
-                    <LinearLayout
-                        android:id="@+id/settingFaqCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_middle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_faq"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="FAQ" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="FAQ и справка"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="Жесты и правообладателям"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/accent_text_color" />
-                    </LinearLayout>
-
-                    <!-- 3. Bug Report -->
-                    <LinearLayout
-                        android:id="@+id/settingBugReportCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_middle"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp"
-                        android:layout_marginBottom="3dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_bug_report"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Bug report" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Сообщить об ошибке"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="Создать тикет на GitHub"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/accent_text_color" />
-                    </LinearLayout>
-
-                    <!-- 4. Check for Updates -->
-                    <LinearLayout
-                        android:id="@+id/settingUpdateCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="56dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bg_m3_item_bottom"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="12dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_refresh"
-                            app:tint="@color/primary_text_color"
-                            android:layout_marginEnd="12dp"
-                            android:contentDescription="Updates" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Проверить обновления"
-                                android:textColor="@color/primary_text_color"
-                                android:textSize="15.5sp"
-                                android:fontFamily="@font/open_sans_bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="1dp"
-                                android:text="AnimeLib Player v1.8.9"
-                                android:textColor="@color/accent_text_color"
-                                android:textSize="12.5sp" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/accent_text_color" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/appVersionText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="12dp"
-                    android:textColor="@color/secondary_text_color"
-                    android:textSize="13sp"
-                    android:text="Версия v1.8.9 (AnimeLib)" />
-
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/purple_primary"
-            android:visibility="gone" />
-
-        <!-- Empty State -->
-        <LinearLayout
-            android:id="@+id/layoutEmptyState"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="32dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/ic_search"
-                app:tint="@color/player_item_inactive_text"
-                android:contentDescription="Empty" />
-
-            <TextView
-                android:id="@+id/tvEmptyTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Видео не найдены"
-                android:textColor="@color/primary_text_color"
-                android:textSize="18sp"
-                android:fontFamily="@font/open_sans_bold" />
-
-            <TextView
-                android:id="@+id/tvEmptySubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Проверьте наличие видеофайлов на устройстве"
-                android:textColor="@color/player_item_inactive_text"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:fontFamily="@font/open_sans_semibold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnEmptyAction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Обновить"
-                android:textColor="@color/white_color"
-                app:backgroundTint="@color/purple_primary"
-                app:cornerRadius="10dp" />
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-    <!-- Unified Bottom Floating Container grouping Control Buttons, Folder Carousel, and Bottom Nav -->
-    <LinearLayout
-        android:id="@+id/layoutBottomFloatingContainer"
+        android:fitsSystemWindows="false" />
+
+    <!-- Floating Bottom Navigation Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/layoutBottomBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
-        android:orientation="vertical"
-        android:clipChildren="false"
-        android:clipToPadding="false">
+        app:cardBackgroundColor="@color/card_bg_color"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="8dp"
+        app:cardPreventCornerOverlap="false">
 
-        <!-- 3. Control Buttons / Search Bar Container -->
         <FrameLayout
-            android:id="@+id/layoutControlButtonsContainer"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="10dp"
-            android:clipChildren="false"
-            android:clipToPadding="false">
+            android:layout_height="match_parent"
+            android:padding="6dp">
 
-            <!-- Normal Circular Buttons (End aligned) -->
+            <!-- Sliding background indicator view -->
+            <View
+                android:id="@+id/vTabIndicator"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_tab_selected" />
+
+            <!-- Tabs container -->
             <LinearLayout
-                android:id="@+id/layoutNormalButtons"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:orientation="horizontal"
-                android:clipChildren="false"
-                android:clipToPadding="false">
+                android:orientation="horizontal">
 
-                <!-- Create Playlist Button (Individual Circle) -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="10dp"
-                    app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="22dp"
-                    app:cardElevation="6dp"
-                    app:cardPreventCornerOverlap="false">
+                <!-- Tab 1: Explorer -->
+                <LinearLayout
+                    android:id="@+id/tabExplorer"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="12dp">
 
-                    <ImageButton
-                        android:id="@+id/btnCreatePlaylist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackgroundBorderless"
+                    <ImageView
+                        android:id="@+id/ivTabExplorerIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_tv"
+                        app:tint="@color/white_color"
+                        android:contentDescription="Проводник" />
+
+                    <TextView
+                        android:id="@+id/tvTabExplorerText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Проводник"
+                        android:textColor="@color/white_color"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/open_sans_bold" />
+                </LinearLayout>
+
+                <!-- Tab 2: Playlists -->
+                <LinearLayout
+                    android:id="@+id/tabPlaylists"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.75"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="12dp">
+
+                    <ImageView
+                        android:id="@+id/ivTabPlaylistsIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:src="@drawable/ic_episodes"
-                        app:tint="@color/purple_primary"
-                        android:padding="10dp"
-                        android:contentDescription="Создать плейлист" />
-                </androidx.cardview.widget.CardView>
+                        app:tint="@color/player_item_inactive_text"
+                        android:contentDescription="Плейлисты" />
 
-                <!-- Sort Button (Individual Circle) -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="10dp"
-                    app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="22dp"
-                    app:cardElevation="6dp"
-                    app:cardPreventCornerOverlap="false">
+                    <TextView
+                        android:id="@+id/tvTabPlaylistsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Плейлисты"
+                        android:textColor="@color/white_color"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:visibility="gone" />
+                </LinearLayout>
 
-                    <ImageButton
-                        android:id="@+id/btnSort"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_sort_arrows"
-                        app:tint="@color/primary_text_color"
-                        android:padding="10dp"
-                        android:contentDescription="Сортировка" />
-                </androidx.cardview.widget.CardView>
+                <!-- Tab 3: Settings -->
+                <LinearLayout
+                    android:id="@+id/tabSettings"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.75"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="12dp">
 
-                <!-- Search Toggle Button (Individual Circle) -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="10dp"
-                    app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="22dp"
-                    app:cardElevation="6dp"
-                    app:cardPreventCornerOverlap="false">
+                    <ImageView
+                        android:id="@+id/ivTabSettingsIcon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_settings"
+                        app:tint="@color/player_item_inactive_text"
+                        android:contentDescription="Настройки" />
 
-                    <ImageButton
-                        android:id="@+id/btnSearchToggle"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_search"
-                        app:tint="@color/primary_text_color"
-                        android:padding="10dp"
-                        android:contentDescription="Поиск" />
-                </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/tvTabSettingsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Настройки"
+                        android:textColor="@color/white_color"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:visibility="gone" />
+                </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Expanded Search Bar (Floating Card matching full width when active) -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/layoutExpandedSearch"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                app:cardBackgroundColor="@color/card_bg_color"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="10dp"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="14dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_search"
-                        app:tint="@color/purple_primary"
-                        android:contentDescription="Search" />
-
-                    <EditText
-                        android:id="@+id/etSearchVideos"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginStart="10dp"
-                        android:background="@null"
-                        android:hint="Поиск видео..."
-                        android:textColor="@color/primary_text_color"
-                        android:textColorHint="@color/player_item_inactive_text"
-                        android:textSize="14sp"
-                        android:singleLine="true"
-                        android:imeOptions="actionSearch" />
-
-                    <ImageButton
-                        android:id="@+id/btnCloseSearch"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_close"
-                        app:tint="@color/player_item_inactive_text"
-                        android:padding="6dp"
-                        android:contentDescription="Закрыть" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
         </FrameLayout>
-
-        <!-- 2. Folder Carousel Card -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardFolderCarousel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            app:cardBackgroundColor="@color/card_bg_color"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="8dp"
-            app:cardPreventCornerOverlap="false">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvFolders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="10dp"
-                android:clipToPadding="false" />
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- 1. Floating Bottom Navigation Card with sliding background indicator -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:cardBackgroundColor="@color/card_bg_color"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="8dp"
-            app:cardPreventCornerOverlap="false">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="6dp">
-
-                <!-- Sliding background indicator view -->
-                <View
-                    android:id="@+id/vTabIndicator"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_tab_selected" />
-
-                <!-- Tabs container -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <!-- Tab 1: Explorer -->
-                    <LinearLayout
-                        android:id="@+id/tabExplorer"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:background="@android:color/transparent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="12dp">
-
-                        <ImageView
-                            android:id="@+id/ivTabExplorerIcon"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_tv"
-                            app:tint="@color/white_color"
-                            android:contentDescription="Проводник" />
-
-                        <TextView
-                            android:id="@+id/tvTabExplorerText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Проводник"
-                            android:textColor="@color/white_color"
-                            android:textSize="14sp"
-                            android:fontFamily="@font/open_sans_bold" />
-                    </LinearLayout>
-
-                    <!-- Tab 2: Playlists -->
-                    <LinearLayout
-                        android:id="@+id/tabPlaylists"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.75"
-                        android:background="@android:color/transparent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="12dp">
-
-                        <ImageView
-                            android:id="@+id/ivTabPlaylistsIcon"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_episodes"
-                            app:tint="@color/player_item_inactive_text"
-                            android:contentDescription="Плейлисты" />
-
-                        <TextView
-                            android:id="@+id/tvTabPlaylistsText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Плейлисты"
-                            android:textColor="@color/player_item_inactive_text"
-                            android:textSize="14sp"
-                            android:fontFamily="@font/open_sans_bold"
-                            android:visibility="gone" />
-                    </LinearLayout>
-
-                    <!-- Tab 3: Settings -->
-                    <LinearLayout
-                        android:id="@+id/tabSettings"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.75"
-                        android:background="@android:color/transparent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:paddingHorizontal="12dp">
-
-                        <ImageView
-                            android:id="@+id/ivTabSettingsIcon"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_settings"
-                            app:tint="@color/player_item_inactive_text"
-                            android:contentDescription="Настройки" />
-
-                        <TextView
-                            android:id="@+id/tvTabSettingsText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="Настройки"
-                            android:textColor="@color/player_item_inactive_text"
-                            android:textSize="14sp"
-                            android:fontFamily="@font/open_sans_bold"
-                            android:visibility="gone" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </FrameLayout>
-
-        </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
-
-    <!-- 4. Playlist Creation Action Bar -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/layoutPlaylistCreationBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="210dp"
-        app:cardBackgroundColor="@color/card_bg_color"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="12dp"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
-
-            <TextView
-                android:id="@+id/tvPlaylistSelectionCount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Выбрано: 0"
-                android:textColor="@color/primary_text_color"
-                android:textSize="14sp"
-                android:fontFamily="@font/open_sans_bold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCancelPlaylist"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Отмена"
-                android:textColor="@color/player_item_inactive_text"
-                android:textSize="14sp"
-                android:fontFamily="@font/open_sans_semibold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDonePlaylist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Далее"
-                android:textColor="@color/white_color"
-                app:backgroundTint="@color/purple_primary"
-                app:cornerRadius="8dp" />
-
-        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

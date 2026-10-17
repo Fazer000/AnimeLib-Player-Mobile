@@ -204,7 +204,11 @@ public class FlexibleBottomSheetUtils {
 
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-        ViewCompat.setOnApplyWindowInsetsListener(bottomSheet, (v, insets) -> WindowInsetsCompat.CONSUMED);
+        ViewCompat.setOnApplyWindowInsetsListener(bottomSheet, (v, insets) -> {
+            androidx.core.graphics.Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(v.getPaddingLeft(), statusBarInsets.top, v.getPaddingRight(), v.getPaddingBottom());
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         View container = dialog.findViewById(com.google.android.material.R.id.container);
         if (container instanceof ViewGroup) {

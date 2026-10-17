@@ -42,6 +42,10 @@ public class UpdateActivity extends AppCompatActivity {
     private UpdateInfo updateInfo;
     private com.example.animelib.ui.M3LinearProgressIndicator progressDownload;
     private TextView tvDownloadStatus;
+    private TextView tvVersionTitle;
+    private TextView tvCurrentVsNew;
+    private TextView tvReleaseDate;
+    private TextView tvChangelog;
     private MaterialButton btnDownload;
     private MaterialButton btnOpenGithub;
     private boolean isDownloading = false;
@@ -74,62 +78,30 @@ public class UpdateActivity extends AppCompatActivity {
             }
         }
 
-        if (getIntent() != null && getIntent().hasExtra(EXTRA_UPDATE_INFO)) {
-            updateInfo = (UpdateInfo) getIntent().getSerializableExtra(EXTRA_UPDATE_INFO);
-        }
-
-        if (updateInfo == null) {
-            CustomToast.showWarning(this, "Информация об обновлении не найдена");
-            finish();
-            return;
-        }
-
         ImageButton btnBack = findViewById(R.id.btnBack);
         android.widget.ImageView ivUpdateLogo = findViewById(R.id.ivUpdateLogo);
         if (ivUpdateLogo != null) {
             boolean isDark = ThemeUtils.isDarkTheme(this);
             ivUpdateLogo.setImageResource(isDark ? R.drawable.ic_logo_non_back_night : R.drawable.ic_logo_non_back_light);
         }
-        TextView tvVersionTitle = findViewById(R.id.tvVersionTitle);
-        TextView tvCurrentVsNew = findViewById(R.id.tvCurrentVsNew);
-        TextView tvReleaseDate = findViewById(R.id.tvReleaseDate);
-        TextView tvChangelog = findViewById(R.id.tvChangelog);
+
+        tvVersionTitle = findViewById(R.id.tvVersionTitle);
+        tvCurrentVsNew = findViewById(R.id.tvCurrentVsNew);
+        tvReleaseDate = findViewById(R.id.tvReleaseDate);
+        tvChangelog = findViewById(R.id.tvChangelog);
 
         progressDownload = findViewById(R.id.progressDownload);
         tvDownloadStatus = findViewById(R.id.tvDownloadStatus);
         btnDownload = findViewById(R.id.btnDownload);
         btnOpenGithub = findViewById(R.id.btnOpenGithub);
 
-        String currentVer = UpdateManager.getCurrentVersion(this);
-        String latestTag = updateInfo.getTagName() != null ? updateInfo.getTagName() : "v0.0.0";
-
-        tvVersionTitle.setText("Доступна версия " + latestTag);
-        tvCurrentVsNew.setText("У вас: v" + currentVer + "  ➔  Новая: " + latestTag);
-
-        String pubDate = formatDate(updateInfo.getPublishedAt());
-        if (!pubDate.isEmpty()) {
-            tvReleaseDate.setText("Дата публикации: " + pubDate);
-            tvReleaseDate.setVisibility(View.VISIBLE);
-        } else {
-            tvReleaseDate.setVisibility(View.GONE);
-        }
-
-        String changelogText = updateInfo.getChangelog();
-        if (changelogText != null && !changelogText.trim().isEmpty()) {
-            // Clean up markdown headers for better display
-            changelogText = changelogText.replaceAll("(?m)^#+\\s*", "• ");
-            tvChangelog.setText(changelogText.trim());
-        } else {
-            tvChangelog.setText("Описание изменений отсутствует.");
-        }
-
         btnBack.setOnClickListener(v -> finish());
 
         btnOpenGithub.setOnClickListener(v -> {
             try {
-                String url = updateInfo.getHtmlUrl() != null && !updateInfo.getHtmlUrl().isEmpty()
+                String url = (updateInfo != null && updateInfo.getHtmlUrl() != null && !updateInfo.getHtmlUrl().isEmpty())
                         ? updateInfo.getHtmlUrl()
-                        : "https://github.com/Fazer000/AnimeLib-Mobile";
+                        : UpdateManager.GITHUB_REPO_URL;
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             } catch (Exception e) {
@@ -139,7 +111,102 @@ public class UpdateActivity extends AppCompatActivity {
 
         btnDownload.setOnClickListener(v -> {
             if (isDownloading) return;
-            checkInstallPermissionAndDownload();
+            if (updateInfo == null) {
+                fetchUpdateInfo();
+            } else {
+                checkInstallPermissionAndDownload();
+            }
+        });
+
+        if (getIntent() != null && getIntent().hasExtra(EXTRA_UPDATE_INFO)) {
+            updateInfo = (UpdateInfo) getIntent().getSerializableExtra(EXTRA_UPDATE_INFO);
+        }
+
+        if (updateInfo != null) {
+            bindUpdateInfo(updateInfo);
+        } else {
+            fetchUpdateInfo();
+        }
+    }
+
+    private void bindUpdateInfo(UpdateInfo info) {
+        if (info == null) return;
+        this.updateInfo = info;
+
+        String currentVer = UpdateManager.getCurrentVersion(this);
+        String latestTag = info.getTagName() != null ? info.getTagName() : "v0.0.0";
+        boolean hasUpdate = UpdateManager.isUpdateAvailable(currentVer, latestTag);
+
+        if (hasUpdate) {
+            tvVersionTitle.setText("Доступна версия " + latestTag);
+            tvCurrentVsNew.setText("У вас: v" + currentVer + "  ➔  Новая: " + latestTag);
+            btnDownload.setEnabled(true);
+            btnDownload.setText("СКАЧАТЬ И УСТАНОВИТЬ APK");
+        } else {
+            tvVersionTitle.setText("У вас актуальная версия (" + latestTag + ")");
+            tvCurrentVsNew.setText("Текущая версия v" + currentVer + " — обновлений не требуется");
+            btnDownload.setEnabled(false);
+            btnDownload.setText("ОБНОВЛЕНИЕ НЕ ТРЕБУЕТСЯ");
+        }
+
+        String pubDate = formatDate(info.getPublishedAt());
+        if (!pubDate.isEmpty()) {
+            tvReleaseDate.setText("Дата публикации: " + pubDate);
+            tvReleaseDate.setVisibility(View.VISIBLE);
+        } else {
+            tvReleaseDate.setVisibility(View.GONE);
+        }
+
+        String changelogText = info.getChangelog();
+        if (changelogText != null && !changelogText.trim().isEmpty()) {
+            changelogText = changelogText.replaceAll("(?m)^#+\\s*", "• ");
+            tvChangelog.setText(changelogText.trim());
+        } else {
+            tvChangelog.setText("Описание изменений отсутствует.");
+        }
+    }
+
+    private void fetchUpdateInfo() {
+        tvVersionTitle.setText("Проверка обновлений...");
+        tvCurrentVsNew.setText("Подключение к GitHub...");
+        progressDownload.setVisibility(View.VISIBLE);
+        progressDownload.setIndeterminate(true);
+        btnDownload.setEnabled(false);
+        btnDownload.setText("ПРОВЕРКА...");
+
+        UpdateManager.checkForUpdates(this, null, new UpdateManager.CheckUpdateCallback() {
+            @Override
+            public void onUpdateCheckResult(boolean hasUpdate, UpdateInfo info, String currentVersion) {
+                runOnUiThread(() -> {
+                    progressDownload.setVisibility(View.GONE);
+                    if (info != null) {
+                        bindUpdateInfo(info);
+                        if (hasUpdate) {
+                            CustomToast.showSuccess(UpdateActivity.this, "Найдено обновление " + info.getTagName());
+                        } else {
+                            CustomToast.showInfo(UpdateActivity.this, "У вас установлена последняя версия");
+                        }
+                    } else {
+                        tvVersionTitle.setText("Информация об обновлении не найдена");
+                        tvCurrentVsNew.setText("Текущая версия v" + currentVersion);
+                        btnDownload.setEnabled(true);
+                        btnDownload.setText("ПРОВЕРИТЬ СНОВА");
+                        CustomToast.showWarning(UpdateActivity.this, "Релизы не найдены на GitHub");
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                runOnUiThread(() -> {
+                    progressDownload.setVisibility(View.GONE);
+                    tvVersionTitle.setText("Ошибка проверки обновлений");
+                    tvCurrentVsNew.setText(errorMessage);
+                    btnDownload.setEnabled(true);
+                    btnDownload.setText("ПОВТОРИТЬ ПРОВЕРКУ");
+                    CustomToast.showError(UpdateActivity.this, errorMessage);
+                });
+            }
         });
     }
 
@@ -162,6 +229,7 @@ public class UpdateActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void startApkDownload() {
+        if (updateInfo == null) return;
         String apkUrl = updateInfo.getApkUrl();
         if (apkUrl == null || apkUrl.isEmpty() || apkUrl.equalsIgnoreCase(updateInfo.getHtmlUrl())) {
             CustomToast.showInfo(this, "Открываем страницу релиза на GitHub...");
@@ -191,7 +259,7 @@ public class UpdateActivity extends AppCompatActivity {
                     btnDownload.setEnabled(true);
                     btnDownload.setText("СКАЧАТЬ И УСТАНОВИТЬ APK");
                     progressDownload.setVisibility(View.GONE);
-                    tvDownloadStatus.setText(" Ошибка скачивания");
+                    tvDownloadStatus.setText("Ошибка скачивания");
                     CustomToast.showWarning(UpdateActivity.this, "Ошибка скачивания обновления");
                 });
             }
@@ -273,7 +341,7 @@ public class UpdateActivity extends AppCompatActivity {
                         btnDownload.setEnabled(true);
                         btnDownload.setText("УСТАНОВИТЬ ПОВТОРНО");
                         progressDownload.setProgress(100);
-                        tvDownloadStatus.setText(" Загрузка завершена!");
+                        tvDownloadStatus.setText("Загрузка завершена!");
                         CustomToast.showSuccess(UpdateActivity.this, "Файл загружен! Запуск установки...");
                         installApk(apkFile);
                     });
@@ -285,7 +353,7 @@ public class UpdateActivity extends AppCompatActivity {
                         btnDownload.setEnabled(true);
                         btnDownload.setText("СКАЧАТЬ И УСТАНОВИТЬ APK");
                         progressDownload.setVisibility(View.GONE);
-                        tvDownloadStatus.setText(" Ошибка сохранения файла");
+                        tvDownloadStatus.setText("Ошибка сохранения файла");
                         CustomToast.showWarning(UpdateActivity.this, "Ошибка сохранения файла обновления");
                     });
                 }

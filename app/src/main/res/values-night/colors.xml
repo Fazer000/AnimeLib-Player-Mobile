@@ -19,8 +19,9 @@
     <color name="resize_card_unselected_stroke">#33333C</color>
     <color name="resize_preview_inner_bg">#2A323D</color>
 
-    <color name="switch_track_unchecked">#2D2D36</color>
-    <color name="switch_thumb_unchecked">#7E8FA6</color>
+    <color name="switch_track_unchecked">#4A4A5A</color>
+    <color name="switch_thumb_unchecked">#FFFFFF</color>
+    <color name="switch_track_outline_unchecked">#938F96</color>
     <color name="toolbar_header_bg">@color/dt_header_color</color>
     <color name="bs_bg_color">#131316</color>
     <color name="bs_divider_color">#2D2D36</color>
@@ -50,6 +51,7 @@
     <color name="player_item_active_stroke">@color/purple_primary</color>
 
     <!-- Dialog Colors (Dark Theme Overrides) -->
+    <color name="m3_item_bg">#1E1E1E</color>
     <color name="dialog_bg">#1C1C1C</color>
     <color name="dialog_card_bg">#1E1E1E</color>
     <color name="dialog_input_bg">#1E1E1E</color>

@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutSettingsContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:paddingTop="16dp"
+    android:paddingBottom="120dp"
+    android:paddingHorizontal="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Настройки"
+            android:textColor="@color/primary_text_color"
+            android:textSize="22sp"
+            android:fontFamily="@font/open_sans_bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- GROUP 1: Основное -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Основное"
+            android:textColor="@color/primary_text_color"
+            android:textSize="14.5sp"
+            android:fontFamily="@font/open_sans_bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="14dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Resize Mode -->
+            <LinearLayout
+                android:id="@+id/settingResizeModeCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_single"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_resize_mode_fit"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Resize Mode" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Заполнение экрана"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:id="@+id/tvCurrentResizeMode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="По умолчанию"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/accent_text_color" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- GROUP 2: Дополнительно -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Дополнительно"
+            android:textColor="@color/primary_text_color"
+            android:textSize="14.5sp"
+            android:fontFamily="@font/open_sans_bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="14dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Subtitles -->
+            <LinearLayout
+                android:id="@+id/settingSubtitlesCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_top"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_subtitles"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Subtitles" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Субтитры"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="Включение и стили субтитров"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchSubtitles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:showText="false"
+                    app:trackTint="@color/switch_track_tint"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <!-- Ambient Light -->
+            <LinearLayout
+                android:id="@+id/settingAmbientLightCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_middle"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_light"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Ambient Light" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ambient подсветка"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="Свечение по краям видео"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchAmbientLight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:showText="false"
+                    app:trackTint="@color/switch_track_tint"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <!-- AutoPlay -->
+            <LinearLayout
+                android:id="@+id/settingAutoPlayCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_middle"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_play"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="AutoPlay" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Автовоспроизведение"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="Следующий эпизод из списка"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchAutoPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:showText="false"
+                    app:trackTint="@color/switch_track_tint"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <!-- Surround Sound -->
+            <LinearLayout
+                android:id="@+id/settingSurroundSoundCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_middle"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_surround_sound"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Surround Sound" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Объемный звук"
+                            android:textColor="@color/primary_text_color"
+                            android:textSize="15.5sp"
+                            android:fontFamily="@font/open_sans_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:paddingHorizontal="5dp"
+                            android:paddingVertical="1dp"
+                            android:background="@drawable/tag_3d_background"
+                            android:text="3D"
+                            android:textColor="#FFFFFF"
+                            android:textSize="9.5sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvCurrentSurroundSound"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="🎬 Кинотеатр 3D"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchSurroundSound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:showText="false"
+                    app:trackTint="@color/switch_track_tint"
+                    app:thumbTint="@color/switch_thumb_tint"
+                    android:checked="false" />
+            </LinearLayout>
+
+            <!-- Video Filters -->
+            <LinearLayout
+                android:id="@+id/settingVideoFiltersCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_middle"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_tune_sliders"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Filters" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Фильтры видео"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:id="@+id/tvCurrentVideoFilters"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="По умолчанию"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/accent_text_color" />
+            </LinearLayout>
+
+            <!-- Skip Duration -->
+            <LinearLayout
+                android:id="@+id/settingSkipDurationCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_middle"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_skip"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Skip" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Пропуск сегмента"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:id="@+id/tvCurrentSkipDuration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="85 сек (1:25)"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/accent_text_color" />
+            </LinearLayout>
+
+            <!-- Test Mode -->
+            <LinearLayout
+                android:id="@+id/settingTestModeCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_bottom"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_test_mode"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Test mode" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Тестовый режим"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="Демонстрационные видеофайлы"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchTestMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:showText="false"
+                    app:trackTint="@color/switch_track_tint"
+                    app:thumbTint="@color/switch_thumb_tint" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- GROUP 3: Внешний вид -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Внешний вид"
+            android:textColor="@color/primary_text_color"
+            android:textSize="14.5sp"
+            android:fontFamily="@font/open_sans_bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="14dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Theme Card -->
+            <LinearLayout
+                android:id="@+id/settingThemeCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_top"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="3dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_theme"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Theme" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Тема оформления"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:id="@+id/tvCurrentTheme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="Системная"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/accent_text_color" />
+            </LinearLayout>
+
+            <!-- Language Card -->
+            <LinearLayout
+                android:id="@+id/settingLanguageCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_bottom"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_language"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Language" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Язык приложения"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:id="@+id/tvCurrentLanguage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="Русский"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/accent_text_color" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- GROUP 4: Прочее -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Прочее"
+            android:textColor="@color/primary_text_color"
+            android:textSize="14.5sp"
+            android:fontFamily="@font/open_sans_bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="14dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Check for Updates -->
+            <LinearLayout
+                android:id="@+id/settingUpdateCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_m3_item_single"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="12dp">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_refresh"
+                    app:tint="@color/primary_text_color"
+                    android:layout_marginEnd="12dp"
+                    android:contentDescription="Updates" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Проверить обновления"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="15.5sp"
+                        android:fontFamily="@font/open_sans_bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="AnimeLib Player v1.8.9"
+                        android:textColor="@color/accent_text_color"
+                        android:textSize="12.5sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/accent_text_color" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/appVersionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="20dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/secondary_text_color"
+            android:textSize="13sp"
+            android:text="Версия v1.8.9 (AnimeLib)" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
