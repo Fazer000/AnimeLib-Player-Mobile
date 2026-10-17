@@ -9,27 +9,27 @@
     <!-- Semantic Theme Colors (Dark Override) -->
     <color name="resize_card_selected_bg">@color/purple_secondary_dark</color>
     <color name="resize_card_selected_stroke">@color/purple_primary</color>
-    <color name="resize_card_unselected_bg">#1E1E1E</color>
+    <color name="resize_card_unselected_bg">#1C1C1E</color>
     <color name="resize_card_unselected_stroke">#33333C</color>
     <color name="resize_preview_inner_bg">#2A323D</color>
 
     <color name="switch_track_unchecked">#2D2D36</color>
     <color name="switch_thumb_unchecked">#7E8FA6</color>
     <color name="toolbar_header_bg">@color/dt_header_color</color>
-    <color name="bs_bg_color">#1C1C1C</color>
+    <color name="bs_bg_color">#131316</color>
     <color name="bs_divider_color">#2D2D36</color>
-    <color name="card_bg_color">#1E1E1E</color>
+    <color name="card_bg_color">#1C1C1E</color>
     <color name="primary_text_color">#BFBFBF</color>
     <color name="secondary_text_color">#8A8A8E</color>
     <color name="accent_text_color">#8A8A8E</color>
-    <color name="comment_input_bg">#1E1E1E</color>
+    <color name="comment_input_bg">#1C1C1E</color>
     <color name="comment_input_stroke">#33333C</color>
-    <color name="chip_selected_bg">@color/purple_primary</color>
+    <color name="chip_selected_bg">@color/purple_secondary_dark</color>
     <color name="chip_selected_stroke">@color/purple_primary</color>
-    <color name="chip_unselected_bg">#2A2A2E</color>
-    <color name="chip_unselected_stroke">#3F3F46</color>
+    <color name="chip_unselected_bg">#1C1C1E</color>
+    <color name="chip_unselected_stroke">#33333C</color>
     <color name="close_btn_bg">#20FFFFFF</color>
-    <color name="placeholder_bg">#1E1E1E</color>
+    <color name="placeholder_bg">#1C1C1E</color>
     <color name="stop_btn_bg">#2A1B20</color>
     <color name="sort_popup_item_selected_bg">#2A2D37</color>
     <color name="sort_popup_item_selected_text">#FFFFFF</color>

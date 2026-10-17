@@ -104,10 +104,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white_color"
-                android:textSize="18sp"
+                android:textSize="17sp"
+                android:fontFamily="@font/open_sans_bold"
                 android:maxLines="1"
                 android:ellipsize="end"
+                android:gravity="center"
                 android:text="Загрузка..."/>
+
+            <TextView
+                android:id="@+id/animeSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:textColor="@color/player_item_inactive_text"
+                android:textSize="12sp"
+                android:fontFamily="@font/open_sans"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:visibility="gone"
+                android:text="Серия 1"/>
         </LinearLayout>
     </RelativeLayout>
 

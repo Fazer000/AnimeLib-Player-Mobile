@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutChoiceItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="10dp"
+    android:layout_marginVertical="3dp"
+    android:background="@drawable/bg_popup_item_ripple"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/ivChoiceIndicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/ic_check"
+        app:tint="@color/purple_primary"
+        android:visibility="gone"
+        android:contentDescription="Выбрано" />
+
+    <TextView
+        android:id="@+id/tvChoiceTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/dialog_text_title"
+        android:textSize="14.5sp"
+        android:fontFamily="@font/open_sans" />
+
+</LinearLayout>

@@ -117,7 +117,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
             holder.pbWatchProgress.setVisibility(View.VISIBLE);
             holder.pbWatchProgress.setProgress(video.getProgressPercent());
             holder.tvWatchProgressStatus.setVisibility(View.VISIBLE);
-            holder.tvWatchProgressStatus.setText("Просмотрено " + video.getProgressPercent() + "%");
+            holder.tvWatchProgressStatus.setText(video.getProgressPercent() + "%");
         } else {
             holder.pbWatchProgress.setVisibility(View.GONE);
             holder.tvWatchProgressStatus.setVisibility(View.GONE);

@@ -18,8 +18,8 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.animelib.util.DialogUtils;
 import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -440,17 +440,13 @@ public class MainActivity extends AppCompatActivity {
                 "Создать новый плейлист",
                 "Мои плейлисты"
         };
-        new AlertDialog.Builder(this)
-                .setTitle("Управление плейлистами")
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        startPlaylistCreationMode();
-                    } else if (which == 1) {
-                        showSavedPlaylistsDialog();
-                    }
-                })
-                .setNegativeButton("Отмена", null)
-                .show();
+        DialogUtils.showListDialog(this, "Управление плейлистами", options, which -> {
+            if (which == 0) {
+                startPlaylistCreationMode();
+            } else if (which == 1) {
+                showSavedPlaylistsDialog();
+            }
+        });
     }
 
     private void startPlaylistCreationMode() {
@@ -502,16 +498,24 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPlaylistDelete(com.example.animelib.data.entity.PlaylistEntity playlist) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Удалить плейлист")
-                        .setMessage("Удалить плейлист «" + playlist.getName() + "»?")
-                        .setPositiveButton("Удалить", (d, w) -> {
-                            databaseManager.deletePlaylist(playlist.getId());
-                            com.example.animelib.util.CustomToast.showSuccess(MainActivity.this, "Плейлист удален");
-                            loadAndDisplayPlaylists();
-                        })
-                        .setNegativeButton("Отмена", null)
-                        .show();
+                DialogUtils.showCustomDialog(MainActivity.this,
+                        "Удалить плейлист",
+                        "Удалить плейлист «" + playlist.getName() + "»?",
+                        "Удалить",
+                        "Отмена",
+                        new DialogUtils.DialogListener() {
+                            @Override
+                            public void onPositiveClick() {
+                                databaseManager.deletePlaylist(playlist.getId());
+                                com.example.animelib.util.CustomToast.showSuccess(MainActivity.this, "Плейлист удален");
+                                loadAndDisplayPlaylists();
+                            }
+
+                            @Override
+                            public void onNegativeClick() {
+                                // Do nothing
+                            }
+                        });
             }
         });
         rvVideos.setAdapter(adapter);
@@ -535,40 +539,45 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        EditText input = new EditText(this);
-        input.setHint("Название плейлиста");
-        input.setText("Плейлист " + new java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()).format(new java.util.Date()));
-        input.setSelection(input.getText().length());
-        int padding = dpToPx(16);
-        input.setPadding(padding, padding, padding, padding);
+        String defaultName = "Плейлист " + new java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+        String msg = "Укажите название для плейлиста (" + selected.size() + " видео по порядку):";
 
-        new AlertDialog.Builder(this)
-                .setTitle("Создание плейлиста")
-                .setMessage("Укажите название для плейлиста (" + selected.size() + " видео по порядку):")
-                .setView(input)
-                .setPositiveButton("Создать", (dialog, which) -> {
-                    String name = input.getText().toString().trim();
-                    if (name.isEmpty()) name = "Мой плейлист";
-                    final String playlistName = name;
-                    final List<VideoItem> selectedCopy = new ArrayList<>(selected);
+        DialogUtils.showInputDialog(this, "Создание плейлиста", msg, defaultName, "Название плейлиста", "Создать", "Отмена",
+                new DialogUtils.InputDialogListener() {
+                    @Override
+                    public void onInputConfirmed(String input) {
+                        String name = input.isEmpty() ? "Мой плейлист" : input;
+                        final String playlistName = name;
+                        final List<VideoItem> selectedCopy = new ArrayList<>(selected);
 
-                    long playlistId = databaseManager.createPlaylist(playlistName, selectedCopy);
-                    if (playlistId != -1) {
-                        com.example.animelib.util.CustomToast.showSuccess(this, "Плейлист «" + playlistName + "» успешно создан!");
-                        exitPlaylistCreationMode();
+                        long playlistId = databaseManager.createPlaylist(playlistName, selectedCopy);
+                        if (playlistId != -1) {
+                            com.example.animelib.util.CustomToast.showSuccess(MainActivity.this, "Плейлист «" + playlistName + "» успешно создан!");
+                            exitPlaylistCreationMode();
 
-                        new AlertDialog.Builder(this)
-                                .setTitle("Плейлист создан")
-                                .setMessage("Воспроизвести созданный плейлист сейчас?")
-                                .setPositiveButton("Да", (d, w) -> playCustomPlaylist(selectedCopy, playlistName))
-                                .setNegativeButton("Позже", null)
-                                .show();
-                    } else {
-                        com.example.animelib.util.CustomToast.showWarning(this, "Не удалось создать плейлист");
+                            DialogUtils.showConfirmDialog(MainActivity.this,
+                                    "Плейлист создан",
+                                    "Воспроизвести созданный плейлист сейчас?",
+                                    "Да",
+                                    "Позже",
+                                    false,
+                                    new DialogUtils.DialogListener() {
+                                        @Override
+                                        public void onPositiveClick() {
+                                            playCustomPlaylist(selectedCopy, playlistName);
+                                        }
+
+                                        @Override
+                                        public void onNegativeClick() {}
+                                    });
+                        } else {
+                            com.example.animelib.util.CustomToast.showWarning(MainActivity.this, "Не удалось создать плейлист");
+                        }
                     }
-                })
-                .setNegativeButton("Отмена", null)
-                .show();
+
+                    @Override
+                    public void onCancelled() {}
+                });
     }
 
     private void showSavedPlaylistsDialog() {
@@ -583,17 +592,18 @@ public class MainActivity extends AppCompatActivity {
             names[i] = playlists.get(i).getName() + " (" + databaseManager.getVideosForPlaylist(playlists.get(i).getId()).size() + " видео)";
         }
 
-        new AlertDialog.Builder(this)
-                .setTitle("Мои плейлисты")
-                .setItems(names, (dialog, which) -> {
-                    com.example.animelib.data.entity.PlaylistEntity selectedPlaylist = playlists.get(which);
-                    loadAndPlaySavedPlaylist(selectedPlaylist);
-                })
-                .setNeutralButton("Удалить плейлист", (dialog, which) -> {
-                    showDeletePlaylistChooser(playlists);
-                })
-                .setNegativeButton("Закрыть", null)
-                .show();
+        DialogUtils.showListWithNeutralDialog(this, "Мои плейлисты", names, "Удалить плейлист", new DialogUtils.NeutralListDialogListener() {
+            @Override
+            public void onItemSelected(int which) {
+                com.example.animelib.data.entity.PlaylistEntity selectedPlaylist = playlists.get(which);
+                loadAndPlaySavedPlaylist(selectedPlaylist);
+            }
+
+            @Override
+            public void onNeutralClicked() {
+                showDeletePlaylistChooser(playlists);
+            }
+        });
     }
 
     private void showDeletePlaylistChooser(List<com.example.animelib.data.entity.PlaylistEntity> playlists) {
@@ -601,15 +611,11 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < playlists.size(); i++) {
             names[i] = playlists.get(i).getName();
         }
-        new AlertDialog.Builder(this)
-                .setTitle("Выберите плейлист для удаления")
-                .setItems(names, (d, w) -> {
-                    com.example.animelib.data.entity.PlaylistEntity toDelete = playlists.get(w);
-                    databaseManager.deletePlaylist(toDelete.getId());
-                    com.example.animelib.util.CustomToast.showSuccess(this, "Плейлист удален");
-                })
-                .setNegativeButton("Отмена", null)
-                .show();
+        DialogUtils.showListDialog(this, "Выберите плейлист для удаления", names, which -> {
+            com.example.animelib.data.entity.PlaylistEntity toDelete = playlists.get(which);
+            databaseManager.deletePlaylist(toDelete.getId());
+            com.example.animelib.util.CustomToast.showSuccess(MainActivity.this, "Плейлист удален");
+        });
     }
 
     private void loadAndPlaySavedPlaylist(com.example.animelib.data.entity.PlaylistEntity playlistEntity) {
@@ -630,6 +636,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("EXTRA_LOCAL_FILE_PATH", paths.get(0));
         intent.putExtra("EXTRA_VIDEO_TITLE", titles.get(0));
         intent.putExtra("EXTRA_FOLDER_NAME", playlistEntity.getName());
+        intent.putExtra("EXTRA_PLAYLIST_NAME", playlistEntity.getName());
+        intent.putExtra("EXTRA_IS_PLAYLIST", true);
         intent.putStringArrayListExtra("EXTRA_PLAYLIST_PATHS", paths);
         intent.putStringArrayListExtra("EXTRA_PLAYLIST_TITLES", titles);
         intent.putExtra("EXTRA_PLAYLIST_INDEX", 0);
@@ -649,6 +657,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("EXTRA_LOCAL_FILE_PATH", paths.get(0));
         intent.putExtra("EXTRA_VIDEO_TITLE", titles.get(0));
         intent.putExtra("EXTRA_FOLDER_NAME", playlistName);
+        intent.putExtra("EXTRA_PLAYLIST_NAME", playlistName);
+        intent.putExtra("EXTRA_IS_PLAYLIST", true);
         intent.putStringArrayListExtra("EXTRA_PLAYLIST_PATHS", paths);
         intent.putStringArrayListExtra("EXTRA_PLAYLIST_TITLES", titles);
         intent.putExtra("EXTRA_PLAYLIST_INDEX", 0);
@@ -808,20 +818,15 @@ public class MainActivity extends AppCompatActivity {
         else if (currentSortOrder == VideoListFilter.SortOrder.NAME_ASC) checkedItem = 2;
         else if (currentSortOrder == VideoListFilter.SortOrder.SIZE_DESC) checkedItem = 3;
 
-        new AlertDialog.Builder(this)
-                .setTitle("Сортировка видео")
-                .setSingleChoiceItems(options, checkedItem, (dialog, which) -> {
-                    switch (which) {
-                        case 0: currentSortOrder = VideoListFilter.SortOrder.DATE_DESC; break;
-                        case 1: currentSortOrder = VideoListFilter.SortOrder.DATE_ASC; break;
-                        case 2: currentSortOrder = VideoListFilter.SortOrder.NAME_ASC; break;
-                        case 3: currentSortOrder = VideoListFilter.SortOrder.SIZE_DESC; break;
-                    }
-                    filterAndDisplayVideos();
-                    dialog.dismiss();
-                })
-                .setNegativeButton("Отмена", null)
-                .show();
+        DialogUtils.showSingleChoiceDialog(this, "Сортировка видео", options, checkedItem, which -> {
+            switch (which) {
+                case 0: currentSortOrder = VideoListFilter.SortOrder.DATE_DESC; break;
+                case 1: currentSortOrder = VideoListFilter.SortOrder.DATE_ASC; break;
+                case 2: currentSortOrder = VideoListFilter.SortOrder.NAME_ASC; break;
+                case 3: currentSortOrder = VideoListFilter.SortOrder.SIZE_DESC; break;
+            }
+            filterAndDisplayVideos();
+        });
     }
 
     private void showTestModeMenu() {
@@ -833,20 +838,16 @@ public class MainActivity extends AppCompatActivity {
                 toggleText
         };
 
-        new AlertDialog.Builder(this)
-                .setTitle("Тест-режим плеера")
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        launchTestPlayerWithDemoPlaylist();
-                    } else if (which == 1) {
-                        databaseManager.saveTestModeSetting(!isTestModeOn);
-                        loadVideosFromStorage();
-                        com.example.animelib.util.CustomToast.showInfo(this,
-                                !isTestModeOn ? "Тестовые видео добавлены в список" : "Тестовые видео скрыты");
-                    }
-                })
-                .setNegativeButton("Отмена", null)
-                .show();
+        DialogUtils.showListDialog(this, "Тест-режим плеера", options, which -> {
+            if (which == 0) {
+                launchTestPlayerWithDemoPlaylist();
+            } else if (which == 1) {
+                databaseManager.saveTestModeSetting(!isTestModeOn);
+                loadVideosFromStorage();
+                com.example.animelib.util.CustomToast.showInfo(MainActivity.this,
+                        !isTestModeOn ? "Тестовые видео добавлены в список" : "Тестовые видео скрыты");
+            }
+        });
     }
 
     private void launchTestPlayerWithDemoPlaylist() {

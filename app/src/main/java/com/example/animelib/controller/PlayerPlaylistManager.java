@@ -17,6 +17,8 @@ public class PlayerPlaylistManager {
     private String currentVideoPath;
     private String currentVideoTitle;
     private String currentFolderName = "Видео";
+    private boolean isPlaylist = false;
+    private String playlistName = null;
 
     private final List<String> playlistPaths = new ArrayList<>();
     private final List<String> playlistTitles = new ArrayList<>();
@@ -44,6 +46,14 @@ public class PlayerPlaylistManager {
 
         currentFolderName = intent.getStringExtra("EXTRA_FOLDER_NAME");
         if (currentFolderName == null) currentFolderName = "Видео";
+
+        isPlaylist = intent.getBooleanExtra("EXTRA_IS_PLAYLIST", false);
+        playlistName = intent.getStringExtra("EXTRA_PLAYLIST_NAME");
+        if (playlistName != null && !playlistName.trim().isEmpty()) {
+            isPlaylist = true;
+        } else if (isPlaylist) {
+            playlistName = currentFolderName;
+        }
 
         ArrayList<String> paths = intent.getStringArrayListExtra("EXTRA_PLAYLIST_PATHS");
         ArrayList<String> titles = intent.getStringArrayListExtra("EXTRA_PLAYLIST_TITLES");
@@ -122,5 +132,25 @@ public class PlayerPlaylistManager {
 
     public boolean isEmpty() {
         return playlistPaths.isEmpty();
+    }
+
+    public boolean isPlaylist() {
+        return isPlaylist;
+    }
+
+    public void setPlaylist(boolean playlist) {
+        this.isPlaylist = playlist;
+    }
+
+    public String getPlaylistName() {
+        if (playlistName != null && !playlistName.trim().isEmpty()) {
+            return playlistName;
+        }
+        return currentFolderName;
+    }
+
+    public void setPlaylistName(String name) {
+        this.playlistName = name;
+        if (name != null) this.isPlaylist = true;
     }
 }

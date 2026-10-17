@@ -77,6 +77,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     private DatabaseManager databaseManager;
 
     private TextView tvAnimeTitle;
+    private TextView tvAnimeSubtitle;
     private TextView tvPortraitAnimeTitle;
     private TextView tvPortraitPlaylistInfo;
     private RecyclerView rvPlaylistEpisodes;
@@ -171,6 +172,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     private void initViews() {
         playerView = findViewById(R.id.playerView);
         tvAnimeTitle = findViewById(R.id.animeTitle);
+        tvAnimeSubtitle = findViewById(R.id.animeSubtitle);
         tvPortraitAnimeTitle = findViewById(R.id.tvPortraitAnimeTitle);
         btnClose = findViewById(R.id.ibClosePlayer);
         btnSettings = findViewById(R.id.settingsButton);
@@ -394,6 +396,46 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         });
     }
 
+    private void updatePlayerTitles() {
+        String mainTitle;
+        String subtitleText;
+
+        if (playlistManager.isPlaylist()) {
+            mainTitle = playlistManager.getPlaylistName();
+            int episodeNum = playlistManager.getCurrentIndex() + 1;
+            subtitleText = "Серия " + episodeNum;
+        } else {
+            mainTitle = playlistManager.getCurrentTitle();
+            subtitleText = null;
+        }
+
+        // Top player controller (Landscape & Portrait video overlay)
+        if (tvAnimeTitle != null) {
+            tvAnimeTitle.setText(mainTitle);
+        }
+        if (tvAnimeSubtitle != null) {
+            if (subtitleText != null) {
+                tvAnimeSubtitle.setText(subtitleText);
+                tvAnimeSubtitle.setVisibility(View.VISIBLE);
+            } else {
+                tvAnimeSubtitle.setVisibility(View.GONE);
+            }
+        }
+
+        // Portrait content below player
+        if (tvPortraitAnimeTitle != null) {
+            tvPortraitAnimeTitle.setText(mainTitle);
+        }
+        if (tvPortraitPlaylistInfo != null) {
+            if (subtitleText != null) {
+                tvPortraitPlaylistInfo.setText(subtitleText);
+                tvPortraitPlaylistInfo.setVisibility(View.VISIBLE);
+            } else {
+                tvPortraitPlaylistInfo.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private void playCurrentVideo(boolean shouldResume) {
         String videoPath = playlistManager.getCurrentPath();
         if (videoPath == null || videoPath.isEmpty()) {
@@ -402,15 +444,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             return;
         }
 
-        if (tvAnimeTitle != null) {
-            tvAnimeTitle.setText(playlistManager.getCurrentTitle());
-        }
-        if (tvPortraitAnimeTitle != null) {
-            tvPortraitAnimeTitle.setText(playlistManager.getCurrentTitle());
-        }
-        if (tvPortraitPlaylistInfo != null) {
-            tvPortraitPlaylistInfo.setText("Плейлист: " + playlistManager.getCurrentFolderName() + " • Серия " + (playlistManager.getCurrentIndex() + 1) + " из " + playlistManager.getPlaylistPaths().size());
-        }
+        updatePlayerTitles();
+
         if (playlistEpisodesAdapter != null) {
             playlistEpisodesAdapter.setCurrentIndex(playlistManager.getCurrentIndex());
         }
@@ -453,9 +488,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         playCurrentVideo(shouldResume);
         if (playlistEpisodesAdapter != null) {
             playlistEpisodesAdapter.setCurrentIndex(index);
-        }
-        if (tvPortraitPlaylistInfo != null) {
-            tvPortraitPlaylistInfo.setText("Плейлист: " + playlistManager.getCurrentFolderName() + " • Серия " + (index + 1) + " из " + playlistManager.getPlaylistPaths().size());
         }
     }
 
@@ -748,7 +780,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         View timeAndControls = findViewById(R.id.timeAndControlsContainer);
         View timeBarContainer = findViewById(R.id.timeBarContainer);
         if (timeBarContainer instanceof com.example.animelib.ui.RoundedCornerFrameLayout) {
-            ((com.example.animelib.ui.RoundedCornerFrameLayout) timeBarContainer).setCornerRadius(dpToPx(6));
+            ((com.example.animelib.ui.RoundedCornerFrameLayout) timeBarContainer).setCornerRadius(dpToPx(8));
         }
 
         if (playerContainer == null) return;
@@ -776,6 +808,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
             if (animeInfoContainer != null) {
                 animeInfoContainer.setVisibility(View.VISIBLE);
+                if (animeInfoContainer.getLayoutParams() instanceof android.widget.RelativeLayout.LayoutParams) {
+                    android.widget.RelativeLayout.LayoutParams aParams = (android.widget.RelativeLayout.LayoutParams) animeInfoContainer.getLayoutParams();
+                    aParams.leftMargin = dpToPx(80);
+                    aParams.rightMargin = dpToPx(80);
+                    animeInfoContainer.setLayoutParams(aParams);
+                }
             }
 
             if (btnLock != null) {
@@ -831,9 +869,14 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 portraitBottomContent.setVisibility(View.VISIBLE);
             }
 
-            // Hide Title and Lock Button in Portrait Mode
             if (animeInfoContainer != null) {
-                animeInfoContainer.setVisibility(View.GONE);
+                animeInfoContainer.setVisibility(View.VISIBLE);
+                if (animeInfoContainer.getLayoutParams() instanceof android.widget.RelativeLayout.LayoutParams) {
+                    android.widget.RelativeLayout.LayoutParams aParams = (android.widget.RelativeLayout.LayoutParams) animeInfoContainer.getLayoutParams();
+                    aParams.leftMargin = dpToPx(48);
+                    aParams.rightMargin = dpToPx(84);
+                    animeInfoContainer.setLayoutParams(aParams);
+                }
             }
 
             if (btnLock != null) {
@@ -903,6 +946,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             }
             ambientContainer.setLayoutParams(ambParams);
         }
+
+        updatePlayerTitles();
     }
 
     private int dpToPx(int dp) {

@@ -48,6 +48,22 @@
                         android:src="@drawable/placeholder_image"
                         android:contentDescription="Video Thumbnail" />
 
+                    <!-- Watch progress percentage badge in bottom-left corner -->
+                    <TextView
+                        android:id="@+id/tvWatchProgressStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|start"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/video_time_background"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="2dp"
+                        android:text="0%"
+                        android:textColor="@color/white_color"
+                        android:textSize="10.5sp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:visibility="gone" />
+
                     <!-- Duration badge -->
                     <TextView
                         android:id="@+id/tvVideoDuration"
@@ -134,17 +150,6 @@
                         android:text="250 МБ • 14.10.2026" />
 
                 </LinearLayout>
-
-                <!-- Last Watched / Progress info -->
-                <TextView
-                    android:id="@+id/tvWatchProgressStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/purple_primary"
-                    android:textSize="11sp"
-                    android:text="Просмотрено 45%"
-                    android:visibility="gone" />
 
             </LinearLayout>
 

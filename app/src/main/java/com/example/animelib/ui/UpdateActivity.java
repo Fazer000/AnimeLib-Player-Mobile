@@ -147,9 +147,14 @@ public class UpdateActivity extends AppCompatActivity {
                         for (int i = 0; i < assets.length(); i++) {
                             JSONObject asset = assets.getJSONObject(i);
                             if (asset.has("name") && asset.getString("name").toLowerCase().endsWith(".apk")) {
+                                String name = asset.getString("name").toLowerCase();
                                 if (asset.has("browser_download_url")) {
-                                    targetApkUrl = asset.getString("browser_download_url");
-                                    break;
+                                    if (name.contains("release")) {
+                                        targetApkUrl = asset.getString("browser_download_url");
+                                        break;
+                                    } else if (targetApkUrl == null) {
+                                        targetApkUrl = asset.getString("browser_download_url");
+                                    }
                                 }
                             }
                         }

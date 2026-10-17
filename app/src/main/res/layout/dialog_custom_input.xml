@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="24dp"
+    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="@color/dialog_bg"
+    app:strokeColor="?attr/alphaBorderColor"
+    app:strokeWidth="0.5dp"
+    app:cardElevation="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header: Title + Close Button -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvDialogTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/btnDialogClose"
+                android:layout_centerVertical="true"
+                android:textColor="@color/dialog_text_title"
+                android:textSize="18sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btnDialogClose"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                app:tint="@color/dialog_icon_close"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:contentDescription="Закрыть" />
+
+        </RelativeLayout>
+
+        <!-- Message / Description -->
+        <TextView
+            android:id="@+id/tvDialogMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/dialog_text_body"
+            android:textSize="14sp"
+            android:lineSpacingExtra="3dp"
+            android:fontFamily="@font/open_sans" />
+
+        <!-- Input Field Container -->
+        <EditText
+            android:id="@+id/etDialogInput"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_ignore_input"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/dialog_text_title"
+            android:textColorHint="@color/dialog_text_hint"
+            android:textSize="14sp"
+            android:fontFamily="@font/open_sans"
+            android:singleLine="true"
+            android:imeOptions="actionDone" />
+
+        <!-- Actions -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="4dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDialogNegative"
+                style="@style/Widget.AnimeLIB.Button.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Отмена"
+                android:textColor="@color/dialog_cancel_text"
+                android:layout_marginEnd="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDialogPositive"
+                style="@style/Widget.AnimeLIB.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Создать"
+                android:backgroundTint="?attr/secondaryColor" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

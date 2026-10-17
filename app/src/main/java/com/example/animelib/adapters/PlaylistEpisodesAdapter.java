@@ -106,10 +106,12 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
             holder.cardView.setStrokeWidth(dpToPx(context, 0.5f));
             holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
             holder.tvSelectionBadge.setBackgroundResource(R.drawable.bg_m3_selected_pill);
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.card_bg_color));
         } else {
-            holder.cardView.setStrokeWidth(dpToPx(context, 1));
+            holder.cardView.setStrokeWidth(dpToPx(context, 0.5f));
+            holder.cardView.setStrokeColor(ContextCompat.getColor(context, android.R.color.transparent));
             holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.primary_text_color));
-            holder.tvSelectionBadge.setBackgroundResource(R.drawable.bg_m3_selected_pill);
+            holder.tvSelectionBadge.setBackgroundResource(R.drawable.bg_m3_unselected_circle);
         }
 
         // Thumbnail loading
