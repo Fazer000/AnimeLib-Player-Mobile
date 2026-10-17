@@ -350,6 +350,16 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(v.getPaddingLeft(), statusBarHeight + defaultTopPadding, v.getPaddingRight(), bottomPadding);
             return windowInsets;
         });
+
+        if (layoutSettingsContainer != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(layoutSettingsContainer, (v, windowInsets) -> {
+                int statusBarHeight = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+                int defaultTopPadding = (int) (16 * getResources().getDisplayMetrics().density);
+                int bottomPadding = (int) (260 * getResources().getDisplayMetrics().density);
+                v.setPadding(v.getPaddingLeft(), statusBarHeight + defaultTopPadding, v.getPaddingRight(), bottomPadding);
+                return windowInsets;
+            });
+        }
     }
 
     private void setupSearchAndListeners() {

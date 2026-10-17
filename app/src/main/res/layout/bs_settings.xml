@@ -226,7 +226,7 @@
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/subtitlesSwitch"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         app:trackTint="@color/switch_track_tint"
                         app:thumbTint="@color/switch_thumb_tint"
                         android:checked="true"/>
@@ -266,7 +266,7 @@
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/ambientLightSwitch"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         app:trackTint="@color/switch_track_tint"
                         app:thumbTint="@color/switch_thumb_tint"
                         android:checked="true"/>
@@ -306,7 +306,7 @@
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/autoPlaySwitch"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         app:trackTint="@color/switch_track_tint"
                         app:thumbTint="@color/switch_thumb_tint"
                         android:checked="true"/>
@@ -380,7 +380,7 @@
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/surroundSoundSwitch"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         app:trackTint="@color/switch_track_tint"
                         app:thumbTint="@color/switch_thumb_tint"
                         android:checked="false"/>
