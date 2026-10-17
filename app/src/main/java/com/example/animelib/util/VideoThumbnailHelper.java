@@ -17,53 +17,8 @@ public class VideoThumbnailHelper {
     public static Bitmap createFrameThumbnail(Context context, String path, Uri uri, long durationMs) {
         Bitmap thumb = null;
 
-        // 1. Try MediaMetadataRetriever at 10% or 10s-30s into the video
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            if (path != null && (path.startsWith("http://") || path.startsWith("https://"))) {
-                retriever.setDataSource(path, new HashMap<String, String>());
-            } else if (path != null && new File(path).exists()) {
-                retriever.setDataSource(path);
-            } else if (uri != null && context != null) {
-                retriever.setDataSource(context, uri);
-            }
-
-            // Extract duration if not provided
-            if (durationMs <= 0) {
-                String durStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                if (durStr != null) {
-                    try {
-                        durationMs = Long.parseLong(durStr);
-                    } catch (Exception ignored) {}
-                }
-            }
-
-            long targetTimeUs = calculateTargetTimeUs(durationMs, 0.10f);
-            thumb = retriever.getFrameAtTime(targetTimeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
-
-            // If mostly black, try at 25% or 40% into the video
-            if (thumb != null && isMostlyBlack(thumb)) {
-                long secondaryTimeUs = calculateTargetTimeUs(durationMs, 0.25f);
-                Bitmap secondTry = retriever.getFrameAtTime(secondaryTimeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
-                if (secondTry != null && !isMostlyBlack(secondTry)) {
-                    thumb = secondTry;
-                } else {
-                    long tertiaryTimeUs = calculateTargetTimeUs(durationMs, 0.40f);
-                    Bitmap thirdTry = retriever.getFrameAtTime(tertiaryTimeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
-                    if (thirdTry != null) {
-                        thumb = thirdTry;
-                    }
-                }
-            }
-        } catch (Throwable ignored) {
-        } finally {
-            try {
-                retriever.release();
-            } catch (Throwable ignored) {}
-        }
-
-        // 2. Fallback to System ContentResolver loadThumbnail or ThumbnailUtils if needed
-        if (thumb == null && context != null && uri != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        // 1. Try System ContentResolver loadThumbnail or ThumbnailUtils FIRST (instant OS cache lookup)
+        if (context != null && uri != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             try {
                 thumb = context.getContentResolver().loadThumbnail(uri, new Size(320, 180), null);
             } catch (Throwable ignored) {}
@@ -73,6 +28,53 @@ public class VideoThumbnailHelper {
             try {
                 thumb = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
             } catch (Throwable ignored) {}
+        }
+
+        // 2. Fallback to MediaMetadataRetriever if system thumbnails are not available
+        if (thumb == null) {
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            try {
+                if (path != null && (path.startsWith("http://") || path.startsWith("https://"))) {
+                    retriever.setDataSource(path, new HashMap<String, String>());
+                } else if (path != null && new File(path).exists()) {
+                    retriever.setDataSource(path);
+                } else if (uri != null && context != null) {
+                    retriever.setDataSource(context, uri);
+                }
+
+                // Extract duration if not provided
+                if (durationMs <= 0) {
+                    String durStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                    if (durStr != null) {
+                        try {
+                            durationMs = Long.parseLong(durStr);
+                        } catch (Exception ignored) {}
+                    }
+                }
+
+                long targetTimeUs = calculateTargetTimeUs(durationMs, 0.10f);
+                thumb = retriever.getFrameAtTime(targetTimeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+
+                // If mostly black, try at 25% or 40% into the video
+                if (thumb != null && isMostlyBlack(thumb)) {
+                    long secondaryTimeUs = calculateTargetTimeUs(durationMs, 0.25f);
+                    Bitmap secondTry = retriever.getFrameAtTime(secondaryTimeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+                    if (secondTry != null && !isMostlyBlack(secondTry)) {
+                        thumb = secondTry;
+                    } else {
+                        long tertiaryTimeUs = calculateTargetTimeUs(durationMs, 0.40f);
+                        Bitmap thirdTry = retriever.getFrameAtTime(tertiaryTimeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+                        if (thirdTry != null) {
+                            thumb = thirdTry;
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {
+            } finally {
+                try {
+                    retriever.release();
+                } catch (Throwable ignored) {}
+            }
         }
 
         return thumb;

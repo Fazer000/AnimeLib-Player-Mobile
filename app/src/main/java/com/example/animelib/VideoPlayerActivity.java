@@ -798,6 +798,13 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     }
 
     @Override
+    public void onHoldSpeedChanged(float speed) {
+        if (player != null) {
+            player.setPlaybackParameters(new PlaybackParameters(speed));
+        }
+    }
+
+    @Override
     public boolean isLocked() {
         return lockController != null && lockController.isLocked();
     }

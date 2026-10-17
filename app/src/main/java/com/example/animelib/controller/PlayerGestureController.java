@@ -24,7 +24,7 @@ import com.example.animelib.R;
 import java.util.Locale;
 
 /**
- * Контроллер жестов воспроизведения видео (яркость, громкость, перемотка свайпом, 2x скорость, двойной тап).
+ * Контроллер жестов воспроизведения видео (яркость, громкость, перемотка свайпом, 2x скорость с горизонтальным драгом, двойной тап).
  */
 public class PlayerGestureController {
 
@@ -34,6 +34,7 @@ public class PlayerGestureController {
         long getCurrentPosition();
         long getDuration();
         void onHoldSpeed(boolean isHolding);
+        void onHoldSpeedChanged(float speed);
         boolean isLocked();
         int getSkipDurationSeconds();
     }
@@ -59,6 +60,7 @@ public class PlayerGestureController {
 
     // Gesture State
     private float touchStartX, touchStartY;
+    private float holdStartX = 0f;
     private boolean isTouching = false;
     private boolean isHorizontalSeeking = false;
     private boolean isVerticalBrightness = false;
@@ -149,6 +151,13 @@ public class PlayerGestureController {
         playerView.setOnTouchListener((v, event) -> {
             if (callback.isLocked()) return false;
 
+            // Inactive top dead zone for status bar / notification shade swipe
+            float density = activity.getResources().getDisplayMetrics().density;
+            float topDeadZonePx = 50f * density;
+            if (event.getAction() == MotionEvent.ACTION_DOWN && event.getY() < topDeadZonePx) {
+                return false;
+            }
+
             gestureDetector.onTouchEvent(event);
 
             int width = playerView.getWidth();
@@ -162,6 +171,7 @@ public class PlayerGestureController {
                     isHorizontalSeeking = false;
                     isVerticalBrightness = false;
                     isVerticalVolume = false;
+                    isHoldingSpeed = false;
 
                     float curB = activity.getWindow().getAttributes().screenBrightness;
                     initialBrightness = curB < 0 ? 0.5f : curB;
@@ -171,6 +181,7 @@ public class PlayerGestureController {
                     holdSpeedHandler.postDelayed(() -> {
                         if (isTouching && !isHorizontalSeeking && !isVerticalBrightness && !isVerticalVolume) {
                             isHoldingSpeed = true;
+                            holdStartX = touchStartX;
                             callback.onHoldSpeed(true);
                             if (holdSpeedToast != null) {
                                 holdSpeedToast.setText("2.0x");
@@ -182,6 +193,14 @@ public class PlayerGestureController {
 
                 case MotionEvent.ACTION_MOVE:
                     if (isHoldingSpeed) {
+                        float holdDx = event.getX() - holdStartX;
+                        float adjustedSpeed = 2.0f + (holdDx / 200f);
+                        adjustedSpeed = Math.max(1.0f, Math.min(4.0f, Math.round(adjustedSpeed * 10f) / 10f));
+                        callback.onHoldSpeedChanged(adjustedSpeed);
+                        if (holdSpeedToast != null) {
+                            holdSpeedToast.setText(String.format(Locale.getDefault(), "%.1fx", adjustedSpeed));
+                            holdSpeedToast.setVisibility(View.VISIBLE);
+                        }
                         return true;
                     }
 
