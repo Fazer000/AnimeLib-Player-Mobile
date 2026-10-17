@@ -66,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btnCreatePlaylist;
     private ImageButton btnSearchToggle;
     private ImageButton btnCloseSearch;
-    private CardView layoutExpandedSearch;
-    private View tabExplorer, tabPlaylists, tabSettings, vTabIndicator;
+    private CardView layoutExpandedSearch, cardFolderCarousel;
+    private View tabExplorer, tabPlaylists, tabSettings, vTabIndicator, layoutControlButtonsContainer;
     private TextView tvTabExplorerText, tvTabPlaylistsText, tvTabSettingsText;
     private ImageView ivTabExplorerIcon, ivTabPlaylistsIcon, ivTabSettingsIcon;
     private View layoutSettingsContainer;
     private MaterialSwitch switchTestMode, switchSurroundSound;
-    private CardView settingThemeCard, settingUpdateCard;
+    private LinearLayout settingThemeCard, settingUpdateCard;
     private TextView tvCurrentTheme;
     private boolean isPlaylistsTabSelected = false;
     private CardView layoutPlaylistCreationBar;
@@ -122,18 +122,21 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, windowInsets) -> {
             int imeHeight = windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
             boolean isImeVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
+            View bottomContainer = findViewById(R.id.layoutBottomFloatingContainer);
             if (isImeVisible && layoutExpandedSearch != null && layoutExpandedSearch.getVisibility() == View.VISIBLE) {
                 float density = getResources().getDisplayMetrics().density;
-                float restingBottomMarginPx = 140f * density;
-                float targetBottomMarginPx = imeHeight + (16f * density);
-                float translation = targetBottomMarginPx - restingBottomMarginPx;
-                layoutExpandedSearch.setTranslationY(translation);
-            } else if (layoutExpandedSearch != null) {
-                layoutExpandedSearch.setTranslationY(0f);
+                if (bottomContainer != null) {
+                    bottomContainer.setTranslationY(-imeHeight + (16f * density));
+                }
+            } else {
+                if (bottomContainer != null) {
+                    bottomContainer.setTranslationY(0f);
+                }
             }
             return windowInsets;
         });
 
+        selectExplorerTab();
         checkAndRequestStoragePermissions();
     }
 
@@ -150,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
         btnCreatePlaylist = findViewById(R.id.btnCreatePlaylist);
         btnSearchToggle = findViewById(R.id.btnSearchToggle);
         layoutExpandedSearch = findViewById(R.id.layoutExpandedSearch);
+        cardFolderCarousel = findViewById(R.id.cardFolderCarousel);
+        layoutControlButtonsContainer = findViewById(R.id.layoutControlButtonsContainer);
         tabExplorer = findViewById(R.id.tabExplorer);
         tabPlaylists = findViewById(R.id.tabPlaylists);
         tabSettings = findViewById(R.id.tabSettings);
@@ -242,86 +247,84 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectExplorerTab() {
         isPlaylistsTabSelected = false;
+        if (cardFolderCarousel != null) cardFolderCarousel.setVisibility(View.VISIBLE);
+        if (layoutControlButtonsContainer != null) layoutControlButtonsContainer.setVisibility(View.VISIBLE);
         rvFolders.setVisibility(View.VISIBLE);
         rvVideos.setVisibility(View.VISIBLE);
         if (layoutSettingsContainer != null) layoutSettingsContainer.setVisibility(View.GONE);
+        if (layoutEmptyState != null) layoutEmptyState.setVisibility(View.GONE);
         if (rvVideos.getAdapter() != videoFilesAdapter) {
             rvVideos.setAdapter(videoFilesAdapter);
         }
         filterAndDisplayVideos();
-
-        if (vTabIndicator != null) {
-            vTabIndicator.animate()
-                    .translationX(0f)
-                    .setDuration(250)
-                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
-                    .start();
-        }
-
-        ivTabExplorerIcon.setColorFilter(ContextCompat.getColor(this, R.color.white_color));
-        tvTabExplorerText.setVisibility(View.VISIBLE);
-        tvTabExplorerText.setTextColor(ContextCompat.getColor(this, R.color.white_color));
-
-        ivTabPlaylistsIcon.setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
-        tvTabPlaylistsText.setVisibility(View.GONE);
-
-        ivTabSettingsIcon.setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
-        tvTabSettingsText.setVisibility(View.GONE);
+        updateTabSelection(0);
     }
 
     private void selectPlaylistsTab() {
         isPlaylistsTabSelected = true;
+        if (cardFolderCarousel != null) cardFolderCarousel.setVisibility(View.GONE);
+        if (layoutControlButtonsContainer != null) layoutControlButtonsContainer.setVisibility(View.GONE);
+        if (layoutExpandedSearch != null) layoutExpandedSearch.setVisibility(View.GONE);
+        if (btnSearchToggle != null) btnSearchToggle.setVisibility(View.VISIBLE);
         rvFolders.setVisibility(View.GONE);
         rvVideos.setVisibility(View.VISIBLE);
         if (layoutSettingsContainer != null) layoutSettingsContainer.setVisibility(View.GONE);
         loadAndDisplayPlaylists();
-
-        if (vTabIndicator != null && tabPlaylists != null && tabExplorer != null) {
-            float deltaX = tabPlaylists.getLeft() - tabExplorer.getLeft();
-            vTabIndicator.animate()
-                    .translationX(deltaX)
-                    .setDuration(250)
-                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
-                    .start();
-        }
-
-        ivTabPlaylistsIcon.setColorFilter(ContextCompat.getColor(this, R.color.white_color));
-        tvTabPlaylistsText.setVisibility(View.VISIBLE);
-        tvTabPlaylistsText.setTextColor(ContextCompat.getColor(this, R.color.white_color));
-
-        ivTabExplorerIcon.setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
-        tvTabExplorerText.setVisibility(View.GONE);
-
-        ivTabSettingsIcon.setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
-        tvTabSettingsText.setVisibility(View.GONE);
+        updateTabSelection(1);
     }
 
     private void selectSettingsTab() {
         isPlaylistsTabSelected = false;
+        if (cardFolderCarousel != null) cardFolderCarousel.setVisibility(View.GONE);
+        if (layoutControlButtonsContainer != null) layoutControlButtonsContainer.setVisibility(View.GONE);
+        if (layoutExpandedSearch != null) layoutExpandedSearch.setVisibility(View.GONE);
+        if (btnSearchToggle != null) btnSearchToggle.setVisibility(View.VISIBLE);
         rvFolders.setVisibility(View.GONE);
         rvVideos.setVisibility(View.GONE);
+        if (layoutEmptyState != null) layoutEmptyState.setVisibility(View.GONE);
         if (layoutSettingsContainer != null) {
             layoutSettingsContainer.setVisibility(View.VISIBLE);
         }
+        updateTabSelection(2);
+    }
 
-        if (vTabIndicator != null && tabSettings != null && tabExplorer != null) {
-            float deltaX = tabSettings.getLeft() - tabExplorer.getLeft();
-            vTabIndicator.animate()
-                    .translationX(deltaX)
-                    .setDuration(250)
-                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
-                    .start();
+    private void updateTabSelection(int targetIndex) {
+        View[] tabs = {tabExplorer, tabPlaylists, tabSettings};
+        TextView[] texts = {tvTabExplorerText, tvTabPlaylistsText, tvTabSettingsText};
+        ImageView[] icons = {ivTabExplorerIcon, ivTabPlaylistsIcon, ivTabSettingsIcon};
+
+        for (int i = 0; i < 3; i++) {
+            if (tabs[i] != null && tabs[i].getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabs[i].getLayoutParams();
+                lp.weight = (i == targetIndex) ? 1.5f : 0.75f;
+                tabs[i].setLayoutParams(lp);
+            }
+            if (i == targetIndex) {
+                if (texts[i] != null) {
+                    texts[i].setVisibility(View.VISIBLE);
+                    texts[i].setTextColor(ContextCompat.getColor(this, R.color.white_color));
+                }
+                if (icons[i] != null) {
+                    icons[i].setColorFilter(ContextCompat.getColor(this, R.color.white_color));
+                }
+            } else {
+                if (texts[i] != null) {
+                    texts[i].setVisibility(View.GONE);
+                }
+                if (icons[i] != null) {
+                    icons[i].setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
+                }
+            }
         }
 
-        ivTabSettingsIcon.setColorFilter(ContextCompat.getColor(this, R.color.white_color));
-        tvTabSettingsText.setVisibility(View.VISIBLE);
-        tvTabSettingsText.setTextColor(ContextCompat.getColor(this, R.color.white_color));
-
-        ivTabExplorerIcon.setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
-        tvTabExplorerText.setVisibility(View.GONE);
-
-        ivTabPlaylistsIcon.setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
-        tvTabPlaylistsText.setVisibility(View.GONE);
+        if (vTabIndicator != null && tabs[targetIndex] != null) {
+            View target = tabs[targetIndex];
+            vTabIndicator.post(() -> {
+                if (vTabIndicator != null && target != null) {
+                    vTabIndicator.animate().translationX(target.getLeft()).setDuration(200).start();
+                }
+            });
+        }
     }
 
     private void setupRecyclerViews() {

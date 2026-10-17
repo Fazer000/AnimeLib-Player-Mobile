@@ -227,6 +227,7 @@
                         android:id="@+id/subtitlesSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:showText="false"
                         app:trackTint="@color/switch_track_tint"
                         app:thumbTint="@color/switch_thumb_tint"
                         android:checked="true"/>
@@ -267,6 +268,7 @@
                         android:id="@+id/ambientLightSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:showText="false"
                         app:trackTint="@color/switch_track_tint"
                         app:thumbTint="@color/switch_thumb_tint"
                         android:checked="true"/>
@@ -307,6 +309,7 @@
                         android:id="@+id/autoPlaySwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:showText="false"
                         app:trackTint="@color/switch_track_tint"
                         app:thumbTint="@color/switch_thumb_tint"
                         android:checked="true"/>
@@ -381,6 +384,7 @@
                         android:id="@+id/surroundSoundSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:showText="false"
                         app:trackTint="@color/switch_track_tint"
                         app:thumbTint="@color/switch_thumb_tint"
                         android:checked="false"/>

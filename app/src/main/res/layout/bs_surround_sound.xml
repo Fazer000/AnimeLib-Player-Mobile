@@ -128,6 +128,7 @@
                     android:id="@+id/surroundMainSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:showText="false"
                     app:trackTint="@color/switch_track_tint"
                     app:thumbTint="@color/switch_thumb_tint"
                     android:checked="true"/>

@@ -54,38 +54,38 @@
                     android:fontFamily="@font/open_sans_bold"
                     android:layout_marginBottom="16dp" />
 
-                <!-- Theme Setting -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/settingThemeCard"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:orientation="vertical">
 
+                    <!-- Theme Setting -->
                     <LinearLayout
+                        android:id="@+id/settingThemeCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:padding="16dp">
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_m3_item_top"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="18dp"
+                        android:paddingVertical="14dp"
+                        android:layout_marginBottom="3dp">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:src="@drawable/ic_theme"
-                            app:tint="@color/purple_primary"
+                            app:tint="@color/primary_text_color"
+                            android:layout_marginEnd="12dp"
                             android:contentDescription="Theme" />
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
 
                             <TextView
@@ -93,50 +93,46 @@
                                 android:layout_height="wrap_content"
                                 android:text="Тема оформления"
                                 android:textColor="@color/primary_text_color"
-                                android:textSize="16sp"
+                                android:textSize="15.5sp"
                                 android:fontFamily="@font/open_sans_bold" />
 
                             <TextView
                                 android:id="@+id/tvCurrentTheme"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="1dp"
                                 android:text="Системная"
-                                android:textColor="@color/player_item_inactive_text"
-                                android:textSize="13sp" />
+                                android:textColor="@color/accent_text_color"
+                                android:textSize="12.5sp" />
                         </LinearLayout>
-
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
 
-                <!-- Test Mode Setting -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
-
+                    <!-- Test Mode Setting -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:padding="16dp">
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_m3_item_middle"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="18dp"
+                        android:paddingVertical="12dp"
+                        android:layout_marginBottom="3dp">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:src="@drawable/ic_test_mode"
-                            app:tint="@color/purple_primary"
+                            app:tint="@color/primary_text_color"
+                            android:layout_marginEnd="12dp"
                             android:contentDescription="Test mode" />
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
 
                             <TextView
@@ -144,54 +140,53 @@
                                 android:layout_height="wrap_content"
                                 android:text="Тестовый режим"
                                 android:textColor="@color/primary_text_color"
-                                android:textSize="16sp"
+                                android:textSize="15.5sp"
                                 android:fontFamily="@font/open_sans_bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="1dp"
                                 android:text="Демонстрационные видеофайлы"
-                                android:textColor="@color/player_item_inactive_text"
-                                android:textSize="13sp" />
+                                android:textColor="@color/accent_text_color"
+                                android:textSize="12.5sp" />
                         </LinearLayout>
 
                         <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/switchTestMode"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
+                            android:layout_height="wrap_content"
+                            app:showText="false"
+                            app:trackTint="@color/switch_track_tint"
+                            app:thumbTint="@color/switch_thumb_tint" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
 
-                <!-- Surround Sound Setting -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
-
+                    <!-- Surround Sound Setting -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:padding="16dp">
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_m3_item_middle"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="18dp"
+                        android:paddingVertical="12dp"
+                        android:layout_marginBottom="3dp">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:src="@drawable/ic_surround_sound"
-                            app:tint="@color/purple_primary"
+                            app:tint="@color/primary_text_color"
+                            android:layout_marginEnd="12dp"
                             android:contentDescription="Surround sound" />
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
 
                             <TextView
@@ -199,58 +194,53 @@
                                 android:layout_height="wrap_content"
                                 android:text="Виртуальный 5.1 звук"
                                 android:textColor="@color/primary_text_color"
-                                android:textSize="16sp"
+                                android:textSize="15.5sp"
                                 android:fontFamily="@font/open_sans_bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="1dp"
                                 android:text="Пространственное аудио"
-                                android:textColor="@color/player_item_inactive_text"
-                                android:textSize="13sp" />
+                                android:textColor="@color/accent_text_color"
+                                android:textSize="12.5sp" />
                         </LinearLayout>
 
                         <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/switchSurroundSound"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
+                            android:layout_height="wrap_content"
+                            app:showText="false"
+                            app:trackTint="@color/switch_track_tint"
+                            app:thumbTint="@color/switch_thumb_tint" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
 
-                <!-- Check Updates Setting -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/settingUpdateCard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
+                    <!-- Check Updates Setting -->
                     <LinearLayout
+                        android:id="@+id/settingUpdateCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:padding="16dp">
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_m3_item_bottom"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="18dp"
+                        android:paddingVertical="14dp">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:src="@drawable/ic_bug_report"
-                            app:tint="@color/purple_primary"
+                            app:tint="@color/primary_text_color"
+                            android:layout_marginEnd="12dp"
                             android:contentDescription="Updates" />
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:layout_marginStart="16dp"
                             android:orientation="vertical">
 
                             <TextView
@@ -258,20 +248,26 @@
                                 android:layout_height="wrap_content"
                                 android:text="Проверить обновления"
                                 android:textColor="@color/primary_text_color"
-                                android:textSize="16sp"
+                                android:textSize="15.5sp"
                                 android:fontFamily="@font/open_sans_bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="1dp"
                                 android:text="AnimeLIB Player v1.0.0"
-                                android:textColor="@color/player_item_inactive_text"
-                                android:textSize="13sp" />
+                                android:textColor="@color/accent_text_color"
+                                android:textSize="12.5sp" />
                         </LinearLayout>
 
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/accent_text_color" />
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -338,6 +334,7 @@
 
     <!-- Unified Bottom Floating Container grouping Control Buttons, Folder Carousel, and Bottom Nav -->
     <LinearLayout
+        android:id="@+id/layoutBottomFloatingContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -349,6 +346,7 @@
 
         <!-- 3. Control Buttons / Search Bar Container -->
         <FrameLayout
+            android:id="@+id/layoutControlButtonsContainer"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="10dp"
@@ -539,7 +537,7 @@
                         android:id="@+id/tabExplorer"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:background="@android:color/transparent"
                         android:gravity="center"
                         android:orientation="horizontal"
@@ -571,7 +569,7 @@
                         android:id="@+id/tabPlaylists"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.75"
                         android:background="@android:color/transparent"
                         android:gravity="center"
                         android:orientation="horizontal"
@@ -604,7 +602,7 @@
                         android:id="@+id/tabSettings"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.75"
                         android:background="@android:color/transparent"
                         android:gravity="center"
                         android:orientation="horizontal"
