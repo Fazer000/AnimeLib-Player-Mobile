@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment activeFragment;
 
     private int currentTabIndex = 0;
+    private int cachedTopInset = 0;
     private int cachedBottomInset = 0;
 
     @Override
@@ -43,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
+            getWindow().setNavigationBarColor(android.graphics.Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_main);
 
         setupWindowInsets();
@@ -56,37 +62,37 @@ public class MainActivity extends AppCompatActivity {
         if (fragmentContainer != null) {
             ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer, (v, insets) -> {
                 Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
-                v.setPadding(0, statusBarInsets.top, 0, 0);
-                return insets;
-            });
-        }
-
-        View layoutBottomBar = findViewById(R.id.layoutBottomBar);
-        if (layoutBottomBar != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(layoutBottomBar, (v, insets) -> {
                 Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+                cachedTopInset = statusBarInsets.top;
                 cachedBottomInset = navBarInsets.bottom;
-                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-                int defaultBottomMargin = (int) (16 * getResources().getDisplayMetrics().density);
-                lp.bottomMargin = cachedBottomInset + defaultBottomMargin;
-                v.setLayoutParams(lp);
 
-                dispatchBottomInsetToFragments(cachedBottomInset);
+                v.setPadding(0, 0, 0, 0);
+
+                View layoutBottomBar = findViewById(R.id.layoutBottomBar);
+                if (layoutBottomBar != null) {
+                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) layoutBottomBar.getLayoutParams();
+                    int defaultBottomMargin = (int) (16 * getResources().getDisplayMetrics().density);
+                    lp.bottomMargin = cachedBottomInset + defaultBottomMargin;
+                    layoutBottomBar.setLayoutParams(lp);
+                }
+
+                dispatchWindowInsetsToFragments(cachedTopInset, cachedBottomInset);
                 return insets;
             });
         }
     }
 
-    public void dispatchBottomInsetToFragments(int bottomInset) {
+    public void dispatchWindowInsetsToFragments(int topInset, int bottomInset) {
+        this.cachedTopInset = topInset;
         this.cachedBottomInset = bottomInset;
         if (explorerFragment != null && explorerFragment.isAdded()) {
-            explorerFragment.updateBottomInsets(bottomInset);
+            explorerFragment.updateWindowInsets(topInset, bottomInset);
         }
         if (playlistsFragment != null && playlistsFragment.isAdded()) {
-            playlistsFragment.updateBottomInsets(bottomInset);
+            playlistsFragment.updateWindowInsets(topInset, bottomInset);
         }
         if (settingsFragment != null && settingsFragment.isAdded()) {
-            settingsFragment.updateBottomInsets(bottomInset);
+            settingsFragment.updateWindowInsets(topInset, bottomInset);
         }
     }
 
@@ -106,6 +112,14 @@ public class MainActivity extends AppCompatActivity {
         vTabIndicator = findViewById(R.id.vTabIndicator);
     }
 
+    private static final String STATE_CURRENT_TAB = "state_current_tab";
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_CURRENT_TAB, currentTabIndex);
+    }
+
     private void initFragments(Bundle savedInstanceState) {
         FragmentManager fm = getSupportFragmentManager();
 
@@ -121,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
 
             activeFragment = explorerFragment;
+            currentTabIndex = 0;
         } else {
             explorerFragment = (ExplorerFragment) fm.findFragmentByTag("EXPLORER");
             playlistsFragment = (PlaylistsFragment) fm.findFragmentByTag("PLAYLISTS");
@@ -130,10 +145,32 @@ public class MainActivity extends AppCompatActivity {
             if (playlistsFragment == null) playlistsFragment = new PlaylistsFragment();
             if (settingsFragment == null) settingsFragment = new SettingsFragment();
 
-            activeFragment = explorerFragment;
+            currentTabIndex = savedInstanceState.getInt(STATE_CURRENT_TAB, 0);
+
+            androidx.fragment.app.FragmentTransaction ft = fm.beginTransaction();
+            if (explorerFragment.isAdded()) ft.hide(explorerFragment);
+            if (playlistsFragment.isAdded()) ft.hide(playlistsFragment);
+            if (settingsFragment.isAdded()) ft.hide(settingsFragment);
+
+            switch (currentTabIndex) {
+                case 1:
+                    activeFragment = playlistsFragment;
+                    ft.show(playlistsFragment);
+                    break;
+                case 2:
+                    activeFragment = settingsFragment;
+                    ft.show(settingsFragment);
+                    break;
+                case 0:
+                default:
+                    activeFragment = explorerFragment;
+                    ft.show(explorerFragment);
+                    break;
+            }
+            ft.commit();
         }
 
-        updateTabSelection(0);
+        updateTabSelection(currentTabIndex, false);
     }
 
     private void setupTabListeners() {
@@ -173,12 +210,13 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
             activeFragment = targetFragment;
             currentTabIndex = index;
-            updateTabSelection(index);
-            dispatchBottomInsetToFragments(cachedBottomInset);
+            updateTabSelection(index, true);
+            dispatchWindowInsetsToFragments(cachedTopInset, cachedBottomInset);
         }
     }
 
-    private void updateTabSelection(int targetIndex) {
+    private void updateTabSelection(int targetIndex, boolean animate) {
+        currentTabIndex = targetIndex;
         View[] tabs = {tabExplorer, tabPlaylists, tabSettings};
         TextView[] texts = {tvTabExplorerText, tvTabPlaylistsText, tvTabSettingsText};
         ImageView[] icons = {ivTabExplorerIcon, ivTabPlaylistsIcon, ivTabSettingsIcon};
@@ -209,23 +247,32 @@ public class MainActivity extends AppCompatActivity {
 
         if (vTabIndicator != null && tabs[targetIndex] != null) {
             View target = tabs[targetIndex];
-            target.post(() -> {
-                if (vTabIndicator != null && target != null) {
-                    int targetWidth = target.getWidth();
-                    int targetLeft = target.getLeft();
 
-                    ViewGroup.LayoutParams lp = vTabIndicator.getLayoutParams();
-                    if (lp.width != targetWidth) {
-                        lp.width = targetWidth;
-                        vTabIndicator.setLayoutParams(lp);
-                    }
+            Runnable positionIndicator = () -> {
+                if (vTabIndicator == null || target == null) return;
+                int targetWidth = target.getWidth();
+                int targetLeft = target.getLeft();
 
+                if (targetWidth <= 0) return;
+
+                ViewGroup.LayoutParams lp = vTabIndicator.getLayoutParams();
+                if (lp.width != targetWidth) {
+                    lp.width = targetWidth;
+                    vTabIndicator.setLayoutParams(lp);
+                }
+
+                if (animate) {
                     vTabIndicator.animate()
                             .translationX(targetLeft)
                             .setDuration(200)
                             .start();
+                } else {
+                    vTabIndicator.animate().cancel();
+                    vTabIndicator.setTranslationX(targetLeft);
                 }
-            });
+            };
+
+            target.post(positionIndicator);
         }
     }
 }

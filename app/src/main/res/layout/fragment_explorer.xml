@@ -2,19 +2,24 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <!-- Video List SwipeRefresh -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvVideos"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:clipChildren="false"
             android:paddingTop="12dp"
             android:paddingBottom="220dp" />
 
@@ -84,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="80dp"
         android:orientation="vertical"
         android:clipChildren="false"
@@ -95,10 +100,12 @@
             android:id="@+id/layoutPlaylistCreationBar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="6dp"
             app:cardBackgroundColor="@color/card_bg_color"
             app:cardCornerRadius="24dp"
             app:cardElevation="10dp"
+            app:cardUseCompatPadding="true"
+            app:cardPreventCornerOverlap="false"
             android:visibility="gone">
 
             <LinearLayout
@@ -146,15 +153,15 @@
         <FrameLayout
             android:id="@+id/layoutControlButtonsContainer"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
             android:clipChildren="false"
             android:clipToPadding="false">
 
             <LinearLayout
                 android:id="@+id/layoutNormalButtons"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical|end"
                 android:orientation="horizontal"
                 android:clipChildren="false"
@@ -162,12 +169,13 @@
 
                 <!-- Create Playlist Button -->
                 <androidx.cardview.widget.CardView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
                     app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="22dp"
+                    app:cardCornerRadius="24dp"
                     app:cardElevation="6dp"
+                    app:cardUseCompatPadding="true"
                     app:cardPreventCornerOverlap="false">
 
                     <ImageButton
@@ -177,18 +185,19 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_episodes"
                         app:tint="@color/purple_primary"
-                        android:padding="10dp"
+                        android:padding="8dp"
                         android:contentDescription="Создать плейлист" />
                 </androidx.cardview.widget.CardView>
 
                 <!-- Sort Button -->
                 <androidx.cardview.widget.CardView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
                     app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="22dp"
+                    app:cardCornerRadius="24dp"
                     app:cardElevation="6dp"
+                    app:cardUseCompatPadding="true"
                     app:cardPreventCornerOverlap="false">
 
                     <ImageButton
@@ -198,18 +207,19 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_sort_arrows"
                         app:tint="@color/primary_text_color"
-                        android:padding="10dp"
+                        android:padding="8dp"
                         android:contentDescription="Сортировка" />
                 </androidx.cardview.widget.CardView>
 
                 <!-- Search Toggle Button -->
                 <androidx.cardview.widget.CardView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
                     app:cardBackgroundColor="@color/card_bg_color"
-                    app:cardCornerRadius="22dp"
+                    app:cardCornerRadius="24dp"
                     app:cardElevation="6dp"
+                    app:cardUseCompatPadding="true"
                     app:cardPreventCornerOverlap="false">
 
                     <ImageButton
@@ -219,7 +229,7 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_search"
                         app:tint="@color/primary_text_color"
-                        android:padding="10dp"
+                        android:padding="8dp"
                         android:contentDescription="Поиск" />
                 </androidx.cardview.widget.CardView>
 
@@ -229,11 +239,13 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/layoutExpandedSearch"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:layout_gravity="center"
                 app:cardBackgroundColor="@color/card_bg_color"
-                app:cardCornerRadius="24dp"
+                app:cardCornerRadius="26dp"
                 app:cardElevation="10dp"
+                app:cardUseCompatPadding="true"
+                app:cardPreventCornerOverlap="false"
                 android:visibility="gone">
 
                 <LinearLayout
@@ -288,6 +300,7 @@
             app:cardBackgroundColor="@color/card_bg_color"
             app:cardCornerRadius="20dp"
             app:cardElevation="8dp"
+            app:cardUseCompatPadding="true"
             app:cardPreventCornerOverlap="false">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -297,7 +310,8 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="10dp"
-                android:clipToPadding="false" />
+                android:clipToPadding="false"
+                android:clipChildren="false" />
 
         </androidx.cardview.widget.CardView>
 

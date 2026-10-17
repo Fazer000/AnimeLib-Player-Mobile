@@ -4,14 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/primaryColor"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="false" />
+        android:fitsSystemWindows="false"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
 
     <!-- Floating Bottom Navigation Card -->
     <androidx.cardview.widget.CardView
@@ -29,7 +33,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="6dp">
+            android:padding="4dp">
 
             <!-- Sliding background indicator view -->
             <View

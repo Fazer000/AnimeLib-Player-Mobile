@@ -1,15 +1,21 @@
 package com.example.animelib.fragments;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -49,7 +55,7 @@ public class ExplorerFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView rvVideos, rvFolders;
-    private View layoutEmptyState, cardFolderCarousel, layoutControlButtonsContainer;
+    private View layoutEmptyState, cardFolderCarousel, layoutControlButtonsContainer, layoutNormalButtons;
     private View layoutPlaylistCreationBar, layoutExpandedSearch;
     private TextView tvEmptyTitle, tvEmptySubtitle, tvPlaylistSelectionCount;
     private EditText etSearchVideos;
@@ -103,6 +109,7 @@ public class ExplorerFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_explorer, container, false);
     }
 
+    private int currentTopInset = 0;
     private int currentBottomInset = 0;
 
     @Override
@@ -112,11 +119,7 @@ public class ExplorerFragment extends Fragment {
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
             Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
             Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
-            float density = getResources().getDisplayMetrics().density;
-            if (rvVideos != null) {
-                rvVideos.setPadding(0, statusBarInsets.top + (int) (12 * density), 0, rvVideos.getPaddingBottom());
-            }
-            updateBottomInsets(navBarInsets.bottom);
+            updateWindowInsets(statusBarInsets.top, navBarInsets.bottom);
             return insets;
         });
 
@@ -130,6 +133,7 @@ public class ExplorerFragment extends Fragment {
         layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
         cardFolderCarousel = view.findViewById(R.id.cardFolderCarousel);
         layoutControlButtonsContainer = view.findViewById(R.id.layoutControlButtonsContainer);
+        layoutNormalButtons = view.findViewById(R.id.layoutNormalButtons);
         layoutPlaylistCreationBar = view.findViewById(R.id.layoutPlaylistCreationBar);
         layoutExpandedSearch = view.findViewById(R.id.layoutExpandedSearch);
 
@@ -137,7 +141,7 @@ public class ExplorerFragment extends Fragment {
         if (layoutFloatingExplorerControls != null) {
             layoutFloatingExplorerControls.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                 if (bottom != oldBottom || top != oldTop) {
-                    updateBottomInsets(currentBottomInset);
+                    updateWindowInsets(currentTopInset, currentBottomInset);
                 }
             });
         }
@@ -166,36 +170,31 @@ public class ExplorerFragment extends Fragment {
         }
     }
 
-    public void updateBottomInsets(int bottomInset) {
+    public void updateWindowInsets(int topInset, int bottomInset) {
+        this.currentTopInset = topInset;
         this.currentBottomInset = bottomInset;
         if (getView() == null) return;
 
+        float density = getResources().getDisplayMetrics().density;
+        int topPadding = topInset + (int) (12 * density);
+
         View layoutFloatingExplorerControls = getView().findViewById(R.id.layoutFloatingExplorerControls);
+        int targetBottomMargin = bottomInset + (int) (88 * density);
+
         if (layoutFloatingExplorerControls != null && layoutFloatingExplorerControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) layoutFloatingExplorerControls.getLayoutParams();
-            float density = getResources().getDisplayMetrics().density;
-
-            // Bottom nav height (60dp) + margin (16dp) + gap (12dp) = 88dp
-            int targetBottomMargin = bottomInset + (int) (88 * density);
             if (lp.bottomMargin != targetBottomMargin) {
                 lp.bottomMargin = targetBottomMargin;
                 layoutFloatingExplorerControls.setLayoutParams(lp);
             }
+        }
 
-            layoutFloatingExplorerControls.post(() -> {
-                if (rvVideos != null && getView() != null && layoutFloatingExplorerControls.getHeight() > 0) {
-                    int controlsHeight = layoutFloatingExplorerControls.getHeight();
-                    int totalPaddingBottom = targetBottomMargin + controlsHeight + (int) (16 * density);
-                    if (rvVideos.getPaddingBottom() != totalPaddingBottom) {
-                        rvVideos.setPadding(
-                                rvVideos.getPaddingLeft(),
-                                rvVideos.getPaddingTop(),
-                                rvVideos.getPaddingRight(),
-                                totalPaddingBottom
-                        );
-                    }
-                }
-            });
+        if (rvVideos != null) {
+            int controlsHeight = layoutFloatingExplorerControls != null ? layoutFloatingExplorerControls.getHeight() : 0;
+            int totalPaddingBottom = targetBottomMargin + controlsHeight + (int) (16 * density);
+            rvVideos.setPadding(0, topPadding, 0, totalPaddingBottom);
+            rvVideos.setClipToPadding(false);
+            rvVideos.setClipChildren(false);
         }
     }
 
@@ -258,26 +257,10 @@ public class ExplorerFragment extends Fragment {
             btnCreatePlaylist.setOnClickListener(v -> startPlaylistCreationMode());
         }
         if (btnSearchToggle != null) {
-            btnSearchToggle.setOnClickListener(v -> {
-                btnSearchToggle.setVisibility(View.GONE);
-                layoutExpandedSearch.setVisibility(View.VISIBLE);
-                etSearchVideos.requestFocus();
-                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.showSoftInput(etSearchVideos, InputMethodManager.SHOW_IMPLICIT);
-                }
-            });
+            btnSearchToggle.setOnClickListener(v -> openSearchAnimated());
         }
         if (btnCloseSearch != null) {
-            btnCloseSearch.setOnClickListener(v -> {
-                etSearchVideos.setText("");
-                layoutExpandedSearch.setVisibility(View.GONE);
-                btnSearchToggle.setVisibility(View.VISIBLE);
-                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(etSearchVideos.getWindowToken(), 0);
-                }
-            });
+            btnCloseSearch.setOnClickListener(v -> closeSearchAnimated());
         }
         if (btnCancelPlaylist != null) {
             btnCancelPlaylist.setOnClickListener(v -> exitPlaylistCreationMode());
@@ -309,6 +292,80 @@ public class ExplorerFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void openSearchAnimated() {
+        if (layoutExpandedSearch == null || layoutNormalButtons == null) return;
+
+        if (layoutControlButtonsContainer instanceof ViewGroup) {
+            TransitionManager.beginDelayedTransition((ViewGroup) layoutControlButtonsContainer, new AutoTransition().setDuration(220));
+        }
+
+        layoutNormalButtons.setVisibility(View.GONE);
+        layoutExpandedSearch.setVisibility(View.VISIBLE);
+
+        layoutExpandedSearch.post(() -> {
+            if (!isAdded() || getView() == null) return;
+            int cx = layoutExpandedSearch.getRight() - (int) (28 * getResources().getDisplayMetrics().density);
+            int cy = layoutExpandedSearch.getHeight() / 2;
+            float finalRadius = (float) Math.hypot(layoutExpandedSearch.getWidth(), layoutExpandedSearch.getHeight());
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && cx > 0 && cy > 0) {
+                try {
+                    Animator anim = ViewAnimationUtils.createCircularReveal(layoutExpandedSearch, cx, cy, 0f, finalRadius);
+                    anim.setDuration(280);
+                    anim.setInterpolator(new AccelerateDecelerateInterpolator());
+                    anim.start();
+                } catch (Exception ignored) {}
+            }
+        });
+
+        etSearchVideos.requestFocus();
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(etSearchVideos, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    private void closeSearchAnimated() {
+        if (layoutExpandedSearch == null || layoutNormalButtons == null) return;
+
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(etSearchVideos.getWindowToken(), 0);
+        }
+
+        int cx = layoutExpandedSearch.getRight() - (int) (28 * getResources().getDisplayMetrics().density);
+        int cy = layoutExpandedSearch.getHeight() / 2;
+        float initialRadius = (float) Math.hypot(layoutExpandedSearch.getWidth(), layoutExpandedSearch.getHeight());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && layoutExpandedSearch.isAttachedToWindow() && cx > 0 && cy > 0) {
+            try {
+                Animator anim = ViewAnimationUtils.createCircularReveal(layoutExpandedSearch, cx, cy, initialRadius, 0f);
+                anim.setDuration(220);
+                anim.setInterpolator(new AccelerateDecelerateInterpolator());
+                anim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        etSearchVideos.setText("");
+                        layoutExpandedSearch.setVisibility(View.GONE);
+                        if (layoutControlButtonsContainer instanceof ViewGroup) {
+                            TransitionManager.beginDelayedTransition((ViewGroup) layoutControlButtonsContainer, new AutoTransition().setDuration(180));
+                        }
+                        layoutNormalButtons.setVisibility(View.VISIBLE);
+                    }
+                });
+                anim.start();
+                return;
+            } catch (Exception ignored) {}
+        }
+
+        etSearchVideos.setText("");
+        if (layoutControlButtonsContainer instanceof ViewGroup) {
+            TransitionManager.beginDelayedTransition((ViewGroup) layoutControlButtonsContainer, new AutoTransition().setDuration(200));
+        }
+        layoutExpandedSearch.setVisibility(View.GONE);
+        layoutNormalButtons.setVisibility(View.VISIBLE);
     }
 
     public void loadVideosFromStorage() {

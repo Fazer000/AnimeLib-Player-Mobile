@@ -58,11 +58,7 @@ public class SettingsFragment extends Fragment {
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
             Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
             Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
-            float density = getResources().getDisplayMetrics().density;
-            int defaultTop = (int) (16 * density);
-            int defaultHorizontal = (int) (16 * density);
-            int defaultBottom = navBarInsets.bottom + (int) (120 * density);
-            v.setPadding(defaultHorizontal, statusBarInsets.top + defaultTop, defaultHorizontal, defaultBottom);
+            updateWindowInsets(statusBarInsets.top, navBarInsets.bottom);
             return insets;
         });
 
@@ -98,12 +94,17 @@ public class SettingsFragment extends Fragment {
         refreshUi();
     }
 
-    public void updateBottomInsets(int bottomInset) {
+    public void updateWindowInsets(int topInset, int bottomInset) {
         if (getView() == null) return;
         float density = getResources().getDisplayMetrics().density;
         int defaultHorizontal = (int) (16 * density);
+        int defaultTop = topInset + (int) (16 * density);
         int defaultBottom = bottomInset + (int) (120 * density);
-        getView().setPadding(defaultHorizontal, getView().getPaddingTop(), defaultHorizontal, defaultBottom);
+        getView().setPadding(defaultHorizontal, defaultTop, defaultHorizontal, defaultBottom);
+        if (getView() instanceof androidx.core.widget.NestedScrollView) {
+            ((androidx.core.widget.NestedScrollView) getView()).setClipToPadding(false);
+            ((androidx.core.widget.NestedScrollView) getView()).setClipChildren(false);
+        }
     }
 
     @Override

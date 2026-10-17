@@ -173,27 +173,12 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
     private void loadThumbnailAsync(Context context, VideoItem video, String cacheKey, ImageView imageView) {
         final Context appContext = context.getApplicationContext();
         thumbnailExecutor.execute(() -> {
-            Bitmap thumb = null;
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && video.getUri() != null) {
-                    thumb = appContext.getContentResolver().loadThumbnail(
-                            video.getUri(),
-                            new Size(320, 180),
-                            null
-                    );
-                }
-            } catch (Throwable ignored) {
-            }
-
-            if (thumb == null && video.getPath() != null) {
-                try {
-                    File file = new File(video.getPath());
-                    if (file.exists()) {
-                        thumb = ThumbnailUtils.createVideoThumbnail(video.getPath(), MediaStore.Images.Thumbnails.MINI_KIND);
-                    }
-                } catch (Throwable ignored) {
-                }
-            }
+            Bitmap thumb = com.example.animelib.util.VideoThumbnailHelper.createFrameThumbnail(
+                    appContext,
+                    video.getPath(),
+                    video.getUri(),
+                    video.getDurationMs()
+            );
 
             if (thumb != null) {
                 final Bitmap finalThumb = thumb;

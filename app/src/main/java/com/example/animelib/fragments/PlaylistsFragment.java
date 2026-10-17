@@ -48,11 +48,7 @@ public class PlaylistsFragment extends Fragment {
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
             Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
             Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
-            float density = getResources().getDisplayMetrics().density;
-            if (rvPlaylists != null) {
-                rvPlaylists.setPadding(0, statusBarInsets.top + (int) (16 * density), 0, rvPlaylists.getPaddingBottom());
-            }
-            updateBottomInsets(navBarInsets.bottom);
+            updateWindowInsets(statusBarInsets.top, navBarInsets.bottom);
             return insets;
         });
 
@@ -66,18 +62,14 @@ public class PlaylistsFragment extends Fragment {
         loadAndDisplayPlaylists();
     }
 
-    public void updateBottomInsets(int bottomInset) {
+    public void updateWindowInsets(int topInset, int bottomInset) {
         if (getView() == null || rvPlaylists == null) return;
         float density = getResources().getDisplayMetrics().density;
+        int totalPaddingTop = topInset + (int) (16 * density);
         int totalPaddingBottom = bottomInset + (int) (96 * density);
-        if (rvPlaylists.getPaddingBottom() != totalPaddingBottom) {
-            rvPlaylists.setPadding(
-                    rvPlaylists.getPaddingLeft(),
-                    rvPlaylists.getPaddingTop(),
-                    rvPlaylists.getPaddingRight(),
-                    totalPaddingBottom
-            );
-        }
+        rvPlaylists.setPadding(0, totalPaddingTop, 0, totalPaddingBottom);
+        rvPlaylists.setClipToPadding(false);
+        rvPlaylists.setClipChildren(false);
     }
 
     @Override

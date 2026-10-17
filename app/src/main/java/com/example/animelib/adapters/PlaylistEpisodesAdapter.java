@@ -142,12 +142,12 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
     private void loadThumbnailAsync(Context context, String path, ImageView imageView) {
         final Context appContext = context.getApplicationContext();
         thumbnailExecutor.execute(() -> {
-            Bitmap thumb = null;
-            try {
-                if (path != null && !path.isEmpty()) {
-                    thumb = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
-                }
-            } catch (Throwable ignored) {}
+            Bitmap thumb = com.example.animelib.util.VideoThumbnailHelper.createFrameThumbnail(
+                    appContext,
+                    path,
+                    null,
+                    0
+            );
 
             if (thumb != null) {
                 final Bitmap finalThumb = thumb;

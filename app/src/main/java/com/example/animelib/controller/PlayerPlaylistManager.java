@@ -27,13 +27,61 @@ public class PlayerPlaylistManager {
     public void parseIntent(@Nullable Intent intent) {
         if (intent == null) return;
 
+        // 1. Check for VIDEO_LIST (ArrayList<VideoItem>)
+        if (intent.hasExtra("VIDEO_LIST") || intent.hasExtra("EXTRA_VIDEO_LIST")) {
+            ArrayList<com.example.animelib.models.VideoItem> videoList = null;
+            try {
+                if (intent.hasExtra("VIDEO_LIST")) {
+                    videoList = (ArrayList<com.example.animelib.models.VideoItem>) intent.getSerializableExtra("VIDEO_LIST");
+                } else {
+                    videoList = (ArrayList<com.example.animelib.models.VideoItem>) intent.getSerializableExtra("EXTRA_VIDEO_LIST");
+                }
+            } catch (Exception ignored) {}
+
+            if (videoList != null && !videoList.isEmpty()) {
+                playlistPaths.clear();
+                playlistTitles.clear();
+                for (com.example.animelib.models.VideoItem item : videoList) {
+                    String p = item.getPath();
+                    if (p == null || p.trim().isEmpty()) {
+                        p = item.getUriString();
+                    }
+                    if (p != null && !p.trim().isEmpty()) {
+                        playlistPaths.add(p);
+                        playlistTitles.add(item.getTitle() != null ? item.getTitle() : "Видео");
+                    }
+                }
+
+                int index = intent.getIntExtra("START_INDEX", intent.getIntExtra("EXTRA_PLAYLIST_INDEX", 0));
+                currentPlaylistIndex = Math.max(0, Math.min(index, playlistPaths.size() - 1));
+
+                if (!playlistPaths.isEmpty()) {
+                    currentVideoPath = playlistPaths.get(currentPlaylistIndex);
+                    currentVideoTitle = playlistTitles.get(currentPlaylistIndex);
+                    com.example.animelib.models.VideoItem currentItem = videoList.get(Math.min(currentPlaylistIndex, videoList.size() - 1));
+                    if (currentItem.getFolderName() != null) {
+                        currentFolderName = currentItem.getFolderName();
+                    }
+                }
+
+                playlistName = intent.getStringExtra("PLAYLIST_NAME");
+                if (playlistName == null) {
+                    playlistName = intent.getStringExtra("EXTRA_PLAYLIST_NAME");
+                }
+                if (playlistName != null && !playlistName.trim().isEmpty()) {
+                    isPlaylist = true;
+                }
+                return;
+            }
+        }
+
         Uri dataUri = intent.getData();
         String localPath = intent.getStringExtra("EXTRA_LOCAL_FILE_PATH");
         if (localPath == null) {
             localPath = intent.getStringExtra("EXTRA_VIDEO_PATH");
         }
 
-        if (localPath != null) {
+        if (localPath != null && !localPath.trim().isEmpty()) {
             currentVideoPath = localPath;
         } else if (dataUri != null) {
             currentVideoPath = dataUri.toString();
@@ -41,7 +89,11 @@ public class PlayerPlaylistManager {
 
         currentVideoTitle = intent.getStringExtra("EXTRA_VIDEO_TITLE");
         if (currentVideoTitle == null && currentVideoPath != null) {
-            currentVideoTitle = new File(currentVideoPath).getName();
+            try {
+                currentVideoTitle = new File(currentVideoPath).getName();
+            } catch (Exception e) {
+                currentVideoTitle = "Видео";
+            }
         }
 
         currentFolderName = intent.getStringExtra("EXTRA_FOLDER_NAME");
@@ -49,6 +101,9 @@ public class PlayerPlaylistManager {
 
         isPlaylist = intent.getBooleanExtra("EXTRA_IS_PLAYLIST", false);
         playlistName = intent.getStringExtra("EXTRA_PLAYLIST_NAME");
+        if (playlistName == null) {
+            playlistName = intent.getStringExtra("PLAYLIST_NAME");
+        }
         if (playlistName != null && !playlistName.trim().isEmpty()) {
             isPlaylist = true;
         } else if (isPlaylist) {
@@ -57,7 +112,7 @@ public class PlayerPlaylistManager {
 
         ArrayList<String> paths = intent.getStringArrayListExtra("EXTRA_PLAYLIST_PATHS");
         ArrayList<String> titles = intent.getStringArrayListExtra("EXTRA_PLAYLIST_TITLES");
-        int index = intent.getIntExtra("EXTRA_PLAYLIST_INDEX", 0);
+        int index = intent.getIntExtra("EXTRA_PLAYLIST_INDEX", intent.getIntExtra("START_INDEX", 0));
 
         if (paths != null && !paths.isEmpty()) {
             playlistPaths.clear();
@@ -75,7 +130,7 @@ public class PlayerPlaylistManager {
             playlistPaths.clear();
             playlistPaths.add(currentVideoPath);
             playlistTitles.clear();
-            playlistTitles.add(currentVideoTitle);
+            playlistTitles.add(currentVideoTitle != null ? currentVideoTitle : "Видео");
             currentPlaylistIndex = 0;
         }
     }

@@ -46,9 +46,22 @@ public class LocalVideoRepository implements VideoRepository {
             scanDirectoryFallback(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), list);
         }
 
-        // Если локальных файлов нет
-        // (Логика добавлена для совместимости с предыдущими версиями)
-
+        // Добавляем тестовые видео, если включен Тестовый режим в настройках или если локальных файлов нет
+        if (databaseManager.loadTestModeSetting() || list.isEmpty()) {
+            List<VideoItem> testVideos = getTestVideos();
+            for (VideoItem testVideo : testVideos) {
+                boolean exists = false;
+                for (VideoItem existing : list) {
+                    if (existing.getPath() != null && existing.getPath().equalsIgnoreCase(testVideo.getPath())) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    list.add(testVideo);
+                }
+            }
+        }
 
         // Синхронизация сохраненного прогресса из Room Database
         for (VideoItem item : list) {
@@ -65,7 +78,58 @@ public class LocalVideoRepository implements VideoRepository {
 
     @Override
     public List<VideoItem> getTestVideos() {
-        return new ArrayList<>();
+        List<VideoItem> testList = new ArrayList<>();
+        testList.add(new VideoItem(
+                10001,
+                "Big Buck Bunny (Демо)",
+                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"),
+                596000,
+                158000000,
+                System.currentTimeMillis() / 1000,
+                "Демо Видео"
+        ));
+        testList.add(new VideoItem(
+                10002,
+                "Tears of Steel (Демо)",
+                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+                Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"),
+                734000,
+                175000000,
+                System.currentTimeMillis() / 1000,
+                "Демо Видео"
+        ));
+        testList.add(new VideoItem(
+                10003,
+                "Sintel (Демо)",
+                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+                Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"),
+                522000,
+                120000000,
+                System.currentTimeMillis() / 1000,
+                "Демо Видео"
+        ));
+        testList.add(new VideoItem(
+                10004,
+                "Elephants Dream (Демо)",
+                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"),
+                653000,
+                140000000,
+                System.currentTimeMillis() / 1000,
+                "Демо Видео"
+        ));
+        testList.add(new VideoItem(
+                10005,
+                "For Bigger Blazes (Демо)",
+                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"),
+                15000,
+                15000000,
+                System.currentTimeMillis() / 1000,
+                "Демо Видео"
+        ));
+        return testList;
     }
 
     @Override
