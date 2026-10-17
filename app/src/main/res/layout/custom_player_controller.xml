@@ -470,7 +470,7 @@
                 android:layout_gravity="center_vertical"
                 app:played_color="@color/purple_primary"
                 app:scrubber_color="@color/white_color"
-                app:bar_height="4dp"
+                app:bar_height="6dp"
                 app:touch_target_height="32dp"
                 app:buffered_color="#80FFFFFF"
                 app:unplayed_color="#4DFFFFFF"

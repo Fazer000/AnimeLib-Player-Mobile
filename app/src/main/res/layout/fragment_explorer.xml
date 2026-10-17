@@ -104,7 +104,6 @@
             app:cardBackgroundColor="@color/card_bg_color"
             app:cardCornerRadius="24dp"
             app:cardElevation="10dp"
-            app:cardUseCompatPadding="true"
             app:cardPreventCornerOverlap="false"
             android:visibility="gone">
 
@@ -175,7 +174,6 @@
                     app:cardBackgroundColor="@color/card_bg_color"
                     app:cardCornerRadius="24dp"
                     app:cardElevation="6dp"
-                    app:cardUseCompatPadding="true"
                     app:cardPreventCornerOverlap="false">
 
                     <ImageButton
@@ -197,7 +195,6 @@
                     app:cardBackgroundColor="@color/card_bg_color"
                     app:cardCornerRadius="24dp"
                     app:cardElevation="6dp"
-                    app:cardUseCompatPadding="true"
                     app:cardPreventCornerOverlap="false">
 
                     <ImageButton
@@ -219,7 +216,6 @@
                     app:cardBackgroundColor="@color/card_bg_color"
                     app:cardCornerRadius="24dp"
                     app:cardElevation="6dp"
-                    app:cardUseCompatPadding="true"
                     app:cardPreventCornerOverlap="false">
 
                     <ImageButton
@@ -244,7 +240,6 @@
                 app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="26dp"
                 app:cardElevation="10dp"
-                app:cardUseCompatPadding="true"
                 app:cardPreventCornerOverlap="false"
                 android:visibility="gone">
 
@@ -300,7 +295,6 @@
             app:cardBackgroundColor="@color/card_bg_color"
             app:cardCornerRadius="20dp"
             app:cardElevation="8dp"
-            app:cardUseCompatPadding="true"
             app:cardPreventCornerOverlap="false">
 
             <androidx.recyclerview.widget.RecyclerView
