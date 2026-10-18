@@ -24,7 +24,7 @@ import com.example.animelib.R;
 import java.util.Locale;
 
 /**
- * Контроллер жестов воспроизведения видео (яркость, громкость, перемотка свайпом, 2x скорость с горизонтальным драгом, двойной тап).
+ * Контроллер жестов воспроизведения видео (яркость, громкость, перемотка свайпом, 2x скорость, двойной тап).
  */
 public class PlayerGestureController {
 
@@ -59,7 +59,7 @@ public class PlayerGestureController {
     private final TextView gestureIndicatorText;
 
     // Gesture State
-    private float touchStartX, touchStartY;
+    private float touchStartX = -1f, touchStartY = -1f;
     private float holdStartX = 0f;
     private boolean isTouching = false;
     private boolean isHorizontalSeeking = false;
@@ -151,10 +151,19 @@ public class PlayerGestureController {
         playerView.setOnTouchListener((v, event) -> {
             if (callback.isLocked()) return false;
 
-            // Inactive top dead zone for status bar / notification shade swipe
             float density = activity.getResources().getDisplayMetrics().density;
-            float topDeadZonePx = 50f * density;
-            if (event.getAction() == MotionEvent.ACTION_DOWN && event.getY() < topDeadZonePx) {
+            float topDeadZonePx = 60f * density;
+
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                touchStartX = event.getX();
+                touchStartY = event.getY();
+            }
+
+            // Ignore touches starting in the top dead zone (notification shade area)
+            if (touchStartY >= 0 && touchStartY < topDeadZonePx) {
+                holdSpeedHandler.removeCallbacksAndMessages(null);
+                if (gestureIndicatorPlaque != null) gestureIndicatorPlaque.setVisibility(View.GONE);
+                if (seekPreviewText != null) seekPreviewText.setVisibility(View.GONE);
                 return false;
             }
 
@@ -165,8 +174,6 @@ public class PlayerGestureController {
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    touchStartX = event.getX();
-                    touchStartY = event.getY();
                     isTouching = true;
                     isHorizontalSeeking = false;
                     isVerticalBrightness = false;
@@ -179,7 +186,7 @@ public class PlayerGestureController {
 
                     // Hold for 2x speed
                     holdSpeedHandler.postDelayed(() -> {
-                        if (isTouching && !isHorizontalSeeking && !isVerticalBrightness && !isVerticalVolume) {
+                        if (isTouching && !isHorizontalSeeking && !isVerticalBrightness && !isVerticalVolume && touchStartY >= topDeadZonePx) {
                             isHoldingSpeed = true;
                             holdStartX = touchStartX;
                             callback.onHoldSpeed(true);
@@ -198,7 +205,7 @@ public class PlayerGestureController {
                         adjustedSpeed = Math.max(1.0f, Math.min(4.0f, Math.round(adjustedSpeed * 10f) / 10f));
                         callback.onHoldSpeedChanged(adjustedSpeed);
                         if (holdSpeedToast != null) {
-                            holdSpeedToast.setText(String.format(Locale.getDefault(), "%.1fx", adjustedSpeed));
+                            holdSpeedToast.setText(String.format(Locale.US, "%.1fx", adjustedSpeed));
                             holdSpeedToast.setVisibility(View.VISIBLE);
                         }
                         return true;
@@ -263,6 +270,8 @@ public class PlayerGestureController {
                     isHorizontalSeeking = false;
                     isVerticalBrightness = false;
                     isVerticalVolume = false;
+                    touchStartX = -1f;
+                    touchStartY = -1f;
 
                     hidePlaqueHandler.postDelayed(() -> {
                         if (gestureIndicatorPlaque != null) gestureIndicatorPlaque.setVisibility(View.GONE);
