@@ -297,19 +297,7 @@ public class SubtitlesBottomSheet extends FlexibleBottomSheetDialog {
 
     private void updateChipState(TextView chip, boolean isSelected) {
         if (chip == null) return;
-        if (isSelected) {
-            int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(getContext());
-            float density = getContext().getResources().getDisplayMetrics().density;
-            android.graphics.drawable.GradientDrawable selectedBg = new android.graphics.drawable.GradientDrawable();
-            selectedBg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-            selectedBg.setCornerRadius(10 * density);
-            selectedBg.setColor(accentColor);
-            chip.setBackground(selectedBg);
-            chip.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.white_color));
-        } else {
-            chip.setBackgroundResource(R.drawable.chip_unselected);
-            chip.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.primary_text_color));
-        }
+        chip.setBackgroundResource(isSelected ? R.drawable.chip_selected : R.drawable.chip_unselected);
     }
 
     private void notifyStyleChanged() {

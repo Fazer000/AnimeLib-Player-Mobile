@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -80,19 +78,5 @@ public class FaqBottomSheet extends FlexibleBottomSheetDialog {
 
         setCancelable(true);
         setCanceledOnTouchOutside(true);
-    }
-
-    private void applyAccentToIcons(View root, int accentColor) {
-        if (root instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup) root;
-            for (int i = 0; i < group.getChildCount(); i++) {
-                applyAccentToIcons(group.getChildAt(i), accentColor);
-            }
-        } else if (root instanceof ImageView) {
-            ImageView iv = (ImageView) root;
-            if (iv.getBackground() != null) {
-                iv.setColorFilter(accentColor);
-            }
-        }
     }
 }

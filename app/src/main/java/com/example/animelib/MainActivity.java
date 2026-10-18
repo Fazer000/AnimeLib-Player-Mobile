@@ -57,14 +57,6 @@ public class MainActivity extends AppCompatActivity {
         setupTabListeners();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (vTabIndicator != null) {
-            vTabIndicator.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ThemeUtils.getAccentColorInt(this)));
-        }
-    }
-
     private int cachedImeInset = 0;
 
     private void setupWindowInsets() {
@@ -289,10 +281,6 @@ public class MainActivity extends AppCompatActivity {
                     icons[i].setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
                 }
             }
-        }
-
-        if (vTabIndicator != null) {
-            vTabIndicator.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ThemeUtils.getAccentColorInt(this)));
         }
 
         if (vTabIndicator != null && tabs[targetIndex] != null) {

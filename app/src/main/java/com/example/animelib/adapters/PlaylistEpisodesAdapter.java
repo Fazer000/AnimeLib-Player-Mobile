@@ -102,8 +102,6 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         Context context = holder.itemView.getContext();
         boolean isCurrent = (position == currentIndex);
 
-        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
-
         // Transparent background & no stroke (identical to VideoFilesAdapter)
         holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
         holder.cardView.setStrokeWidth(0);
@@ -111,40 +109,25 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         // Title
         holder.tvVideoTitle.setText(video.getDisplayTitle());
         if (isCurrent) {
-            holder.tvVideoTitle.setTextColor(accentColor);
+            holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
         } else {
             holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.primary_text_color));
         }
 
         // "НОВОЕ" Tag
         if (holder.tvVideoNewTag != null) {
-            android.graphics.drawable.GradientDrawable newBadge = new android.graphics.drawable.GradientDrawable();
-            newBadge.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-            newBadge.setCornerRadius(com.example.animelib.util.DisplayUtils.dpToPx(context, 4));
-            newBadge.setColor(android.graphics.Color.TRANSPARENT);
-            newBadge.setStroke((int) (1 * context.getResources().getDisplayMetrics().density + 0.5f), accentColor);
-            holder.tvVideoNewTag.setBackground(newBadge);
-            holder.tvVideoNewTag.setTextColor(accentColor);
             holder.tvVideoNewTag.setVisibility(video.isNew() ? View.VISIBLE : View.GONE);
         }
 
         // Extension Tag
         String extension = video.getFileExtension();
         if (holder.tvVideoExtensionTag != null) {
-            holder.tvVideoExtensionTag.setTextColor(accentColor);
-            holder.tvVideoExtensionTag.setBackgroundTintList(android.content.res.ColorStateList.valueOf((0x25 << 24) | (accentColor & 0x00FFFFFF)));
             if (!extension.isEmpty() && extension.length() <= 5) {
                 holder.tvVideoExtensionTag.setText(extension);
                 holder.tvVideoExtensionTag.setVisibility(View.VISIBLE);
             } else {
                 holder.tvVideoExtensionTag.setVisibility(View.GONE);
             }
-        }
-
-        // Folder Tag
-        if (holder.tvVideoFolder != null) {
-            holder.tvVideoFolder.setTextColor(accentColor);
-            holder.tvVideoFolder.setBackgroundTintList(android.content.res.ColorStateList.valueOf((0x25 << 24) | (accentColor & 0x00FFFFFF)));
         }
 
         // Selection / Numbering badge
@@ -213,7 +196,6 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         }
         if (progressPercent > 0) {
             holder.pbWatchProgress.setVisibility(View.VISIBLE);
-            holder.pbWatchProgress.setIndicatorColor(accentColor);
             holder.pbWatchProgress.setProgress(progressPercent, false);
             holder.tvWatchProgressStatus.setVisibility(View.VISIBLE);
             holder.tvWatchProgressStatus.setText(progressPercent + "%");

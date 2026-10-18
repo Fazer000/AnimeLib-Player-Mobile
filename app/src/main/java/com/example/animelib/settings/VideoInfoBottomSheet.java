@@ -53,15 +53,6 @@ public class VideoInfoBottomSheet extends FlexibleBottomSheetDialog {
         TextView tvPath = view.findViewById(R.id.tvInfoPath);
         View layoutCopyPath = view.findViewById(R.id.layoutCopyPath);
 
-        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(getContext());
-        if (tvFormat != null) {
-            tvFormat.setTextColor(accentColor);
-        }
-        android.widget.ImageView ivCopy = view.findViewById(R.id.ivInfoCopyPath);
-        if (ivCopy != null) {
-            ivCopy.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
-        }
-
         btnClose.setOnClickListener(v -> dismiss());
 
         String rawTitle = video.getTitle();

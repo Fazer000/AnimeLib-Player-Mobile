@@ -352,8 +352,6 @@ public class ExplorerFragment extends Fragment {
         rvFolders.setAdapter(videoFoldersAdapter);
 
         rvVideos.setLayoutManager(new LinearLayoutManager(requireContext()));
-        rvVideos.setHasFixedSize(true);
-        rvVideos.setItemViewCacheSize(20);
         videoFilesAdapter = new VideoFilesAdapter(displayedVideos, new VideoFilesAdapter.OnVideoClickListener() {
             @Override
             public void onVideoClick(VideoItem video, int position) {

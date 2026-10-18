@@ -142,14 +142,8 @@ public class SkipDurationBottomSheet extends FlexibleBottomSheetDialog {
     private void highlightPresetIfMatching(TextView presetView, int presetVal, int currentVal) {
         if (presetView == null) return;
         if (presetVal == currentVal) {
-            int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(getContext());
-            float density = getContext().getResources().getDisplayMetrics().density;
-            android.graphics.drawable.GradientDrawable selectedBg = new android.graphics.drawable.GradientDrawable();
-            selectedBg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-            selectedBg.setCornerRadius(10 * density);
-            selectedBg.setColor(accentColor);
-            presetView.setBackground(selectedBg);
-            presetView.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.white_color));
+            presetView.setBackgroundResource(R.drawable.chip_selected);
+            presetView.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.secondary_text_color));
         } else {
             presetView.setBackgroundResource(R.drawable.chip_unselected);
             presetView.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.primary_text_color));

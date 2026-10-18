@@ -65,11 +65,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     };
 
-    private static final ExecutorService thumbnailExecutor = Executors.newFixedThreadPool(2, r -> {
-        Thread thread = new Thread(r, "thumb-loader");
-        thread.setPriority(Thread.MIN_PRIORITY);
-        return thread;
-    });
+    private static final ExecutorService thumbnailExecutor = Executors.newFixedThreadPool(4);
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public VideoFilesAdapter(List<VideoItem> initialVideos, OnVideoClickListener listener) {
@@ -305,9 +301,6 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void loadThumbnailAsync(Context context, VideoItem video, String cacheKey, ImageView imageView) {
         final Context appContext = context.getApplicationContext();
         thumbnailExecutor.execute(() -> {
-            if (!cacheKey.equals(imageView.getTag())) {
-                return;
-            }
             Bitmap thumb = com.example.animelib.util.VideoThumbnailHelper.createFrameThumbnail(
                     appContext,
                     video.getPath(),
@@ -315,7 +308,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     video.getDurationMs()
             );
 
-            if (thumb != null && cacheKey.equals(imageView.getTag())) {
+            if (thumb != null) {
                 final Bitmap finalThumb = thumb;
                 thumbnailCache.put(cacheKey, finalThumb);
                 mainHandler.post(() -> {
@@ -325,15 +318,6 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 });
             }
         });
-    }
-
-    @Override
-    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (holder instanceof VideoViewHolder) {
-            VideoViewHolder vh = (VideoViewHolder) holder;
-            vh.ivVideoThumbnail.setTag(null);
-        }
     }
 
     @Override
