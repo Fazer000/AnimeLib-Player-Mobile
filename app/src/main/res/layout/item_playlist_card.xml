@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="6dp"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="2dp"
+    android:layout_marginHorizontal="6dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
     app:cardBackgroundColor="@color/card_bg_color"
     app:strokeColor="?attr/alphaBorderColor"
     app:strokeWidth="0.5dp"
@@ -17,25 +17,41 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:orientation="vertical">
 
-        <!-- Thumbnail -->
-        <ImageView
-            android:id="@+id/ivPlaylistThumbnail"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/placeholder_image"
-            android:contentDescription="Thumbnail" />
+        <!-- Thumbnail & Delete Overlay Container -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="116dp">
 
-        <!-- Info -->
+            <ImageView
+                android:id="@+id/ivPlaylistThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder_image"
+                android:contentDescription="Thumbnail" />
+
+            <!-- Delete Button Overlay -->
+            <ImageButton
+                android:id="@+id/btnDeletePlaylist"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="top|end"
+                android:layout_margin="8dp"
+                android:background="@drawable/video_time_background"
+                android:src="@drawable/ic_trash_delete"
+                app:tint="@color/white_color"
+                android:padding="6dp"
+                android:contentDescription="Удалить" />
+
+        </FrameLayout>
+
+        <!-- Playlist Info -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:padding="16dp"
+            android:padding="12dp"
             android:orientation="vertical">
 
             <TextView
@@ -43,8 +59,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary_text_color"
-                android:textSize="16sp"
+                android:textSize="14.5sp"
                 android:fontFamily="@font/open_sans_bold"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:text="Название плейлиста" />
 
             <TextView
@@ -53,22 +71,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/player_item_inactive_text"
-                android:textSize="12.5sp"
+                android:textSize="12sp"
                 android:fontFamily="@font/open_sans"
                 android:text="Видео: 5" />
 
         </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/btnDeletePlaylist"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginEnd="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_trash_delete"
-            app:tint="@color/player_item_inactive_text"
-            android:padding="8dp"
-            android:contentDescription="Удалить" />
 
     </LinearLayout>
 
