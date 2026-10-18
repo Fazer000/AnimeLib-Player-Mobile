@@ -412,10 +412,17 @@ public class DatabaseManager {
         if (filePath == null || filePath.trim().isEmpty()) return;
         executor.execute(() -> {
             try {
+                long duration = durationMs;
+                if (duration <= 0) {
+                    VideoPlaybackHistoryEntity old = db.videoPlaybackHistoryDao().getHistoryForPath(filePath);
+                    if (old != null && old.getDurationMs() > 0) {
+                        duration = old.getDurationMs();
+                    }
+                }
                 VideoPlaybackHistoryEntity entity = new VideoPlaybackHistoryEntity(
                         filePath,
                         title != null ? title : "",
-                        durationMs,
+                        duration,
                         lastPositionMs,
                         System.currentTimeMillis(),
                         folderName != null ? folderName : ""
@@ -444,6 +451,20 @@ public class DatabaseManager {
             Log.e(TAG, "Error getting all video history", e);
             return new ArrayList<>();
         }
+    }
+
+    public VideoPlaybackHistoryEntity getLastPlayedVideo() {
+        try {
+            List<VideoPlaybackHistoryEntity> list = db.videoPlaybackHistoryDao().getAllHistory();
+            for (VideoPlaybackHistoryEntity item : list) {
+                if (item.getFilePath() != null && new java.io.File(item.getFilePath()).exists()) {
+                    return item;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting last played video", e);
+        }
+        return null;
     }
 
     public void deleteVideoHistory(String filePath) {
@@ -502,6 +523,25 @@ public class DatabaseManager {
         } catch (Exception e) {
             Log.e(TAG, "Error getting playlist videos", e);
             return new ArrayList<>();
+        }
+    }
+
+    public com.example.animelib.data.entity.PlaylistEntity getPlaylistById(long playlistId) {
+        try {
+            return db.playlistDao().getPlaylistById(playlistId);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting playlist by id", e);
+            return null;
+        }
+    }
+
+    public com.example.animelib.data.entity.PlaylistEntity getPlaylistForVideoPath(String videoPath) {
+        if (videoPath == null || videoPath.trim().isEmpty()) return null;
+        try {
+            return db.playlistDao().getPlaylistForVideoPath(videoPath);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting playlist for video path", e);
+            return null;
         }
     }
 

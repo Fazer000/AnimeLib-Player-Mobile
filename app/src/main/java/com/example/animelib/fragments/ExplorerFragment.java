@@ -17,8 +17,10 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.graphics.Bitmap;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -40,15 +42,24 @@ import com.example.animelib.VideoPlayerActivity;
 import com.example.animelib.adapters.VideoFilesAdapter;
 import com.example.animelib.adapters.VideoFoldersAdapter;
 import com.example.animelib.data.DatabaseManager;
+import com.example.animelib.data.entity.PlaylistEntity;
+import com.example.animelib.data.entity.PlaylistVideoEntity;
+import com.example.animelib.data.entity.VideoPlaybackHistoryEntity;
 import com.example.animelib.domain.VideoListFilter;
 import com.example.animelib.models.VideoFolder;
 import com.example.animelib.models.VideoItem;
 import com.example.animelib.repository.LocalVideoRepository;
+import com.example.animelib.settings.PlaylistVideosBottomSheet;
+import com.example.animelib.ui.M3LinearProgressIndicator;
 import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.DialogUtils;
+import com.example.animelib.util.VideoThumbnailHelper;
+import com.google.android.material.card.MaterialCardView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 public class ExplorerFragment extends Fragment {
@@ -56,6 +67,7 @@ public class ExplorerFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView rvVideos, rvFolders;
     private View layoutEmptyState, cardFolderCarousel, layoutControlButtonsContainer, layoutNormalButtons;
+    private View layoutTopControls, layoutFloatingExplorerControls;
     private View layoutPlaylistCreationBar, layoutExpandedSearch;
     private TextView tvEmptyTitle, tvEmptySubtitle, tvPlaylistSelectionCount;
     private EditText etSearchVideos;
@@ -63,6 +75,19 @@ public class ExplorerFragment extends Fragment {
     private ImageButton btnCancelPlaylist, btnDonePlaylist;
     private com.google.android.material.button.MaterialButton btnEmptyAction;
     private ProgressBar progressBar;
+
+    // Last Played Video block views
+    private MaterialCardView cardLastPlayedVideo;
+    private ImageView ivLastPlayedThumbnail;
+    private TextView tvLastPlayedDuration;
+    private TextView tvLastPlayedProgressPercent;
+    private TextView tvLastPlayedTitle;
+    private TextView tvLastPlayedSubtitle;
+    private M3LinearProgressIndicator pbLastPlayedProgress;
+    private View btnLastPlayedPlayCard;
+    private ImageButton btnLastPlayedPlay;
+    private View btnLastPlayedPlaylistCard;
+    private ImageButton btnLastPlayedPlaylist;
 
     private VideoFilesAdapter videoFilesAdapter;
     private VideoFoldersAdapter videoFoldersAdapter;
@@ -161,24 +186,29 @@ public class ExplorerFragment extends Fragment {
         rvFolders = view.findViewById(R.id.rvFolders);
         layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
         cardFolderCarousel = view.findViewById(R.id.cardFolderCarousel);
+        layoutTopControls = view.findViewById(R.id.layoutTopControls);
+        layoutFloatingExplorerControls = view.findViewById(R.id.layoutFloatingExplorerControls);
         layoutControlButtonsContainer = view.findViewById(R.id.layoutControlButtonsContainer);
         layoutNormalButtons = view.findViewById(R.id.layoutNormalButtons);
         layoutPlaylistCreationBar = view.findViewById(R.id.layoutPlaylistCreationBar);
         layoutExpandedSearch = view.findViewById(R.id.layoutExpandedSearch);
 
-        View layoutFloatingExplorerControls = view.findViewById(R.id.layoutFloatingExplorerControls);
+        if (layoutTopControls != null) {
+            layoutTopControls.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                int newHeight = bottom - top;
+                int oldHeight = oldBottom - oldTop;
+                if (newHeight != oldHeight) {
+                    applyListPaddings();
+                }
+            });
+        }
+
         if (layoutFloatingExplorerControls != null) {
             layoutFloatingExplorerControls.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                 int newHeight = bottom - top;
                 int oldHeight = oldBottom - oldTop;
-                if (newHeight != oldHeight && rvVideos != null && isAdded()) {
-                    float density = getResources().getDisplayMetrics().density;
-                    int currentBottomMargin = 0;
-                    if (layoutFloatingExplorerControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-                        currentBottomMargin = ((ViewGroup.MarginLayoutParams) layoutFloatingExplorerControls.getLayoutParams()).bottomMargin;
-                    }
-                    int totalPaddingBottom = currentBottomMargin + newHeight + (int) (16 * density);
-                    rvVideos.setPadding(rvVideos.getPaddingLeft(), rvVideos.getPaddingTop(), rvVideos.getPaddingRight(), totalPaddingBottom);
+                if (newHeight != oldHeight) {
+                    applyListPaddings();
                 }
             });
         }
@@ -197,14 +227,53 @@ public class ExplorerFragment extends Fragment {
         btnDonePlaylist = view.findViewById(R.id.btnDonePlaylist);
         progressBar = view.findViewById(R.id.progressBar);
 
+        cardLastPlayedVideo = view.findViewById(R.id.cardLastPlayedVideo);
+        ivLastPlayedThumbnail = view.findViewById(R.id.ivLastPlayedThumbnail);
+        tvLastPlayedDuration = view.findViewById(R.id.tvLastPlayedDuration);
+        tvLastPlayedProgressPercent = view.findViewById(R.id.tvLastPlayedProgressPercent);
+        tvLastPlayedTitle = view.findViewById(R.id.tvLastPlayedTitle);
+        tvLastPlayedSubtitle = view.findViewById(R.id.tvLastPlayedSubtitle);
+        pbLastPlayedProgress = view.findViewById(R.id.pbLastPlayedProgress);
+        btnLastPlayedPlayCard = view.findViewById(R.id.btnLastPlayedPlayCard);
+        btnLastPlayedPlay = view.findViewById(R.id.btnLastPlayedPlay);
+        btnLastPlayedPlaylistCard = view.findViewById(R.id.btnLastPlayedPlaylistCard);
+        btnLastPlayedPlaylist = view.findViewById(R.id.btnLastPlayedPlaylist);
+
         setupRecyclerViews();
         setupListeners();
+        loadAndDisplayLastPlayedVideo();
 
         if (hasStoragePermission()) {
             loadVideosFromStorage();
         } else {
             showPermissionDeniedState();
         }
+    }
+
+    private void applyListPaddings() {
+        if (rvVideos == null || !isAdded()) return;
+        float density = getResources().getDisplayMetrics().density;
+
+        int topMargin = currentTopInset + (int) (8 * density);
+        int topControlsHeight = (layoutTopControls != null && layoutTopControls.getHeight() > 0)
+                ? layoutTopControls.getHeight()
+                : (int) (52 * density);
+        int totalTopPadding = topMargin + topControlsHeight + (int) (14 * density);
+
+        int targetBottomMargin;
+        if (currentImeBottomInset > currentNavBarBottomInset) {
+            targetBottomMargin = currentImeBottomInset + (int) (12 * density);
+        } else {
+            targetBottomMargin = currentNavBarBottomInset + (int) (88 * density);
+        }
+        int bottomControlsHeight = (layoutFloatingExplorerControls != null && layoutFloatingExplorerControls.getHeight() > 0)
+                ? layoutFloatingExplorerControls.getHeight()
+                : (int) (64 * density);
+        int totalBottomPadding = targetBottomMargin + bottomControlsHeight + (int) (16 * density);
+
+        rvVideos.setPadding(0, totalTopPadding, 0, totalBottomPadding);
+        rvVideos.setClipToPadding(false);
+        rvVideos.setClipChildren(false);
     }
 
     public void updateWindowInsets(int topInset, int navBarBottomInset, int imeBottomInset) {
@@ -214,21 +283,24 @@ public class ExplorerFragment extends Fragment {
         if (getView() == null || !isAdded()) return;
 
         float density = getResources().getDisplayMetrics().density;
-        int topPadding = topInset + (int) (12 * density);
 
-        View layoutFloatingExplorerControls = getView().findViewById(R.id.layoutFloatingExplorerControls);
-        if (layoutFloatingExplorerControls == null) return;
+        if (layoutTopControls != null && layoutTopControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) layoutTopControls.getLayoutParams();
+            int targetTopMargin = topInset + (int) (8 * density);
+            if (lp.topMargin != targetTopMargin) {
+                lp.topMargin = targetTopMargin;
+                layoutTopControls.setLayoutParams(lp);
+            }
+        }
 
         int targetBottomMargin;
         if (imeBottomInset > navBarBottomInset) {
-            // Software keyboard is active: position controls right above the keyboard
             targetBottomMargin = imeBottomInset + (int) (12 * density);
         } else {
-            // Keyboard is dismissed: position controls above the floating bottom navigation bar
             targetBottomMargin = navBarBottomInset + (int) (88 * density);
         }
 
-        if (layoutFloatingExplorerControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+        if (layoutFloatingExplorerControls != null && layoutFloatingExplorerControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) layoutFloatingExplorerControls.getLayoutParams();
             if (lp.bottomMargin != targetBottomMargin) {
                 lp.bottomMargin = targetBottomMargin;
@@ -236,13 +308,7 @@ public class ExplorerFragment extends Fragment {
             }
         }
 
-        if (rvVideos != null) {
-            int controlsHeight = layoutFloatingExplorerControls.getHeight();
-            int totalPaddingBottom = targetBottomMargin + controlsHeight + (int) (16 * density);
-            rvVideos.setPadding(0, topPadding, 0, totalPaddingBottom);
-            rvVideos.setClipToPadding(false);
-            rvVideos.setClipChildren(false);
-        }
+        applyListPaddings();
     }
 
     public void updateWindowInsets(int topInset, int bottomInset) {
@@ -255,6 +321,7 @@ public class ExplorerFragment extends Fragment {
         if (hasStoragePermission()) {
             loadVideosFromStorage();
         }
+        loadAndDisplayLastPlayedVideo();
     }
 
     private boolean hasStoragePermission() {
@@ -501,6 +568,7 @@ public class ExplorerFragment extends Fragment {
 
     private void startPlaylistCreationMode() {
         isPlaylistCreationMode = true;
+        if (cardLastPlayedVideo != null) cardLastPlayedVideo.setVisibility(View.GONE);
         layoutPlaylistCreationBar.setVisibility(View.VISIBLE);
         btnSort.setVisibility(View.GONE);
         btnCreatePlaylist.setVisibility(View.GONE);
@@ -515,6 +583,7 @@ public class ExplorerFragment extends Fragment {
         btnSort.setVisibility(View.VISIBLE);
         btnCreatePlaylist.setVisibility(View.VISIBLE);
         videoFilesAdapter.setSelectionMode(false);
+        loadAndDisplayLastPlayedVideo();
     }
 
     private void updatePlaylistSelectionBar() {
@@ -549,5 +618,191 @@ public class ExplorerFragment extends Fragment {
             @Override
             public void onCancelled() {}
         });
+    }
+
+    private void loadAndDisplayLastPlayedVideo() {
+        if (!isAdded() || getContext() == null || databaseManager == null) return;
+        if (isPlaylistCreationMode) {
+            if (cardLastPlayedVideo != null) cardLastPlayedVideo.setVisibility(View.GONE);
+            return;
+        }
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            VideoPlaybackHistoryEntity lastVideo = databaseManager.getLastPlayedVideo();
+            if (lastVideo == null || lastVideo.getFilePath() == null) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        if (cardLastPlayedVideo != null) cardLastPlayedVideo.setVisibility(View.GONE);
+                    });
+                }
+                return;
+            }
+
+            File file = new File(lastVideo.getFilePath());
+            if (!file.exists()) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        if (cardLastPlayedVideo != null) cardLastPlayedVideo.setVisibility(View.GONE);
+                    });
+                }
+                return;
+            }
+
+            PlaylistEntity playlist = databaseManager.getPlaylistForVideoPath(lastVideo.getFilePath());
+            Bitmap thumb = VideoThumbnailHelper.createFrameThumbnail(getContext(), lastVideo.getFilePath(), null, lastVideo.getDurationMs());
+
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    if (!isAdded() || cardLastPlayedVideo == null || isPlaylistCreationMode) return;
+
+                    cardLastPlayedVideo.setVisibility(View.VISIBLE);
+
+                    if (thumb != null) {
+                        ivLastPlayedThumbnail.setImageBitmap(thumb);
+                    } else {
+                        ivLastPlayedThumbnail.setImageResource(R.drawable.player_item_background);
+                    }
+
+                    if (lastVideo.getDurationMs() > 0) {
+                        long totalSec = lastVideo.getDurationMs() / 1000;
+                        long min = totalSec / 60;
+                        long sec = totalSec % 60;
+                        tvLastPlayedDuration.setText(String.format(Locale.getDefault(), "%02d:%02d", min, sec));
+                        tvLastPlayedDuration.setVisibility(View.VISIBLE);
+                    } else {
+                        tvLastPlayedDuration.setVisibility(View.GONE);
+                    }
+
+                    int percent = lastVideo.getProgressPercentage();
+                    if (percent > 0) {
+                        tvLastPlayedProgressPercent.setText(percent + "%");
+                        tvLastPlayedProgressPercent.setVisibility(View.VISIBLE);
+                        pbLastPlayedProgress.setVisibility(View.VISIBLE);
+                        pbLastPlayedProgress.setProgress(percent, false);
+                    } else {
+                        tvLastPlayedProgressPercent.setVisibility(View.GONE);
+                        pbLastPlayedProgress.setVisibility(View.GONE);
+                    }
+
+                    String title = lastVideo.getTitle();
+                    if (title == null || title.trim().isEmpty()) {
+                        title = file.getName();
+                    }
+                    tvLastPlayedTitle.setText(title);
+
+                    String subtitle;
+                    if (lastVideo.getLastPositionMs() > 0) {
+                        long curSec = lastVideo.getLastPositionMs() / 1000;
+                        long curMin = curSec / 60;
+                        long s = curSec % 60;
+                        String timeStr = String.format(Locale.getDefault(), "%02d:%02d", curMin, s);
+                        subtitle = "Продолжить с " + timeStr + (percent > 0 ? " • " + percent + "%" : "");
+                    } else {
+                        subtitle = "Начать просмотр" + (lastVideo.getFolderName() != null && !lastVideo.getFolderName().isEmpty() ? " • " + lastVideo.getFolderName() : "");
+                    }
+                    tvLastPlayedSubtitle.setText(subtitle);
+
+                    View.OnClickListener playListener = v -> playLastVideo(lastVideo, playlist);
+                    cardLastPlayedVideo.setOnClickListener(playListener);
+                    btnLastPlayedPlayCard.setOnClickListener(playListener);
+                    btnLastPlayedPlay.setOnClickListener(playListener);
+
+                    if (playlist != null) {
+                        btnLastPlayedPlaylistCard.setVisibility(View.VISIBLE);
+                        View.OnClickListener playlistClickListener = v -> {
+                            PlaylistVideosBottomSheet bs = new PlaylistVideosBottomSheet(requireContext(), playlist);
+                            bs.show();
+                        };
+                        btnLastPlayedPlaylistCard.setOnClickListener(playlistClickListener);
+                        btnLastPlayedPlaylist.setOnClickListener(playlistClickListener);
+                    } else {
+                        btnLastPlayedPlaylistCard.setVisibility(View.GONE);
+                    }
+                });
+            }
+        });
+    }
+
+    private void playLastVideo(VideoPlaybackHistoryEntity lastVideo, PlaylistEntity playlist) {
+        if (!isAdded() || getContext() == null || lastVideo == null) return;
+
+        if (playlist != null) {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                List<PlaylistVideoEntity> videoEntities = databaseManager.getVideosForPlaylist(playlist.getId());
+                if (videoEntities != null && !videoEntities.isEmpty() && getActivity() != null) {
+                    ArrayList<VideoItem> playlistVideos = new ArrayList<>();
+                    int startIndex = 0;
+                    long tempId = 1;
+                    for (int i = 0; i < videoEntities.size(); i++) {
+                        PlaylistVideoEntity entity = videoEntities.get(i);
+                        String path = entity.getVideoPath();
+                        File file = new File(path);
+                        String title = entity.getVideoTitle() != null ? entity.getVideoTitle() : file.getName();
+                        if (path.equals(lastVideo.getFilePath())) {
+                            startIndex = i;
+                        }
+                        playlistVideos.add(new VideoItem(tempId++, title, path, null, 0, file.length(), file.lastModified(), playlist.getName()));
+                    }
+
+                    int finalStartIndex = startIndex;
+                    getActivity().runOnUiThread(() -> {
+                        Intent intent = new Intent(requireContext(), VideoPlayerActivity.class);
+                        intent.putExtra("VIDEO_LIST", playlistVideos);
+                        intent.putExtra("START_INDEX", finalStartIndex);
+                        intent.putExtra("PLAYLIST_NAME", playlist.getName());
+                        intent.putExtra("EXTRA_PLAYLIST_ID", playlist.getId());
+                        startActivity(intent);
+                    });
+                    return;
+                }
+
+                // Fallback to single video play if playlist has no videos
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> playSingleOrFromAll(lastVideo));
+                }
+            });
+        } else {
+            playSingleOrFromAll(lastVideo);
+        }
+    }
+
+    private void playSingleOrFromAll(VideoPlaybackHistoryEntity lastVideo) {
+        if (!isAdded() || getContext() == null || lastVideo == null) return;
+
+        int foundIndex = -1;
+        for (int i = 0; i < displayedVideos.size(); i++) {
+            if (lastVideo.getFilePath().equals(displayedVideos.get(i).getPath())) {
+                foundIndex = i;
+                break;
+            }
+        }
+
+        if (foundIndex != -1) {
+            Intent intent = new Intent(requireContext(), VideoPlayerActivity.class);
+            intent.putExtra("VIDEO_LIST", new ArrayList<>(displayedVideos));
+            intent.putExtra("START_INDEX", foundIndex);
+            startActivity(intent);
+        } else {
+            for (int i = 0; i < allVideos.size(); i++) {
+                if (lastVideo.getFilePath().equals(allVideos.get(i).getPath())) {
+                    foundIndex = i;
+                    break;
+                }
+            }
+            if (foundIndex != -1) {
+                Intent intent = new Intent(requireContext(), VideoPlayerActivity.class);
+                intent.putExtra("VIDEO_LIST", new ArrayList<>(allVideos));
+                intent.putExtra("START_INDEX", foundIndex);
+                startActivity(intent);
+            } else {
+                File file = new File(lastVideo.getFilePath());
+                ArrayList<VideoItem> singleList = new ArrayList<>();
+                singleList.add(new VideoItem(1, lastVideo.getTitle() != null ? lastVideo.getTitle() : file.getName(), lastVideo.getFilePath(), null, lastVideo.getDurationMs(), file.length(), file.lastModified(), lastVideo.getFolderName()));
+                Intent intent = new Intent(requireContext(), VideoPlayerActivity.class);
+                intent.putExtra("VIDEO_LIST", singleList);
+                intent.putExtra("START_INDEX", 0);
+                startActivity(intent);
+            }
+        }
     }
 }

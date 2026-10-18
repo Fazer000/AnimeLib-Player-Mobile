@@ -21,6 +21,12 @@ public interface PlaylistDao {
     @Query("SELECT * FROM playlists ORDER BY createdAt DESC")
     List<PlaylistEntity> getAllPlaylists();
 
+    @Query("SELECT * FROM playlists WHERE id = :playlistId LIMIT 1")
+    PlaylistEntity getPlaylistById(long playlistId);
+
+    @Query("SELECT p.* FROM playlists p INNER JOIN playlist_videos pv ON p.id = pv.playlistId WHERE pv.videoPath = :videoPath LIMIT 1")
+    PlaylistEntity getPlaylistForVideoPath(String videoPath);
+
     @Query("SELECT * FROM playlist_videos WHERE playlistId = :playlistId ORDER BY orderIndex ASC")
     List<PlaylistVideoEntity> getVideosForPlaylist(long playlistId);
 

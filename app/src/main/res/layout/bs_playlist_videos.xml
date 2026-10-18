@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:background="@android:color/transparent">
+
+    <!-- Bottom Sheet Drag Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bottom_sheet_handle"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="6dp">
+
+        <ImageButton
+            android:id="@+id/btnClosePlaylistBs"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="6dp"
+            app:tint="@color/accent_text_color"
+            android:background="@drawable/button_close_background"
+            android:src="@drawable/ic_close"
+            android:scaleType="fitCenter"
+            android:contentDescription="Закрыть" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvBsPlaylistTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Плейлист"
+                android:textColor="@color/primary_text_color"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvBsPlaylistCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="0 видео"
+                android:textColor="@color/secondary_text_color"
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/bs_divider_color"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Empty State -->
+    <LinearLayout
+        android:id="@+id/layoutBsPlaylistEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_episodes"
+            app:tint="@color/player_item_inactive_text"
+            android:contentDescription="Пусто" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="В этом плейлисте нет видео"
+            android:textColor="@color/secondary_text_color"
+            android:fontFamily="@font/open_sans_semibold"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Playlist Episodes List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBsPlaylistEpisodes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="true"
+        android:overScrollMode="never"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false" />
+
+</LinearLayout>

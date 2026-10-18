@@ -525,6 +525,14 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         player.play();
         updateTimebarProgress();
 
+        databaseManager.saveVideoProgress(
+                videoPath,
+                playlistManager.getCurrentTitle(),
+                0,
+                resumePosition,
+                playlistManager.getCurrentFolderName()
+        );
+
         updatePlaylistNavigationButtons();
     }
 
@@ -673,15 +681,13 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
         long currentPos = player.getCurrentPosition();
         long duration = player.getDuration();
-        if (duration > 0) {
-            databaseManager.saveVideoProgress(
-                    path,
-                    playlistManager.getCurrentTitle(),
-                    duration,
-                    currentPos,
-                    playlistManager.getCurrentFolderName()
-            );
-        }
+        databaseManager.saveVideoProgress(
+                path,
+                playlistManager.getCurrentTitle(),
+                duration > 0 ? duration : 0,
+                currentPos,
+                playlistManager.getCurrentFolderName()
+        );
     }
 
     private void toggleFullscreen() {

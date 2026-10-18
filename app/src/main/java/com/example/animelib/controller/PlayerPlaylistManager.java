@@ -19,6 +19,7 @@ public class PlayerPlaylistManager {
     private String currentFolderName = "Видео";
     private boolean isPlaylist = false;
     private String playlistName = null;
+    private long playlistId = -1;
 
     private final List<String> playlistPaths = new ArrayList<>();
     private final List<String> playlistTitles = new ArrayList<>();
@@ -26,6 +27,8 @@ public class PlayerPlaylistManager {
 
     public void parseIntent(@Nullable Intent intent) {
         if (intent == null) return;
+
+        playlistId = intent.getLongExtra("EXTRA_PLAYLIST_ID", -1);
 
         // 1. Check for VIDEO_LIST (ArrayList<VideoItem>)
         if (intent.hasExtra("VIDEO_LIST") || intent.hasExtra("EXTRA_VIDEO_LIST")) {
@@ -207,5 +210,13 @@ public class PlayerPlaylistManager {
     public void setPlaylistName(String name) {
         this.playlistName = name;
         if (name != null) this.isPlaylist = true;
+    }
+
+    public long getPlaylistId() {
+        return playlistId;
+    }
+
+    public void setPlaylistId(long playlistId) {
+        this.playlistId = playlistId;
     }
 }

@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import com.example.animelib.ui.M3LinearProgressIndicator;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -115,7 +115,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
 
         if (video.getProgressPercent() > 0) {
             holder.pbWatchProgress.setVisibility(View.VISIBLE);
-            holder.pbWatchProgress.setProgress(video.getProgressPercent());
+            holder.pbWatchProgress.setProgress(video.getProgressPercent(), false);
             holder.tvWatchProgressStatus.setVisibility(View.VISIBLE);
             holder.tvWatchProgressStatus.setText(video.getProgressPercent() + "%");
         } else {
@@ -205,7 +205,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
         TextView tvVideoSize;
         TextView tvWatchProgressStatus;
         TextView tvSelectionBadge;
-        ProgressBar pbWatchProgress;
+        M3LinearProgressIndicator pbWatchProgress;
 
         VideoViewHolder(@NonNull View itemView) {
             super(itemView);

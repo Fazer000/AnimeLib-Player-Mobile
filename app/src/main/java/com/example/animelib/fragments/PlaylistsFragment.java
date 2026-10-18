@@ -133,6 +133,7 @@ public class PlaylistsFragment extends Fragment {
         intent.putExtra("VIDEO_LIST", playlistVideos);
         intent.putExtra("START_INDEX", 0);
         intent.putExtra("PLAYLIST_NAME", playlist.getName());
+        intent.putExtra("EXTRA_PLAYLIST_ID", playlist.getId());
         startActivity(intent);
     }
 

@@ -127,21 +127,21 @@ public class PlayerGestureController {
             public boolean onDoubleTap(@NonNull MotionEvent e) {
                 if (callback.isLocked()) return false;
                 int width = playerView.getWidth();
-                int skipSec = callback.getSkipDurationSeconds();
+                int seekSec = 10;
                 long currentPos = callback.getCurrentPosition();
                 long duration = callback.getDuration();
 
                 if (e.getX() < width / 3.0f) {
-                    // Double tap left: rewind
-                    long newPos = Math.max(0, currentPos - (skipSec * 1000L));
+                    // Double tap left: rewind 10 seconds
+                    long newPos = Math.max(0, currentPos - (seekSec * 1000L));
                     callback.onSeekCommit(newPos);
-                    showDoubleTapSkipIndicator(false, skipSec);
+                    showDoubleTapSkipIndicator(false, seekSec);
                     return true;
                 } else if (e.getX() > (width * 2.0f / 3.0f)) {
-                    // Double tap right: forward
-                    long newPos = Math.min(duration, currentPos + (skipSec * 1000L));
+                    // Double tap right: forward 10 seconds
+                    long newPos = Math.min(duration, currentPos + (seekSec * 1000L));
                     callback.onSeekCommit(newPos);
-                    showDoubleTapSkipIndicator(true, skipSec);
+                    showDoubleTapSkipIndicator(true, seekSec);
                     return true;
                 }
                 return false;

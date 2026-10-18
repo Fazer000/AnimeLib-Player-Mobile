@@ -20,8 +20,8 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:clipChildren="false"
-            android:paddingTop="12dp"
-            android:paddingBottom="220dp" />
+            android:paddingTop="96dp"
+            android:paddingBottom="180dp" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -83,14 +83,14 @@
         android:indeterminateTint="@color/purple_primary"
         android:visibility="gone" />
 
-    <!-- Control Buttons & Folder Carousel Floating Bar -->
+    <!-- Top Floating Controls: Action Buttons, Search, & Playlist Creation Bar -->
     <LinearLayout
-        android:id="@+id/layoutFloatingExplorerControls"
+        android:id="@+id/layoutTopControls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="top"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         android:clipChildren="false"
         android:clipToPadding="false">
@@ -153,7 +153,6 @@
             android:id="@+id/layoutControlButtonsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
             android:clipChildren="false"
             android:clipToPadding="false">
 
@@ -286,6 +285,204 @@
             </androidx.cardview.widget.CardView>
 
         </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- Bottom Floating Bar: Last Played Video & Folder Carousel -->
+    <LinearLayout
+        android:id="@+id/layoutFloatingExplorerControls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="80dp"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <!-- Last Played Video Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardLastPlayedVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/card_bg_color"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/purple_alpha_25"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp">
+
+                <!-- Left: Preview Thumbnail -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardLastPlayedThumbnail"
+                    android:layout_width="92dp"
+                    android:layout_height="54dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0.5dp"
+                    app:strokeColor="@color/purple_alpha_25"
+                    app:cardBackgroundColor="#0A0C14">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/ivLastPlayedThumbnail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Превью видео" />
+
+                        <!-- Mini duration pill -->
+                        <TextView
+                            android:id="@+id/tvLastPlayedDuration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|start"
+                            android:layout_margin="3dp"
+                            android:background="@drawable/bg_video_thumbnail_badge"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="1dp"
+                            android:textColor="@color/white_color"
+                            android:textSize="9sp"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:visibility="gone" />
+
+                        <!-- Mini percentage pill -->
+                        <TextView
+                            android:id="@+id/tvLastPlayedProgressPercent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|end"
+                            android:layout_margin="3dp"
+                            android:background="@drawable/bg_video_thumbnail_badge"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="1dp"
+                            android:textColor="@color/white_color"
+                            android:textSize="9sp"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Middle: Video Title, Subtitle, and Progress -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="6dp"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvLastPlayedTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Название видео"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:singleLine="true"
+                        android:ellipsize="end" />
+
+                    <TextView
+                        android:id="@+id/tvLastPlayedSubtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Продолжить • 12:45"
+                        android:textColor="@color/player_item_inactive_text"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:singleLine="true"
+                        android:ellipsize="end" />
+
+                    <com.example.animelib.ui.M3LinearProgressIndicator
+                        android:id="@+id/pbLastPlayedProgress"
+                        android:layout_width="match_parent"
+                        android:layout_height="7dp"
+                        android:layout_marginTop="5dp"
+                        android:max="100"
+                        android:progress="0"
+                        app:m3TrackHeight="3.5dp"
+                        app:m3GapSize="2.5dp"
+                        app:m3StopDotSize="3dp"
+                        app:m3ShowStopDot="true"
+                        app:m3IndicatorColor="@color/purple_primary"
+                        app:m3TrackColor="@color/purple_alpha_25"
+                        app:m3StopDotColor="@color/purple_primary"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <!-- Right: Action Buttons -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Button 1: Play button -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/btnLastPlayedPlayCard"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        app:cardBackgroundColor="@color/purple_primary"
+                        app:cardCornerRadius="19dp"
+                        app:cardElevation="4dp"
+                        app:cardPreventCornerOverlap="false">
+
+                        <ImageButton
+                            android:id="@+id/btnLastPlayedPlay"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_player_play"
+                            app:tint="@color/white_color"
+                            android:padding="8dp"
+                            android:contentDescription="Воспроизвести" />
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Button 2: Playlist button (only if in playlist) -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/btnLastPlayedPlaylistCard"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_marginStart="6dp"
+                        app:cardBackgroundColor="@color/card_bg_color"
+                        app:cardCornerRadius="19dp"
+                        app:cardElevation="4dp"
+                        app:cardPreventCornerOverlap="false"
+                        android:visibility="gone">
+
+                        <ImageButton
+                            android:id="@+id/btnLastPlayedPlaylist"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_episodes"
+                            app:tint="@color/purple_primary"
+                            android:padding="8dp"
+                            android:contentDescription="Плейлист" />
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Folder Carousel Card -->
         <androidx.cardview.widget.CardView

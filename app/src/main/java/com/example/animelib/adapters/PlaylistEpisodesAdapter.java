@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import com.example.animelib.ui.M3LinearProgressIndicator;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,9 +22,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.example.animelib.R;
+import com.example.animelib.data.DatabaseManager;
+import com.example.animelib.data.entity.VideoPlaybackHistoryEntity;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -82,34 +85,59 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         holder.tvSelectionBadge.setVisibility(View.VISIBLE);
         holder.tvSelectionBadge.setText(String.valueOf(position + 1));
 
+        Context context = holder.itemView.getContext();
+        VideoPlaybackHistoryEntity history = !path.isEmpty()
+                ? DatabaseManager.getInstance(context).getVideoHistory(path)
+                : null;
+
         // Folder & size info
         File file = !path.isEmpty() ? new File(path) : null;
         if (file != null && file.exists()) {
             holder.tvVideoFolder.setText("Эпизод " + (position + 1));
             long sizeMb = file.length() / (1024 * 1024);
             holder.tvVideoSize.setText(sizeMb + " МБ");
-            holder.tvVideoDuration.setVisibility(View.GONE);
         } else {
             holder.tvVideoFolder.setText("Серия");
             holder.tvVideoSize.setText("");
+        }
+
+        // Duration badge (bottom-left)
+        if (history != null && history.getDurationMs() > 0) {
+            long totalSecs = history.getDurationMs() / 1000;
+            long hours = totalSecs / 3600;
+            long mins = (totalSecs % 3600) / 60;
+            long secs = totalSecs % 60;
+            String durStr = hours > 0
+                    ? String.format(Locale.getDefault(), "%d:%02d:%02d", hours, mins, secs)
+                    : String.format(Locale.getDefault(), "%02d:%02d", mins, secs);
+            holder.tvVideoDuration.setText(durStr);
+            holder.tvVideoDuration.setVisibility(View.VISIBLE);
+        } else {
             holder.tvVideoDuration.setVisibility(View.GONE);
         }
 
-        holder.pbWatchProgress.setVisibility(View.GONE);
-        holder.tvWatchProgressStatus.setVisibility(View.GONE);
+        // Progress percentage badge (bottom-right) and M3 progress bar (in description)
+        if (history != null && history.getProgressPercentage() > 0) {
+            holder.pbWatchProgress.setVisibility(View.VISIBLE);
+            holder.pbWatchProgress.setProgress(history.getProgressPercentage(), false);
+            holder.tvWatchProgressStatus.setVisibility(View.VISIBLE);
+            holder.tvWatchProgressStatus.setText(history.getProgressPercentage() + "%");
+        } else {
+            holder.pbWatchProgress.setVisibility(View.GONE);
+            holder.tvWatchProgressStatus.setVisibility(View.GONE);
+        }
 
         boolean isCurrent = (position == currentIndex);
-        Context context = holder.itemView.getContext();
 
         if (isCurrent) {
             holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.purple_primary));
-            holder.cardView.setStrokeWidth(dpToPx(context, 0.5f));
+            holder.cardView.setStrokeWidth(dpToPx(context, 1.5f));
             holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
             holder.tvSelectionBadge.setBackgroundResource(R.drawable.bg_m3_selected_pill);
             holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.card_bg_color));
         } else {
-            holder.cardView.setStrokeWidth(dpToPx(context, 0.5f));
-            holder.cardView.setStrokeColor(ContextCompat.getColor(context, android.R.color.transparent));
+            holder.cardView.setStrokeWidth(dpToPx(context, 0.8f));
+            holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.player_item_inactive_stroke));
             holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.primary_text_color));
             holder.tvSelectionBadge.setBackgroundResource(R.drawable.bg_m3_unselected_circle);
         }
@@ -175,7 +203,7 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         TextView tvVideoSize;
         TextView tvSelectionBadge;
         TextView tvWatchProgressStatus;
-        ProgressBar pbWatchProgress;
+        M3LinearProgressIndicator pbWatchProgress;
 
         EpisodeViewHolder(@NonNull View itemView) {
             super(itemView);
