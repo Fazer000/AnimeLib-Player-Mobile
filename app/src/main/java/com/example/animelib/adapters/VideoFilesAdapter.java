@@ -65,7 +65,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     };
 
-    private static final ExecutorService thumbnailExecutor = Executors.newFixedThreadPool(4);
+    private static final ExecutorService thumbnailExecutor = Executors.newFixedThreadPool(2);
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public VideoFilesAdapter(List<VideoItem> initialVideos, OnVideoClickListener listener) {

@@ -322,7 +322,20 @@ public class ExplorerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (hasStoragePermission()) {
-            loadVideosFromStorage();
+            if (allVideos.isEmpty()) {
+                loadVideosFromStorage();
+            } else {
+                Executors.newSingleThreadExecutor().execute(() -> {
+                    boolean changed = videoRepository.refreshWatchProgress(allVideos);
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (changed) {
+                                filterAndDisplayVideos();
+                            }
+                        });
+                    }
+                });
+            }
         }
         loadAndDisplayLastPlayedVideo();
     }

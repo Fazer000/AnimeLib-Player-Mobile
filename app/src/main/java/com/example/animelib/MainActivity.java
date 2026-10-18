@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         layoutBottomBar.setVisibility(View.VISIBLE);
                         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) layoutBottomBar.getLayoutParams();
-                        int defaultBottomMargin = (int) (16 * getResources().getDisplayMetrics().density);
-                        lp.bottomMargin = cachedBottomInset + defaultBottomMargin;
+                        int baseBottomMargin = (int) (14 * getResources().getDisplayMetrics().density);
+                        lp.bottomMargin = baseBottomMargin + navBarInsets.bottom;
                         layoutBottomBar.setLayoutParams(lp);
                     }
                 }
@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (targetFragment != null) {
             fm.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .hide(activeFragment)
                     .show(targetFragment)
                     .commit();
@@ -258,6 +259,10 @@ public class MainActivity extends AppCompatActivity {
         View[] tabs = {tabExplorer, tabPlaylists, tabSettings};
         TextView[] texts = {tvTabExplorerText, tvTabPlaylistsText, tvTabSettingsText};
         ImageView[] icons = {ivTabExplorerIcon, ivTabPlaylistsIcon, ivTabSettingsIcon};
+
+        if (animate && tabs[0] != null && tabs[0].getParent() instanceof ViewGroup) {
+            android.transition.TransitionManager.beginDelayedTransition((ViewGroup) tabs[0].getParent(), new android.transition.AutoTransition().setDuration(220));
+        }
 
         for (int i = 0; i < 3; i++) {
             if (tabs[i] != null && tabs[i].getLayoutParams() instanceof LinearLayout.LayoutParams) {
@@ -283,34 +288,58 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (vTabIndicator != null && tabs[targetIndex] != null) {
-            View target = tabs[targetIndex];
+        if (vTabIndicator != null) {
+            View containerView = (View) vTabIndicator.getParent();
+            containerView.post(() -> {
+                if (vTabIndicator == null || containerView == null) return;
+                int containerWidth = containerView.getWidth() - containerView.getPaddingLeft() - containerView.getPaddingRight();
+                int paddingLeft = containerView.getPaddingLeft();
 
-            Runnable positionIndicator = () -> {
-                if (vTabIndicator == null || target == null) return;
-                int targetWidth = target.getWidth();
-                int targetLeft = target.getLeft();
+                int targetWidth = containerWidth / 2;
+                int targetLeft;
 
-                if (targetWidth <= 0) return;
+                if (targetIndex == 0) {
+                    targetLeft = 0;
+                } else if (targetIndex == 1) {
+                    targetLeft = containerWidth / 4;
+                } else {
+                    targetLeft = containerWidth / 2;
+                }
 
                 ViewGroup.LayoutParams lp = vTabIndicator.getLayoutParams();
-                if (lp.width != targetWidth) {
-                    lp.width = targetWidth;
-                    vTabIndicator.setLayoutParams(lp);
+                int startWidth = vTabIndicator.getWidth();
+                float startTranslationX = vTabIndicator.getTranslationX();
+
+                if (startWidth <= 0) {
+                    startWidth = targetWidth;
+                    startTranslationX = targetLeft;
                 }
 
                 if (animate) {
-                    vTabIndicator.animate()
-                            .translationX(targetLeft)
-                            .setDuration(200)
-                            .start();
+                    android.animation.ValueAnimator animator = android.animation.ValueAnimator.ofFloat(0f, 1f);
+                    animator.setDuration(220);
+                    animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+                    int finalStartWidth = startWidth;
+                    float finalStartTranslationX = startTranslationX;
+                    animator.addUpdateListener(animation -> {
+                        float fraction = (float) animation.getAnimatedValue();
+                        int currentWidth = (int) (finalStartWidth + (targetWidth - finalStartWidth) * fraction);
+                        float currentTranslationX = finalStartTranslationX + (targetLeft - finalStartTranslationX) * fraction;
+
+                        lp.width = currentWidth;
+                        vTabIndicator.setLayoutParams(lp);
+                        vTabIndicator.requestLayout();
+                        vTabIndicator.setTranslationX(currentTranslationX);
+                    });
+                    animator.start();
                 } else {
                     vTabIndicator.animate().cancel();
+                    lp.width = targetWidth;
+                    vTabIndicator.setLayoutParams(lp);
+                    vTabIndicator.requestLayout();
                     vTabIndicator.setTranslationX(targetLeft);
                 }
-            };
-
-            target.post(positionIndicator);
+            });
         }
     }
 }
