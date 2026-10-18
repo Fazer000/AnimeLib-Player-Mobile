@@ -245,57 +245,11 @@ public class ExplorerFragment extends Fragment {
         setupRecyclerViews();
         setupListeners();
         loadAndDisplayLastPlayedVideo();
-        applyAccentColors();
 
         if (hasStoragePermission()) {
             loadVideosFromStorage();
         } else {
             showPermissionDeniedState();
-        }
-    }
-
-
-    private void applyAccentColors() {
-        if (!isAdded() || getContext() == null) return;
-        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(requireContext());
-        if (btnEmptyAction != null) {
-            btnEmptyAction.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accentColor));
-        }
-        if (progressBar != null) {
-            progressBar.setIndeterminateTintList(android.content.res.ColorStateList.valueOf(accentColor));
-        }
-        if (pbLastPlayedProgress != null) {
-            pbLastPlayedProgress.setIndicatorColor(accentColor);
-        }
-        if (btnCreatePlaylist != null) {
-            btnCreatePlaylist.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
-        }
-        if (btnDonePlaylist != null) {
-            btnDonePlaylist.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
-        }
-        if (btnSearchToggle != null) {
-            btnSearchToggle.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
-        }
-        if (getView() != null) {
-            android.widget.ImageView ivSearchIcon = getView().findViewById(R.id.ivSearchFieldIcon);
-            if (ivSearchIcon != null) {
-                ivSearchIcon.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
-            }
-        }
-        if (btnLastPlayedPlayCard instanceof androidx.cardview.widget.CardView) {
-            ((androidx.cardview.widget.CardView) btnLastPlayedPlayCard).setCardBackgroundColor(accentColor);
-        }
-        if (btnLastPlayedPlaylist != null) {
-            btnLastPlayedPlaylist.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
-        }
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setColorSchemeColors(accentColor);
-        }
-        if (videoFoldersAdapter != null) {
-            videoFoldersAdapter.notifyDataSetChanged();
-        }
-        if (videoFilesAdapter != null) {
-            videoFilesAdapter.notifyDataSetChanged();
         }
     }
 
@@ -367,7 +321,6 @@ public class ExplorerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        applyAccentColors();
         if (hasStoragePermission()) {
             loadVideosFromStorage();
         }
@@ -399,6 +352,8 @@ public class ExplorerFragment extends Fragment {
         rvFolders.setAdapter(videoFoldersAdapter);
 
         rvVideos.setLayoutManager(new LinearLayoutManager(requireContext()));
+        rvVideos.setHasFixedSize(true);
+        rvVideos.setItemViewCacheSize(20);
         videoFilesAdapter = new VideoFilesAdapter(displayedVideos, new VideoFilesAdapter.OnVideoClickListener() {
             @Override
             public void onVideoClick(VideoItem video, int position) {

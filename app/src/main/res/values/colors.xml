@@ -84,21 +84,21 @@
     <!-- Light Theme -->
     <!-- General Colors -->
     <color name="lt_primary_color">#FFFFFF</color>
-    <color name="lt_secondary_color">@color/purple_primary</color>
+    <color name="lt_secondary_color">@color/brand_primary</color>
     <color name="lt_blue_color">#1976D2</color>
-    <color name="lt_alpha_primary_color">@color/purple_alpha_10</color>
+    <color name="lt_alpha_primary_color">@color/brand_alpha_10</color>
 
     <color name="lt_border_color">#E5E7EB</color>
     <color name="lt_alpha_border_color">#33E5E7EB</color>
 
     <color name="lt_line_color">#E5E7EB</color>
 
-    <color name="lt_header_color">#ede7f6</color>
-    <color name="lt_webview_status_bar_color">#ede7f6</color>
-    <color name="toolbar_header_bg">#ede7f6</color>
+    <color name="lt_header_color">#FFF0E5</color>
+    <color name="lt_webview_status_bar_color">#FFF0E5</color>
+    <color name="toolbar_header_bg">#FFF0E5</color>
 
     <!-- Lib Site Header Colors (Light Theme) -->
-    <color name="site_header_animelib_light">#ede7f6</color>
+    <color name="site_header_animelib_light">#FFF0E5</color>
     <color name="site_header_mangalib_light">#FFF3E0</color>
     <color name="site_header_ranobelib_light">#E0F2FF</color>
 

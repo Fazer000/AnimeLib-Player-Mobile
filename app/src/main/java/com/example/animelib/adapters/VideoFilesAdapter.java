@@ -65,7 +65,11 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     };
 
-    private static final ExecutorService thumbnailExecutor = Executors.newFixedThreadPool(4);
+    private static final ExecutorService thumbnailExecutor = Executors.newFixedThreadPool(2, r -> {
+        Thread thread = new Thread(r, "thumb-loader");
+        thread.setPriority(Thread.MIN_PRIORITY);
+        return thread;
+    });
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public VideoFilesAdapter(List<VideoItem> initialVideos, OnVideoClickListener listener) {
@@ -202,28 +206,16 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         VideoViewHolder holder = (VideoViewHolder) rawHolder;
         VideoItem video = (VideoItem) itemObj;
 
-        Context context = holder.itemView.getContext();
-        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
-
         holder.tvVideoTitle.setText(video.getDisplayTitle());
 
         // "НОВОЕ" Tag
         if (holder.tvVideoNewTag != null) {
-            android.graphics.drawable.GradientDrawable newBadge = new android.graphics.drawable.GradientDrawable();
-            newBadge.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-            newBadge.setCornerRadius(com.example.animelib.util.DisplayUtils.dpToPx(context, 4));
-            newBadge.setColor(android.graphics.Color.TRANSPARENT);
-            newBadge.setStroke((int) (1 * context.getResources().getDisplayMetrics().density + 0.5f), accentColor);
-            holder.tvVideoNewTag.setBackground(newBadge);
-            holder.tvVideoNewTag.setTextColor(accentColor);
             holder.tvVideoNewTag.setVisibility(video.isNew() ? View.VISIBLE : View.GONE);
         }
 
         // Extension Tag
         String extension = video.getFileExtension();
         if (holder.tvVideoExtensionTag != null) {
-            holder.tvVideoExtensionTag.setTextColor(accentColor);
-            holder.tvVideoExtensionTag.setBackgroundTintList(android.content.res.ColorStateList.valueOf((0x25 << 24) | (accentColor & 0x00FFFFFF)));
             if (!extension.isEmpty() && extension.length() <= 5) {
                 holder.tvVideoExtensionTag.setText(extension);
                 holder.tvVideoExtensionTag.setVisibility(View.VISIBLE);
@@ -234,10 +226,6 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         holder.tvVideoDuration.setText(video.getFormattedDuration());
         holder.tvVideoFolder.setText(video.getFolderName());
-        if (holder.tvVideoFolder != null) {
-            holder.tvVideoFolder.setTextColor(accentColor);
-            holder.tvVideoFolder.setBackgroundTintList(android.content.res.ColorStateList.valueOf((0x25 << 24) | (accentColor & 0x00FFFFFF)));
-        }
         String sizeStr = video.getFormattedSize();
         String dateStr = video.getFormattedDate();
         if (!sizeStr.isEmpty() && !dateStr.isEmpty()) {
@@ -250,7 +238,6 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (video.getProgressPercent() > 0) {
             holder.pbWatchProgress.setVisibility(View.VISIBLE);
-            holder.pbWatchProgress.setIndicatorColor(accentColor);
             holder.pbWatchProgress.setProgress(video.getProgressPercent(), false);
             holder.tvWatchProgressStatus.setVisibility(View.VISIBLE);
             holder.tvWatchProgressStatus.setText(video.getProgressPercent() + "%");
@@ -268,10 +255,6 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     break;
                 }
             }
-        }
-
-        if (holder.tvSelectionBadge != null) {
-            holder.tvSelectionBadge.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accentColor));
         }
 
         if (selectionIndex >= 0) {
@@ -322,6 +305,9 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void loadThumbnailAsync(Context context, VideoItem video, String cacheKey, ImageView imageView) {
         final Context appContext = context.getApplicationContext();
         thumbnailExecutor.execute(() -> {
+            if (!cacheKey.equals(imageView.getTag())) {
+                return;
+            }
             Bitmap thumb = com.example.animelib.util.VideoThumbnailHelper.createFrameThumbnail(
                     appContext,
                     video.getPath(),
@@ -329,7 +315,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     video.getDurationMs()
             );
 
-            if (thumb != null) {
+            if (thumb != null && cacheKey.equals(imageView.getTag())) {
                 final Bitmap finalThumb = thumb;
                 thumbnailCache.put(cacheKey, finalThumb);
                 mainHandler.post(() -> {
@@ -339,6 +325,15 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 });
             }
         });
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder instanceof VideoViewHolder) {
+            VideoViewHolder vh = (VideoViewHolder) holder;
+            vh.ivVideoThumbnail.setTag(null);
+        }
     }
 
     @Override
