@@ -21,12 +21,12 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/layoutBottomBar"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
         app:cardBackgroundColor="@color/card_bg_color"
-        app:cardCornerRadius="26dp"
+        app:cardCornerRadius="30dp"
         app:cardElevation="8dp"
         app:cardPreventCornerOverlap="false">
 

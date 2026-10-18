@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Accent / Primary Brand Colors (Orange) -->
-    <color name="brand_primary">#FF7A00</color>
-    <color name="brand_alpha_12">#1FFF7A00</color>
-    <color name="brand_alpha_16">#2AFF7A00</color>
-    <color name="brand_alpha_20">#33FF7A00</color>
-    <color name="brand_alpha_60">#99FF7A00</color>
-    <color name="purple_primary">@color/brand_primary</color>
-    <color name="purple_secondary">#FFF7ED</color>
-    <color name="purple_secondary_dark">#2E1E12</color>
-    <color name="purple_alpha_10">#1AFF7A00</color>
-    <color name="purple_alpha_25">#40FF7A00</color>
-    <color name="brand_secondary_dark">@color/purple_secondary_dark</color>
+    <!-- Option 2: AnimeLib (Vivid Orange) & Player (Electric Cobalt Blue) -->
+    <!-- Core Brand / AnimeLib Colors -->
+    <color name="brand_primary">#FF6B00</color>
+    <color name="brand_secondary">#FFF0E5</color>
+    <color name="brand_secondary_dark">#381E0A</color>
+    <color name="brand_alpha_10">#1AFF6B00</color>
+    <color name="brand_alpha_25">#40FF6B00</color>
+    <color name="brand_alpha_50">#80FF6B00</color>
+
+    <!-- Dedicated Video Player Colors (Unified Orange Accent) -->
     <color name="player_primary">@color/brand_primary</color>
+    <color name="player_secondary">@color/brand_secondary</color>
+    <color name="player_secondary_dark">@color/brand_secondary_dark</color>
+    <color name="player_alpha_10">@color/brand_alpha_10</color>
+    <color name="player_alpha_25">@color/brand_alpha_25</color>
+    <color name="player_alpha_50">@color/brand_alpha_50</color>
+
+    <!-- AnimeLib Module Semantic Colors -->
+    <color name="animelib_primary">@color/brand_primary</color>
+    <color name="animelib_secondary">@color/brand_secondary</color>
+    <color name="animelib_secondary_dark">@color/brand_secondary_dark</color>
+    <color name="animelib_alpha_10">@color/brand_alpha_10</color>
+    <color name="animelib_alpha_25">@color/brand_alpha_25</color>
+
+    <!-- Backward Compatibility / Primary Legacy Aliases -->
+    <color name="purple_primary">@color/brand_primary</color>
+    <color name="purple_secondary">@color/brand_secondary</color>
+    <color name="purple_secondary_dark">@color/brand_secondary_dark</color>
+    <color name="purple_alpha_10">@color/brand_alpha_10</color>
+    <color name="purple_alpha_25">@color/brand_alpha_25</color>
     <color name="switch_track_unchecked">#E3E2E6</color>
     <color name="switch_thumb_unchecked">#79747E</color>
     <color name="switch_track_outline_unchecked">#79747E</color>
@@ -67,21 +84,21 @@
     <!-- Light Theme -->
     <!-- General Colors -->
     <color name="lt_primary_color">#FFFFFF</color>
-    <color name="lt_secondary_color">@color/purple_primary</color>
+    <color name="lt_secondary_color">@color/brand_primary</color>
     <color name="lt_blue_color">#1976D2</color>
-    <color name="lt_alpha_primary_color">@color/purple_alpha_10</color>
+    <color name="lt_alpha_primary_color">@color/brand_alpha_10</color>
 
     <color name="lt_border_color">#E5E7EB</color>
     <color name="lt_alpha_border_color">#33E5E7EB</color>
 
     <color name="lt_line_color">#E5E7EB</color>
 
-    <color name="lt_header_color">#ede7f6</color>
-    <color name="lt_webview_status_bar_color">#ede7f6</color>
-    <color name="toolbar_header_bg">#ede7f6</color>
+    <color name="lt_header_color">#FFF0E5</color>
+    <color name="lt_webview_status_bar_color">#FFF0E5</color>
+    <color name="toolbar_header_bg">#FFF0E5</color>
 
     <!-- Lib Site Header Colors (Light Theme) -->
-    <color name="site_header_animelib_light">#ede7f6</color>
+    <color name="site_header_animelib_light">#FFF0E5</color>
     <color name="site_header_mangalib_light">#FFF3E0</color>
     <color name="site_header_ranobelib_light">#E0F2FF</color>
 
@@ -136,7 +153,7 @@
     <color name="player_item_inactive_text">#374151</color>
     <color name="player_item_inactive_stroke">#33FFFFFF</color>
     <color name="player_item_active_text">#FFFFFF</color>
-    <color name="player_item_active_stroke">@color/purple_primary</color>
+    <color name="player_item_active_stroke">@color/player_primary</color>
 
     <!-- Dialog Colors (Unified Defaults) -->
     <color name="m3_item_bg">#12000000</color>
