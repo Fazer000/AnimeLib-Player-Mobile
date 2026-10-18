@@ -48,6 +48,7 @@ import java.lang.reflect.Field;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.animelib.adapters.PlaylistEpisodesAdapter;
+import com.example.animelib.models.VideoItem;
 
 import okhttp3.OkHttpClient;
 
@@ -61,12 +62,18 @@ import com.example.animelib.managers.AmbientLightManager;
 import com.example.animelib.managers.SurroundSoundManager;
 import com.example.animelib.managers.VideoFiltersManager;
 import com.example.animelib.settings.SettingsBottomSheet;
+import com.example.animelib.settings.VideoOptionsBottomSheet;
+import com.example.animelib.settings.VideoInfoBottomSheet;
+import com.example.animelib.util.DialogUtils;
 import com.example.animelib.ui.AmbientVignetteOverlayView;
 import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.SurroundRenderersFactory;
 import com.example.animelib.util.ThemeUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.concurrent.Executors;
 
 @UnstableApi
 public class VideoPlayerActivity extends AppCompatActivity implements PlayerGestureController.GestureCallback {
@@ -222,7 +229,17 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                     playlistManager.getPlaylistTitles(),
                     playlistManager.getPlaylistPaths(),
                     playlistManager.getCurrentIndex(),
-                    position -> playVideoAtIndex(position, true)
+                    new PlaylistEpisodesAdapter.OnEpisodeClickListener() {
+                        @Override
+                        public void onEpisodeClick(int position) {
+                            playVideoAtIndex(position, true);
+                        }
+
+                        @Override
+                        public void onEpisodeMoreClick(VideoItem video, int position) {
+                            showVideoOptionsBottomSheet(video);
+                        }
+                    }
             );
             rvPlaylistEpisodes.setAdapter(playlistEpisodesAdapter);
         }
@@ -913,7 +930,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             int playerWidth = screenWidth;
             int playerHeight = (int) (playerWidth * (9.0f / 16.0f));
 
-            int topMargin = statusBarHeight > 0 ? statusBarHeight : dpToPx(24);
+            int topMargin = statusBarHeight > 0 ? statusBarHeight : dpToPx(0);
 
             params.width = playerWidth;
             params.height = playerHeight;
@@ -1122,6 +1139,154 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 systemUiController.showSystemUI();
             }
         }
+    }
+
+    private void showVideoOptionsBottomSheet(VideoItem video) {
+        if (isFinishing() || isDestroyed() || video == null) return;
+        VideoOptionsBottomSheet bs = new VideoOptionsBottomSheet(this, video, new VideoOptionsBottomSheet.VideoActionCallback() {
+            @Override
+            public void onShare(VideoItem video) {
+                shareVideo(video);
+            }
+
+            @Override
+            public void onAddToPlaylist(VideoItem video) {
+                showAddToPlaylistDialog(video);
+            }
+
+            @Override
+            public void onRename(VideoItem video) {
+                showRenameVideoDialog(video);
+            }
+
+            @Override
+            public void onInfo(VideoItem video) {
+                VideoInfoBottomSheet infoBs = new VideoInfoBottomSheet(VideoPlayerActivity.this, video);
+                infoBs.show();
+            }
+
+            @Override
+            public void onDelete(VideoItem video) {
+                confirmDeleteVideo(video);
+            }
+        });
+        bs.show();
+    }
+
+    private void shareVideo(VideoItem video) {
+        try {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("video/*");
+            Uri uri = video.getUri();
+            if (uri == null && video.getPath() != null) {
+                File file = new File(video.getPath());
+                uri = androidx.core.content.FileProvider.getUriForFile(
+                        this,
+                        getPackageName() + ".fileprovider",
+                        file
+                );
+            }
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(shareIntent, "Поделиться видео"));
+        } catch (Exception e) {
+            CustomToast.showWarning(this, "Не удалось поделиться видео");
+        }
+    }
+
+    private void showAddToPlaylistDialog(VideoItem video) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            java.util.List<com.example.animelib.data.entity.PlaylistEntity> playlists = databaseManager.getAllPlaylists();
+            runOnUiThread(() -> {
+                ArrayList<String> options = new ArrayList<>();
+                options.add("＋ Новый плейлист");
+                for (com.example.animelib.data.entity.PlaylistEntity p : playlists) {
+                    options.add(p.getName());
+                }
+                DialogUtils.showListDialog(this, "Добавить в плейлист", options.toArray(new String[0]), index -> {
+                    if (index == 0) {
+                        DialogUtils.showInputDialog(this, "Новый плейлист", "Введите название плейлиста:", "", "Название", "Создать", "Отмена", new DialogUtils.InputDialogListener() {
+                            @Override
+                            public void onInputConfirmed(String input) {
+                                if (input == null || input.trim().isEmpty()) return;
+                                ArrayList<VideoItem> single = new ArrayList<>();
+                                single.add(video);
+                                databaseManager.createPlaylist(input.trim(), single);
+                                CustomToast.showSuccess(VideoPlayerActivity.this, "Плейлист создан и видео добавлено");
+                            }
+
+                            @Override
+                            public void onCancelled() {}
+                        });
+                    } else {
+                        com.example.animelib.data.entity.PlaylistEntity chosen = playlists.get(index - 1);
+                        String path = video.getPath() != null && !video.getPath().isEmpty() ? video.getPath() : video.getUriString();
+                        databaseManager.addVideoToPlaylist(chosen.getId(), path, video.getTitle());
+                        CustomToast.showSuccess(VideoPlayerActivity.this, "Добавлено в " + chosen.getName());
+                    }
+                });
+            });
+        });
+    }
+
+    private void showRenameVideoDialog(VideoItem video) {
+        String currentName = video.getDisplayTitle();
+        DialogUtils.showInputDialog(this, "Переименовать видео", "Введите новое имя:", currentName, "Имя файла", "Сохранить", "Отмена", new DialogUtils.InputDialogListener() {
+            @Override
+            public void onInputConfirmed(String input) {
+                if (input == null || input.trim().isEmpty() || input.trim().equals(currentName)) return;
+                String newName = input.trim();
+                String ext = video.getFileExtension();
+                String fullNewName = !ext.isEmpty() ? newName + "." + ext.toLowerCase(Locale.ROOT) : newName;
+
+                if (video.getPath() != null) {
+                    try {
+                        File file = new File(video.getPath());
+                        if (file.exists()) {
+                            File newFile = new File(file.getParentFile(), fullNewName);
+                            file.renameTo(newFile);
+                        }
+                    } catch (Exception ignored) {}
+                }
+
+                video.setTitle(fullNewName);
+                if (playlistEpisodesAdapter != null) {
+                    playlistEpisodesAdapter.notifyDataSetChanged();
+                }
+                CustomToast.showSuccess(VideoPlayerActivity.this, "Видео переименовано");
+            }
+
+            @Override
+            public void onCancelled() {}
+        });
+    }
+
+    private void confirmDeleteVideo(VideoItem video) {
+        DialogUtils.showConfirmDialog(
+                this,
+                "Удалить видео?",
+                "Вы действительно хотите удалить файл «" + video.getDisplayTitle() + "»? Это действие нельзя отменить.",
+                "Удалить",
+                "Отмена",
+                true,
+                new DialogUtils.DialogListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        if (video.getPath() != null) {
+                            try {
+                                File file = new File(video.getPath());
+                                if (file.exists()) {
+                                    file.delete();
+                                }
+                            } catch (Exception ignored) {}
+                        }
+                        CustomToast.showSuccess(VideoPlayerActivity.this, "Видео удалено");
+                    }
+
+                    @Override
+                    public void onNegativeClick() {}
+                }
+        );
     }
 
     @Override

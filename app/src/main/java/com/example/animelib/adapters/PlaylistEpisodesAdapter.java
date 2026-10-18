@@ -2,30 +2,29 @@ package com.example.animelib.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.util.LruCache;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import com.example.animelib.ui.M3LinearProgressIndicator;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.example.animelib.R;
 import com.example.animelib.data.DatabaseManager;
 import com.example.animelib.data.entity.VideoPlaybackHistoryEntity;
+import com.example.animelib.models.VideoItem;
+import com.example.animelib.ui.M3LinearProgressIndicator;
+import com.google.android.material.card.MaterialCardView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -35,28 +34,53 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
 
     public interface OnEpisodeClickListener {
         void onEpisodeClick(int position);
+        default void onEpisodeMoreClick(VideoItem video, int position) {}
     }
 
-    private final List<String> titles;
-    private final List<String> paths;
+    private final List<VideoItem> videos = new ArrayList<>();
     private int currentIndex;
     private final OnEpisodeClickListener listener;
 
-    private static final int CACHE_SIZE = 20 * 1024 * 1024;
+    private static final int CACHE_SIZE = 30 * 1024 * 1024;
     private static final LruCache<String, Bitmap> thumbnailCache = new LruCache<String, Bitmap>(CACHE_SIZE) {
         @Override
         protected int sizeOf(String key, Bitmap bitmap) {
             return bitmap.getByteCount();
         }
     };
-    private static final ExecutorService thumbnailExecutor = Executors.newFixedThreadPool(2);
+    private static final ExecutorService thumbnailExecutor = Executors.newFixedThreadPool(3);
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public PlaylistEpisodesAdapter(List<String> titles, List<String> paths, int currentIndex, OnEpisodeClickListener listener) {
-        this.titles = titles;
-        this.paths = paths;
         this.currentIndex = currentIndex;
         this.listener = listener;
+        if (titles != null && paths != null) {
+            for (int i = 0; i < paths.size(); i++) {
+                String path = paths.get(i);
+                String title = i < titles.size() ? titles.get(i) : "Серия " + (i + 1);
+                File file = (path != null && !path.isEmpty()) ? new File(path) : null;
+                long size = file != null && file.exists() ? file.length() : 0;
+                long modified = file != null && file.exists() ? file.lastModified() / 1000L : 0;
+                String folder = file != null && file.getParentFile() != null ? file.getParentFile().getName() : "Серия " + (i + 1);
+                this.videos.add(new VideoItem(i, title, path, null, 0, size, modified, folder));
+            }
+        }
+    }
+
+    public PlaylistEpisodesAdapter(List<VideoItem> initialVideos, int currentIndex, OnEpisodeClickListener listener) {
+        this.currentIndex = currentIndex;
+        this.listener = listener;
+        if (initialVideos != null) {
+            this.videos.addAll(initialVideos);
+        }
+    }
+
+    public void updateVideoList(List<VideoItem> newVideos) {
+        this.videos.clear();
+        if (newVideos != null) {
+            this.videos.addAll(newVideos);
+        }
+        notifyDataSetChanged();
     }
 
     public void setCurrentIndex(int index) {
@@ -73,29 +97,30 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
 
     @Override
     public void onBindViewHolder(@NonNull EpisodeViewHolder holder, int position) {
-        String title = position < titles.size() ? titles.get(position) : "Серия " + (position + 1);
-        String path = (paths != null && position < paths.size()) ? paths.get(position) : "";
+        if (position < 0 || position >= videos.size()) return;
+        VideoItem video = videos.get(position);
+        Context context = holder.itemView.getContext();
+        boolean isCurrent = (position == currentIndex);
 
-        String cleanTitle = title;
-        String extension = "";
-        if (title != null && title.contains(".")) {
-            int lastDot = title.lastIndexOf('.');
-            if (lastDot > 0) {
-                cleanTitle = title.substring(0, lastDot);
-                if (lastDot < title.length() - 1) {
-                    extension = title.substring(lastDot + 1).toUpperCase(java.util.Locale.ROOT);
-                }
-            }
-        }
-        if (extension.isEmpty() && !path.isEmpty() && path.contains(".")) {
-            int pathDot = path.lastIndexOf('.');
-            if (pathDot > 0 && pathDot < path.length() - 1) {
-                extension = path.substring(pathDot + 1).toUpperCase(java.util.Locale.ROOT);
-            }
+        // Transparent background & no stroke (identical to VideoFilesAdapter)
+        holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+        holder.cardView.setStrokeWidth(0);
+
+        // Title
+        holder.tvVideoTitle.setText(video.getDisplayTitle());
+        if (isCurrent) {
+            holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
+        } else {
+            holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.primary_text_color));
         }
 
-        holder.tvVideoTitle.setText(cleanTitle);
+        // "НОВОЕ" Tag
+        if (holder.tvVideoNewTag != null) {
+            holder.tvVideoNewTag.setVisibility(video.isNew() ? View.VISIBLE : View.GONE);
+        }
 
+        // Extension Tag
+        String extension = video.getFileExtension();
         if (holder.tvVideoExtensionTag != null) {
             if (!extension.isEmpty() && extension.length() <= 5) {
                 holder.tvVideoExtensionTag.setText(extension);
@@ -105,29 +130,52 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
             }
         }
 
-        // Episode Numbering Badge
-        holder.tvSelectionBadge.setVisibility(View.VISIBLE);
-        holder.tvSelectionBadge.setText(String.valueOf(position + 1));
+        // Selection / Numbering badge
+        if (holder.tvSelectionBadge != null) {
+            holder.tvSelectionBadge.setVisibility(View.GONE);
+        }
 
-        Context context = holder.itemView.getContext();
-        VideoPlaybackHistoryEntity history = !path.isEmpty()
-                ? DatabaseManager.getInstance(context).getVideoHistory(path)
+        // Fetch watch history if available
+        VideoPlaybackHistoryEntity history = (video.getPath() != null && !video.getPath().isEmpty())
+                ? DatabaseManager.getInstance(context).getVideoHistory(video.getPath())
                 : null;
 
-        // Folder & size info
-        File file = !path.isEmpty() ? new File(path) : null;
-        if (file != null && file.exists()) {
-            holder.tvVideoFolder.setText("Эпизод " + (position + 1));
-            long sizeMb = file.length() / (1024 * 1024);
-            holder.tvVideoSize.setText(sizeMb + " МБ");
+        // Folder & size/date info
+        holder.tvVideoFolder.setText(video.getFolderName() != null ? video.getFolderName() : "Серия " + (position + 1));
+
+        String sizeStr = video.getFormattedSize();
+        String dateStr = video.getFormattedDate();
+        if (sizeStr.isEmpty() && video.getPath() != null) {
+            File f = new File(video.getPath());
+            if (f.exists()) {
+                long sizeBytes = f.length();
+                double mb = sizeBytes / (1024.0 * 1024.0);
+                double gb = mb / 1024.0;
+                sizeStr = gb >= 1.0 ? String.format(Locale.getDefault(), "%.1f ГБ", gb) : String.format(Locale.getDefault(), "%.0f МБ", mb);
+                if (f.lastModified() > 0) {
+                    try {
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+                        dateStr = sdf.format(new java.util.Date(f.lastModified()));
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
+
+        if (!sizeStr.isEmpty() && !dateStr.isEmpty()) {
+            holder.tvVideoSize.setText(sizeStr + " • " + dateStr);
+        } else if (!sizeStr.isEmpty()) {
+            holder.tvVideoSize.setText(sizeStr);
         } else {
-            holder.tvVideoFolder.setText("Серия");
-            holder.tvVideoSize.setText("");
+            holder.tvVideoSize.setText(dateStr);
         }
 
         // Duration badge (bottom-left)
-        if (history != null && history.getDurationMs() > 0) {
-            long totalSecs = history.getDurationMs() / 1000;
+        long durationMs = video.getDurationMs();
+        if (durationMs <= 0 && history != null) {
+            durationMs = history.getDurationMs();
+        }
+        if (durationMs > 0) {
+            long totalSecs = durationMs / 1000;
             long hours = totalSecs / 3600;
             long mins = (totalSecs % 3600) / 60;
             long secs = totalSecs % 60;
@@ -137,44 +185,46 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
             holder.tvVideoDuration.setText(durStr);
             holder.tvVideoDuration.setVisibility(View.VISIBLE);
         } else {
-            holder.tvVideoDuration.setVisibility(View.GONE);
+            holder.tvVideoDuration.setText("--:--");
+            holder.tvVideoDuration.setVisibility(View.VISIBLE);
         }
 
-        // Progress percentage badge (bottom-right) and M3 progress bar (in description)
-        if (history != null && history.getProgressPercentage() > 0) {
+        // Progress percentage badge & M3 progress bar
+        int progressPercent = video.getProgressPercent();
+        if (progressPercent <= 0 && history != null) {
+            progressPercent = history.getProgressPercentage();
+        }
+        if (progressPercent > 0) {
             holder.pbWatchProgress.setVisibility(View.VISIBLE);
-            holder.pbWatchProgress.setProgress(history.getProgressPercentage(), false);
+            holder.pbWatchProgress.setProgress(progressPercent, false);
             holder.tvWatchProgressStatus.setVisibility(View.VISIBLE);
-            holder.tvWatchProgressStatus.setText(history.getProgressPercentage() + "%");
+            holder.tvWatchProgressStatus.setText(progressPercent + "%");
         } else {
             holder.pbWatchProgress.setVisibility(View.GONE);
             holder.tvWatchProgressStatus.setVisibility(View.GONE);
         }
 
-        boolean isCurrent = (position == currentIndex);
-
-        if (isCurrent) {
-            holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.purple_primary));
-            holder.cardView.setStrokeWidth(dpToPx(context, 1.5f));
-            holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
-            holder.tvSelectionBadge.setBackgroundResource(R.drawable.bg_m3_selected_pill);
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.card_bg_color));
-        } else {
-            holder.cardView.setStrokeWidth(dpToPx(context, 0.8f));
-            holder.cardView.setStrokeColor(ContextCompat.getColor(context, R.color.player_item_inactive_stroke));
-            holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.primary_text_color));
-            holder.tvSelectionBadge.setBackgroundResource(R.drawable.bg_m3_unselected_circle);
+        // 3-dots More Button
+        if (holder.btnVideoMore != null) {
+            holder.btnVideoMore.setVisibility(View.VISIBLE);
+            holder.btnVideoMore.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onEpisodeMoreClick(video, position);
+                }
+            });
         }
 
         // Thumbnail loading
-        if (!path.isEmpty()) {
-            holder.ivVideoThumbnail.setTag(path);
-            Bitmap cached = thumbnailCache.get(path);
+        String cacheKey = (video.getUriString() != null && !video.getUriString().isEmpty())
+                ? video.getUriString() : video.getPath();
+        if (cacheKey != null && !cacheKey.isEmpty()) {
+            holder.ivVideoThumbnail.setTag(cacheKey);
+            Bitmap cached = thumbnailCache.get(cacheKey);
             if (cached != null) {
                 holder.ivVideoThumbnail.setImageBitmap(cached);
             } else {
                 holder.ivVideoThumbnail.setImageResource(R.drawable.placeholder_image);
-                loadThumbnailAsync(context, path, holder.ivVideoThumbnail);
+                loadThumbnailAsync(context, video, cacheKey, holder.ivVideoThumbnail);
             }
         } else {
             holder.ivVideoThumbnail.setImageResource(R.drawable.placeholder_image);
@@ -187,25 +237,21 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         });
     }
 
-    private int dpToPx(Context context, float dp) {
-        return (int) (dp * context.getResources().getDisplayMetrics().density);
-    }
-
-    private void loadThumbnailAsync(Context context, String path, ImageView imageView) {
+    private void loadThumbnailAsync(Context context, VideoItem video, String cacheKey, ImageView imageView) {
         final Context appContext = context.getApplicationContext();
         thumbnailExecutor.execute(() -> {
             Bitmap thumb = com.example.animelib.util.VideoThumbnailHelper.createFrameThumbnail(
                     appContext,
-                    path,
-                    null,
-                    0
+                    video.getPath(),
+                    video.getUri(),
+                    video.getDurationMs()
             );
 
             if (thumb != null) {
                 final Bitmap finalThumb = thumb;
-                thumbnailCache.put(path, finalThumb);
+                thumbnailCache.put(cacheKey, finalThumb);
                 mainHandler.post(() -> {
-                    if (path.equals(imageView.getTag())) {
+                    if (cacheKey.equals(imageView.getTag())) {
                         imageView.setImageBitmap(finalThumb);
                     }
                 });
@@ -215,7 +261,7 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
 
     @Override
     public int getItemCount() {
-        return titles.size();
+        return videos.size();
     }
 
     static class EpisodeViewHolder extends RecyclerView.ViewHolder {
@@ -223,12 +269,14 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         ImageView ivVideoThumbnail;
         TextView tvVideoDuration;
         TextView tvVideoTitle;
+        TextView tvVideoNewTag;
         TextView tvVideoExtensionTag;
         TextView tvVideoFolder;
         TextView tvVideoSize;
         TextView tvSelectionBadge;
         TextView tvWatchProgressStatus;
         M3LinearProgressIndicator pbWatchProgress;
+        ImageButton btnVideoMore;
 
         EpisodeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -236,17 +284,14 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
             ivVideoThumbnail = itemView.findViewById(R.id.ivVideoThumbnail);
             tvVideoDuration = itemView.findViewById(R.id.tvVideoDuration);
             tvVideoTitle = itemView.findViewById(R.id.tvVideoTitle);
+            tvVideoNewTag = itemView.findViewById(R.id.tvVideoNewTag);
             tvVideoExtensionTag = itemView.findViewById(R.id.tvVideoExtensionTag);
             tvVideoFolder = itemView.findViewById(R.id.tvVideoFolder);
             tvVideoSize = itemView.findViewById(R.id.tvVideoSize);
             tvSelectionBadge = itemView.findViewById(R.id.tvSelectionBadge);
             tvWatchProgressStatus = itemView.findViewById(R.id.tvWatchProgressStatus);
             pbWatchProgress = itemView.findViewById(R.id.pbWatchProgress);
-
-            View btnMore = itemView.findViewById(R.id.btnVideoMore);
-            if (btnMore != null) btnMore.setVisibility(View.GONE);
-            View tvNew = itemView.findViewById(R.id.tvVideoNewTag);
-            if (tvNew != null) tvNew.setVisibility(View.GONE);
+            btnVideoMore = itemView.findViewById(R.id.btnVideoMore);
         }
     }
 }

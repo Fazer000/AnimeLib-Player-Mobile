@@ -85,20 +85,12 @@
             android:contentDescription="Закрыть" />
     </LinearLayout>
 
-    <!-- Divider or spacing -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/purple_alpha_25" />
-
     <!-- Actions List -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="6dp"
         android:paddingHorizontal="16dp">
 
         <!-- 1. Share -->
@@ -270,7 +262,7 @@
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/ic_info"
+                android:src="@drawable/ic_file_info"
                 app:tint="@color/primary_text_color"
                 android:layout_marginEnd="14dp"
                 android:contentDescription="Информация о файле" />
