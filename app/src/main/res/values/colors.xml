@@ -12,6 +12,8 @@
     <color name="purple_secondary_dark">#2E1E12</color>
     <color name="purple_alpha_10">#1AFF7A00</color>
     <color name="purple_alpha_25">#40FF7A00</color>
+    <color name="brand_secondary_dark">@color/purple_secondary_dark</color>
+    <color name="player_primary">@color/brand_primary</color>
     <color name="switch_track_unchecked">#E3E2E6</color>
     <color name="switch_thumb_unchecked">#79747E</color>
     <color name="switch_track_outline_unchecked">#79747E</color>
