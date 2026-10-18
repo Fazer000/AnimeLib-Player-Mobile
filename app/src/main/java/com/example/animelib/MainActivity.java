@@ -57,14 +57,6 @@ public class MainActivity extends AppCompatActivity {
         setupTabListeners();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (vTabIndicator != null) {
-            vTabIndicator.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ThemeUtils.getAccentColorInt(this)));
-        }
-    }
-
     private int cachedImeInset = 0;
 
     private void setupWindowInsets() {
@@ -251,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (targetFragment != null) {
             fm.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .hide(activeFragment)
                     .show(targetFragment)
                     .commit();
@@ -267,32 +260,82 @@ public class MainActivity extends AppCompatActivity {
         TextView[] texts = {tvTabExplorerText, tvTabPlaylistsText, tvTabSettingsText};
         ImageView[] icons = {ivTabExplorerIcon, ivTabPlaylistsIcon, ivTabSettingsIcon};
 
-        for (int i = 0; i < 3; i++) {
-            if (tabs[i] != null && tabs[i].getLayoutParams() instanceof LinearLayout.LayoutParams) {
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabs[i].getLayoutParams();
-                lp.weight = (i == targetIndex) ? 1.5f : 0.75f;
-                tabs[i].setLayoutParams(lp);
+        float startWeight0 = tabExplorer != null && tabExplorer.getLayoutParams() instanceof LinearLayout.LayoutParams ? ((LinearLayout.LayoutParams) tabExplorer.getLayoutParams()).weight : (currentTabIndex == 0 ? 1.5f : 0.75f);
+        float startWeight1 = tabPlaylists != null && tabPlaylists.getLayoutParams() instanceof LinearLayout.LayoutParams ? ((LinearLayout.LayoutParams) tabPlaylists.getLayoutParams()).weight : (currentTabIndex == 1 ? 1.5f : 0.75f);
+        float startWeight2 = tabSettings != null && tabSettings.getLayoutParams() instanceof LinearLayout.LayoutParams ? ((LinearLayout.LayoutParams) tabSettings.getLayoutParams()).weight : (currentTabIndex == 2 ? 1.5f : 0.75f);
+
+        float targetWeight0 = (targetIndex == 0) ? 1.5f : 0.75f;
+        float targetWeight1 = (targetIndex == 1) ? 1.5f : 0.75f;
+        float targetWeight2 = (targetIndex == 2) ? 1.5f : 0.75f;
+
+        if (animate && tabExplorer != null) {
+            android.animation.ValueAnimator weightAnim = android.animation.ValueAnimator.ofFloat(0f, 1f);
+            weightAnim.setDuration(220);
+            weightAnim.addUpdateListener(anim -> {
+                float fraction = anim.getAnimatedFraction();
+                if (tabExplorer.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                    LinearLayout.LayoutParams lp0 = (LinearLayout.LayoutParams) tabExplorer.getLayoutParams();
+                    lp0.weight = startWeight0 + (targetWeight0 - startWeight0) * fraction;
+                    tabExplorer.setLayoutParams(lp0);
+                }
+                if (tabPlaylists.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                    LinearLayout.LayoutParams lp1 = (LinearLayout.LayoutParams) tabPlaylists.getLayoutParams();
+                    lp1.weight = startWeight1 + (targetWeight1 - startWeight1) * fraction;
+                    tabPlaylists.setLayoutParams(lp1);
+                }
+                if (tabSettings.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                    LinearLayout.LayoutParams lp2 = (LinearLayout.LayoutParams) tabSettings.getLayoutParams();
+                    lp2.weight = startWeight2 + (targetWeight2 - startWeight2) * fraction;
+                    tabSettings.setLayoutParams(lp2);
+                }
+            });
+            weightAnim.start();
+        } else {
+            if (tabExplorer != null && tabExplorer.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                LinearLayout.LayoutParams lp0 = (LinearLayout.LayoutParams) tabExplorer.getLayoutParams();
+                lp0.weight = targetWeight0;
+                tabExplorer.setLayoutParams(lp0);
             }
+            if (tabPlaylists != null && tabPlaylists.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                LinearLayout.LayoutParams lp1 = (LinearLayout.LayoutParams) tabPlaylists.getLayoutParams();
+                lp1.weight = targetWeight1;
+                tabPlaylists.setLayoutParams(lp1);
+            }
+            if (tabSettings != null && tabSettings.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                LinearLayout.LayoutParams lp2 = (LinearLayout.LayoutParams) tabSettings.getLayoutParams();
+                lp2.weight = targetWeight2;
+                tabSettings.setLayoutParams(lp2);
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
             if (i == targetIndex) {
                 if (texts[i] != null) {
                     texts[i].setVisibility(View.VISIBLE);
                     texts[i].setTextColor(ContextCompat.getColor(this, R.color.white_color));
+                    if (animate) {
+                        texts[i].setAlpha(0f);
+                        texts[i].animate().alpha(1f).setDuration(200).start();
+                    } else {
+                        texts[i].setAlpha(1f);
+                    }
                 }
                 if (icons[i] != null) {
                     icons[i].setColorFilter(ContextCompat.getColor(this, R.color.white_color));
                 }
             } else {
                 if (texts[i] != null) {
-                    texts[i].setVisibility(View.GONE);
+                    if (animate && texts[i].getVisibility() == View.VISIBLE) {
+                        final TextView tv = texts[i];
+                        tv.animate().alpha(0f).setDuration(150).withEndAction(() -> tv.setVisibility(View.GONE)).start();
+                    } else {
+                        texts[i].setVisibility(View.GONE);
+                    }
                 }
                 if (icons[i] != null) {
                     icons[i].setColorFilter(ContextCompat.getColor(this, R.color.player_item_inactive_text));
                 }
             }
-        }
-
-        if (vTabIndicator != null) {
-            vTabIndicator.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ThemeUtils.getAccentColorInt(this)));
         }
 
         if (vTabIndicator != null && tabs[targetIndex] != null) {
@@ -314,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
                 if (animate) {
                     vTabIndicator.animate()
                             .translationX(targetLeft)
-                            .setDuration(200)
+                            .setDuration(220)
                             .start();
                 } else {
                     vTabIndicator.animate().cancel();
