@@ -145,7 +145,7 @@
                     android:background="@drawable/bg_new_badge"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:textColor="@color/purple_primary"
+                    android:textColor="@color/brand_primary"
                     android:textSize="9.5sp"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="НОВОЕ"
@@ -159,9 +159,9 @@
                     android:background="@drawable/bg_search_pill_badge"
                     android:paddingHorizontal="7dp"
                     android:paddingVertical="2dp"
-                    android:textColor="@color/purple_primary"
+                    android:textColor="@color/app_text_secondary"
                     android:textSize="10sp"
-                    android:fontFamily="@font/open_sans_bold"
+                    android:fontFamily="@font/open_sans_semibold"
                     android:text="MP4"
                     android:visibility="gone" />
 
@@ -172,7 +172,7 @@
                     android:background="@drawable/bg_search_pill_badge"
                     android:paddingHorizontal="7dp"
                     android:paddingVertical="2dp"
-                    android:textColor="@color/purple_primary"
+                    android:textColor="@color/app_text_secondary"
                     android:textSize="10sp"
                     android:fontFamily="@font/open_sans_semibold"
                     android:text="Downloads" />
