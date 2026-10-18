@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Accent / Primary Purple Brand Colors -->
-    <color name="purple_primary">#8852DE</color>
-    <color name="purple_secondary">#F3E8FF</color>
-    <color name="purple_secondary_dark">#241E38</color>
-    <color name="purple_alpha_10">#1A8852DE</color>
-    <color name="purple_alpha_25">#408852DE</color>
+    <!-- Accent / Primary Brand Colors (New Cyber Cyan Default) -->
+    <color name="purple_primary">#00D2FF</color>
+    <color name="purple_secondary">#E0F7FA</color>
+    <color name="purple_secondary_dark">#122B32</color>
+    <color name="purple_alpha_10">#1A00D2FF</color>
+    <color name="purple_alpha_25">#4000D2FF</color>
+
+    <!-- Available Accent Palettes -->
+    <color name="accent_cyan_primary">#00D2FF</color>
+    <color name="accent_cobalt_primary">#2563EB</color>
+    <color name="accent_emerald_primary">#10B981</color>
+    <color name="accent_crimson_primary">#FF2E63</color>
+    <color name="accent_amber_primary">#F59E0B</color>
+    <color name="accent_purple_primary">#8852DE</color>
     <color name="switch_track_unchecked">#E3E2E6</color>
     <color name="switch_thumb_unchecked">#79747E</color>
     <color name="switch_track_outline_unchecked">#79747E</color>

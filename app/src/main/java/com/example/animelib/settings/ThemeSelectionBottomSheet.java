@@ -60,6 +60,28 @@ public class ThemeSelectionBottomSheet extends FlexibleBottomSheetDialog {
         themeDarkPill = view.findViewById(R.id.themeDarkPill);
         themeDarkUnselected = view.findViewById(R.id.themeDarkUnselected);
         
+        // Accent color options
+        View accentCyan = view.findViewById(R.id.accentCyanOption);
+        View accentCobalt = view.findViewById(R.id.accentCobaltOption);
+        View accentEmerald = view.findViewById(R.id.accentEmeraldOption);
+        View accentCrimson = view.findViewById(R.id.accentCrimsonOption);
+        View accentAmber = view.findViewById(R.id.accentAmberOption);
+        View accentPurple = view.findViewById(R.id.accentPurpleOption);
+
+        View tagCyan = view.findViewById(R.id.tagCyanCurrent);
+        View tagCobalt = view.findViewById(R.id.tagCobaltCurrent);
+        View tagEmerald = view.findViewById(R.id.tagEmeraldCurrent);
+        View tagCrimson = view.findViewById(R.id.tagCrimsonCurrent);
+        View tagAmber = view.findViewById(R.id.tagAmberCurrent);
+        View tagPurple = view.findViewById(R.id.tagPurpleCurrent);
+
+        if (accentCyan != null) accentCyan.setOnClickListener(v -> selectAccent("Cyber Cyan", tagCyan, tagCobalt, tagEmerald, tagCrimson, tagAmber, tagPurple));
+        if (accentCobalt != null) accentCobalt.setOnClickListener(v -> selectAccent("Electric Cobalt", tagCobalt, tagCyan, tagEmerald, tagCrimson, tagAmber, tagPurple));
+        if (accentEmerald != null) accentEmerald.setOnClickListener(v -> selectAccent("Neon Emerald", tagEmerald, tagCyan, tagCobalt, tagCrimson, tagAmber, tagPurple));
+        if (accentCrimson != null) accentCrimson.setOnClickListener(v -> selectAccent("Cinema Crimson", tagCrimson, tagCyan, tagCobalt, tagEmerald, tagAmber, tagPurple));
+        if (accentAmber != null) accentAmber.setOnClickListener(v -> selectAccent("Sunset Amber", tagAmber, tagCyan, tagCobalt, tagEmerald, tagCrimson, tagPurple));
+        if (accentPurple != null) accentPurple.setOnClickListener(v -> selectAccent("AnimeLib Purple", tagPurple, tagCyan, tagCobalt, tagEmerald, tagCrimson, tagAmber));
+
         // Устанавливаем текущую тему
         updateThemeSelection();
         
@@ -80,6 +102,14 @@ public class ThemeSelectionBottomSheet extends FlexibleBottomSheetDialog {
         // Закрытие при клике вне диалога
         setCancelable(true);
         setCanceledOnTouchOutside(true);
+    }
+
+    private void selectAccent(String name, View activeTag, View... otherTags) {
+        if (activeTag != null) activeTag.setVisibility(View.VISIBLE);
+        for (View t : otherTags) {
+            if (t != null) t.setVisibility(View.GONE);
+        }
+        com.example.animelib.util.CustomToast.showSuccess(getContext(), "Выбран акцент: " + name);
     }
     
     private void selectTheme(int themeMode) {
