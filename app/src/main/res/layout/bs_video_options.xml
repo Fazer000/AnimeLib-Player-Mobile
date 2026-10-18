@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:background="@android:color/transparent">
+
+    <!-- Bottom Sheet Drag Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bottom_sheet_handle"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="56dp"
+            android:layout_height="36dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/black_color">
+
+            <ImageView
+                android:id="@+id/ivBsVideoThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder_image"
+                android:contentDescription="Превью" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvBsVideoTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Название видео"
+                android:textColor="@color/primary_text_color"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="15sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvBsVideoSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="MP4 • 250 МБ"
+                android:textColor="@color/player_item_inactive_text"
+                android:fontFamily="@font/open_sans"
+                android:textSize="11.5sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnCloseVideoOptions"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="6dp"
+            app:tint="@color/accent_text_color"
+            android:background="@drawable/button_close_background"
+            android:src="@drawable/ic_close"
+            android:scaleType="fitCenter"
+            android:contentDescription="Закрыть" />
+    </LinearLayout>
+
+    <!-- Divider or spacing -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/purple_alpha_25" />
+
+    <!-- Actions List -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp">
+
+        <!-- 1. Share -->
+        <LinearLayout
+            android:id="@+id/optVideoShare"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_m3_item_top"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="3dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_send"
+                app:tint="@color/primary_text_color"
+                android:layout_marginEnd="14dp"
+                android:contentDescription="Поделиться" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Поделиться"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="14.5sp"
+                    android:fontFamily="@font/open_sans_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Отправить видеофайл через приложения"
+                    android:textColor="@color/player_item_inactive_text"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/open_sans" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/player_item_inactive_text" />
+        </LinearLayout>
+
+        <!-- 2. Add to Playlist -->
+        <LinearLayout
+            android:id="@+id/optVideoAddToPlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_m3_item_middle"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="3dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_episodes"
+                app:tint="@color/primary_text_color"
+                android:layout_marginEnd="14dp"
+                android:contentDescription="Добавить в плейлист" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Добавить в плейлист"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="14.5sp"
+                    android:fontFamily="@font/open_sans_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Сохранить в существующий или новый плейлист"
+                    android:textColor="@color/player_item_inactive_text"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/open_sans" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/player_item_inactive_text" />
+        </LinearLayout>
+
+        <!-- 3. Rename -->
+        <LinearLayout
+            android:id="@+id/optVideoRename"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_m3_item_middle"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="3dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_edit_pencil"
+                app:tint="@color/primary_text_color"
+                android:layout_marginEnd="14dp"
+                android:contentDescription="Переименовать" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Переименовать"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="14.5sp"
+                    android:fontFamily="@font/open_sans_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Изменить название этого видео"
+                    android:textColor="@color/player_item_inactive_text"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/open_sans" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/player_item_inactive_text" />
+        </LinearLayout>
+
+        <!-- 4. Info -->
+        <LinearLayout
+            android:id="@+id/optVideoInfo"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_m3_item_middle"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="3dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_info"
+                app:tint="@color/primary_text_color"
+                android:layout_marginEnd="14dp"
+                android:contentDescription="Информация о файле" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Информация о файле"
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="14.5sp"
+                    android:fontFamily="@font/open_sans_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Свойства, разрешение, кодек, путь и размер"
+                    android:textColor="@color/player_item_inactive_text"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/open_sans" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/player_item_inactive_text" />
+        </LinearLayout>
+
+        <!-- 5. Delete -->
+        <LinearLayout
+            android:id="@+id/optVideoDelete"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_m3_item_bottom"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_trash_delete"
+                app:tint="#EF4444"
+                android:layout_marginEnd="14dp"
+                android:contentDescription="Удалить" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Удалить"
+                    android:textColor="#EF4444"
+                    android:textSize="14.5sp"
+                    android:fontFamily="@font/open_sans_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Удалить видеофайл с устройства"
+                    android:textColor="#F87171"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/open_sans" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="#EF4444" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

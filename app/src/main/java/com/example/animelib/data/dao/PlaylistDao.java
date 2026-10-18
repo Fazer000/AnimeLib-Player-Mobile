@@ -18,6 +18,12 @@ public interface PlaylistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPlaylistVideos(List<PlaylistVideoEntity> videos);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertPlaylistVideo(PlaylistVideoEntity video);
+
+    @Query("DELETE FROM playlist_videos WHERE videoPath = :videoPath")
+    void deleteVideoFromAllPlaylists(String videoPath);
+
     @Query("SELECT * FROM playlists ORDER BY createdAt DESC")
     List<PlaylistEntity> getAllPlaylists();
 

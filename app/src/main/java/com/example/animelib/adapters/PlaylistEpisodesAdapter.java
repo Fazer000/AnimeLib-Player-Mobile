@@ -242,6 +242,11 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
             tvSelectionBadge = itemView.findViewById(R.id.tvSelectionBadge);
             tvWatchProgressStatus = itemView.findViewById(R.id.tvWatchProgressStatus);
             pbWatchProgress = itemView.findViewById(R.id.pbWatchProgress);
+
+            View btnMore = itemView.findViewById(R.id.btnVideoMore);
+            if (btnMore != null) btnMore.setVisibility(View.GONE);
+            View tvNew = itemView.findViewById(R.id.tvVideoNewTag);
+            if (tvNew != null) tvNew.setVisibility(View.GONE);
         }
     }
 }

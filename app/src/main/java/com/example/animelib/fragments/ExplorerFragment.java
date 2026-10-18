@@ -49,7 +49,10 @@ import com.example.animelib.domain.VideoListFilter;
 import com.example.animelib.models.VideoFolder;
 import com.example.animelib.models.VideoItem;
 import com.example.animelib.repository.LocalVideoRepository;
+import android.net.Uri;
 import com.example.animelib.settings.PlaylistVideosBottomSheet;
+import com.example.animelib.settings.VideoInfoBottomSheet;
+import com.example.animelib.settings.VideoOptionsBottomSheet;
 import com.example.animelib.ui.M3LinearProgressIndicator;
 import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.DialogUtils;
@@ -349,12 +352,20 @@ public class ExplorerFragment extends Fragment {
         rvFolders.setAdapter(videoFoldersAdapter);
 
         rvVideos.setLayoutManager(new LinearLayoutManager(requireContext()));
-        videoFilesAdapter = new VideoFilesAdapter(displayedVideos, (video, position) -> {
-            if (isPlaylistCreationMode) {
-                videoFilesAdapter.toggleSelection(video);
-                updatePlaylistSelectionBar();
-            } else {
-                openVideoInPlayer(video);
+        videoFilesAdapter = new VideoFilesAdapter(displayedVideos, new VideoFilesAdapter.OnVideoClickListener() {
+            @Override
+            public void onVideoClick(VideoItem video, int position) {
+                if (isPlaylistCreationMode) {
+                    videoFilesAdapter.toggleSelection(video);
+                    updatePlaylistSelectionBar();
+                } else {
+                    openVideoInPlayer(video);
+                }
+            }
+
+            @Override
+            public void onVideoMoreClick(VideoItem video, int position) {
+                showVideoOptionsBottomSheet(video);
             }
         });
         rvVideos.setAdapter(videoFilesAdapter);
@@ -522,7 +533,7 @@ public class ExplorerFragment extends Fragment {
 
         displayedVideos.clear();
         displayedVideos.addAll(filtered);
-        videoFilesAdapter.notifyDataSetChanged();
+        videoFilesAdapter.updateVideos(displayedVideos);
 
         if (displayedVideos.isEmpty()) {
             layoutEmptyState.setVisibility(View.VISIBLE);
@@ -552,6 +563,189 @@ public class ExplorerFragment extends Fragment {
         intent.putExtra("VIDEO_LIST", new ArrayList<>(displayedVideos));
         intent.putExtra("START_INDEX", index);
         startActivity(intent);
+    }
+
+    private void showVideoOptionsBottomSheet(VideoItem video) {
+        if (!isAdded() || getContext() == null || video == null) return;
+        VideoOptionsBottomSheet bs = new VideoOptionsBottomSheet(requireContext(), video, new VideoOptionsBottomSheet.VideoActionCallback() {
+            @Override
+            public void onShare(VideoItem video) {
+                shareVideo(video);
+            }
+
+            @Override
+            public void onAddToPlaylist(VideoItem video) {
+                showAddToPlaylistDialog(video);
+            }
+
+            @Override
+            public void onRename(VideoItem video) {
+                showRenameVideoDialog(video);
+            }
+
+            @Override
+            public void onInfo(VideoItem video) {
+                showVideoInfoDialog(video);
+            }
+
+            @Override
+            public void onDelete(VideoItem video) {
+                confirmDeleteVideo(video);
+            }
+        });
+        bs.show();
+    }
+
+    private void shareVideo(VideoItem video) {
+        if (!isAdded() || getContext() == null || video == null) return;
+        try {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("video/*");
+            Uri uri = video.getUri();
+            if (uri == null && video.getPath() != null) {
+                File file = new File(video.getPath());
+                uri = androidx.core.content.FileProvider.getUriForFile(
+                        requireContext(),
+                        requireContext().getPackageName() + ".fileprovider",
+                        file
+                );
+            }
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(shareIntent, "Поделиться видео"));
+        } catch (Exception e) {
+            CustomToast.showWarning(requireContext(), "Не удалось поделиться видео");
+        }
+    }
+
+    private void showAddToPlaylistDialog(VideoItem video) {
+        if (!isAdded() || getContext() == null || video == null) return;
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<PlaylistEntity> playlists = databaseManager.getAllPlaylists();
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                if (!isAdded()) return;
+                ArrayList<String> options = new ArrayList<>();
+                options.add("＋ Новый плейлист");
+                for (PlaylistEntity p : playlists) {
+                    options.add(p.getName());
+                }
+                DialogUtils.showListDialog(requireContext(), "Добавить в плейлист", options.toArray(new String[0]), index -> {
+                    if (index == 0) {
+                        DialogUtils.showInputDialog(requireContext(), "Новый плейлист", "Введите название плейлиста:", "", "Название", "Создать", "Отмена", new DialogUtils.InputDialogListener() {
+                            @Override
+                            public void onInputConfirmed(String input) {
+                                if (input == null || input.trim().isEmpty()) return;
+                                ArrayList<VideoItem> single = new ArrayList<>();
+                                single.add(video);
+                                databaseManager.createPlaylist(input.trim(), single);
+                                CustomToast.showSuccess(requireContext(), "Плейлист создан и видео добавлено");
+                            }
+
+                            @Override
+                            public void onCancelled() {}
+                        });
+                    } else {
+                        PlaylistEntity chosen = playlists.get(index - 1);
+                        String path = video.getPath() != null && !video.getPath().isEmpty() ? video.getPath() : video.getUriString();
+                        databaseManager.addVideoToPlaylist(chosen.getId(), path, video.getTitle());
+                        CustomToast.showSuccess(requireContext(), "Добавлено в " + chosen.getName());
+                    }
+                });
+            });
+        });
+    }
+
+    private void showRenameVideoDialog(VideoItem video) {
+        if (!isAdded() || getContext() == null || video == null) return;
+        String currentName = video.getDisplayTitle();
+        DialogUtils.showInputDialog(requireContext(), "Переименовать видео", "Введите новое имя:", currentName, "Имя файла", "Сохранить", "Отмена", new DialogUtils.InputDialogListener() {
+            @Override
+            public void onInputConfirmed(String input) {
+                if (input == null || input.trim().isEmpty() || input.trim().equals(currentName)) return;
+                String newName = input.trim();
+                String ext = video.getFileExtension();
+                String fullNewName = !ext.isEmpty() ? newName + "." + ext.toLowerCase(Locale.ROOT) : newName;
+
+                if (video.getPath() != null) {
+                    try {
+                        File file = new File(video.getPath());
+                        if (file.exists()) {
+                            File newFile = new File(file.getParentFile(), fullNewName);
+                            file.renameTo(newFile);
+                        }
+                    } catch (Exception ignored) {}
+                }
+
+                video.setTitle(fullNewName);
+                databaseManager.updateVideoTitle(video.getPath(), fullNewName);
+                videoFilesAdapter.updateVideos(displayedVideos);
+                loadAndDisplayLastPlayedVideo();
+                CustomToast.showSuccess(requireContext(), "Видео переименовано");
+            }
+
+            @Override
+            public void onCancelled() {}
+        });
+    }
+
+    private void showVideoInfoDialog(VideoItem video) {
+        if (!isAdded() || getContext() == null || video == null) return;
+        VideoInfoBottomSheet infoBs = new VideoInfoBottomSheet(requireContext(), video);
+        infoBs.show();
+    }
+
+    private void confirmDeleteVideo(VideoItem video) {
+        if (!isAdded() || getContext() == null || video == null) return;
+        DialogUtils.showConfirmDialog(
+                requireContext(),
+                "Удалить видео?",
+                "Вы действительно хотите удалить «" + video.getDisplayTitle() + "»? Это действие нельзя отменить.",
+                "Удалить",
+                "Отмена",
+                true,
+                new DialogUtils.DialogListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        deleteVideoFile(video);
+                    }
+
+                    @Override
+                    public void onNegativeClick() {}
+                }
+        );
+    }
+
+    private void deleteVideoFile(VideoItem video) {
+        if (!isAdded() || getContext() == null || video == null) return;
+        Executors.newSingleThreadExecutor().execute(() -> {
+            if (video.getPath() != null) {
+                try {
+                    File file = new File(video.getPath());
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                } catch (Exception ignored) {}
+            }
+            if (video.getUri() != null && getContext() != null) {
+                try {
+                    requireContext().getContentResolver().delete(video.getUri(), null, null);
+                } catch (Exception ignored) {}
+            }
+            databaseManager.deleteVideoEverywhere(video.getPath());
+
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                allVideos.remove(video);
+                displayedVideos.remove(video);
+                videoFilesAdapter.updateVideos(displayedVideos);
+                foldersList.clear();
+                foldersList.addAll(videoFilter.buildFolders(allVideos));
+                videoFoldersAdapter.notifyDataSetChanged();
+                loadAndDisplayLastPlayedVideo();
+                CustomToast.showSuccess(requireContext(), "Видео удалено");
+            });
+        });
     }
 
     private void showSortDialog() {

@@ -556,6 +556,43 @@ public class DatabaseManager {
         });
     }
 
+    public void addVideoToPlaylist(long playlistId, String path, String title) {
+        executor.execute(() -> {
+            try {
+                List<com.example.animelib.data.entity.PlaylistVideoEntity> existing = db.playlistDao().getVideosForPlaylist(playlistId);
+                int nextIndex = existing != null ? existing.size() : 0;
+                db.playlistDao().insertPlaylistVideo(new com.example.animelib.data.entity.PlaylistVideoEntity(playlistId, path, title, nextIndex));
+            } catch (Exception e) {
+                Log.e(TAG, "Error adding video to playlist", e);
+            }
+        });
+    }
+
+    public void updateVideoTitle(String path, String newTitle) {
+        executor.execute(() -> {
+            try {
+                com.example.animelib.data.entity.VideoPlaybackHistoryEntity history = db.videoPlaybackHistoryDao().getHistoryForPath(path);
+                if (history != null) {
+                    history.setTitle(newTitle);
+                    db.videoPlaybackHistoryDao().insertOrUpdate(history);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error updating video title", e);
+            }
+        });
+    }
+
+    public void deleteVideoEverywhere(String path) {
+        executor.execute(() -> {
+            try {
+                db.videoPlaybackHistoryDao().deleteByPath(path);
+                db.playlistDao().deleteVideoFromAllPlaylists(path);
+            } catch (Exception e) {
+                Log.e(TAG, "Error deleting video from database", e);
+            }
+        });
+    }
+
     public void shutdown() {
         if (executor != null && !executor.isShutdown()) {
             executor.shutdown();

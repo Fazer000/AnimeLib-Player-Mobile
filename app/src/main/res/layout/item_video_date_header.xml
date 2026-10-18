@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginHorizontal="12dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="4dp">
+
+    <TextView
+        android:id="@+id/tvDateHeaderTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/open_sans_bold"
+        android:textColor="@color/primary_text_color"
+        android:textSize="14sp"
+        android:text="12 октября 2026" />
+
+    <TextView
+        android:id="@+id/tvDateHeaderCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_semibold"
+        android:textColor="@color/player_item_inactive_text"
+        android:textSize="11.5sp"
+        android:text="3 видео" />
+
+</LinearLayout>

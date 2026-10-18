@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="20dp"
+    android:background="@android:color/transparent">
+
+    <!-- Bottom Sheet Drag Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bottom_sheet_handle"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Информация о файле"
+            android:textColor="@color/primary_text_color"
+            android:fontFamily="@font/open_sans_bold"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/btnCloseVideoInfo"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="6dp"
+            app:tint="@color/accent_text_color"
+            android:background="@drawable/button_close_background"
+            android:src="@drawable/ic_close"
+            android:scaleType="fitCenter"
+            android:contentDescription="Закрыть" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/purple_alpha_25" />
+
+    <!-- Information Rows -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp">
+
+        <!-- Card Container with Info Rows -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_m3_item_single"
+            android:padding="16dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Имя файла"
+                android:textColor="@color/player_item_inactive_text"
+                android:textSize="11.5sp"
+                android:fontFamily="@font/open_sans" />
+
+            <TextView
+                android:id="@+id/tvInfoFileName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/primary_text_color"
+                android:textSize="14sp"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="video.mp4" />
+
+            <!-- Resolution & Duration -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Разрешение"
+                        android:textColor="@color/player_item_inactive_text"
+                        android:textSize="11.5sp"
+                        android:fontFamily="@font/open_sans" />
+
+                    <TextView
+                        android:id="@+id/tvInfoResolution"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="13.5sp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="1920 × 1080" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Длительность"
+                        android:textColor="@color/player_item_inactive_text"
+                        android:textSize="11.5sp"
+                        android:fontFamily="@font/open_sans" />
+
+                    <TextView
+                        android:id="@+id/tvInfoDuration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="13.5sp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="24:15" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Size & Extension -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Размер"
+                        android:textColor="@color/player_item_inactive_text"
+                        android:textSize="11.5sp"
+                        android:fontFamily="@font/open_sans" />
+
+                    <TextView
+                        android:id="@+id/tvInfoSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/primary_text_color"
+                        android:textSize="13.5sp"
+                        android:fontFamily="@font/open_sans_semibold"
+                        android:text="250 МБ" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Формат"
+                        android:textColor="@color/player_item_inactive_text"
+                        android:textSize="11.5sp"
+                        android:fontFamily="@font/open_sans" />
+
+                    <TextView
+                        android:id="@+id/tvInfoFormat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/purple_primary"
+                        android:textSize="13.5sp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="MP4" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Date modified -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Дата изменения"
+                android:textColor="@color/player_item_inactive_text"
+                android:textSize="11.5sp"
+                android:fontFamily="@font/open_sans" />
+
+            <TextView
+                android:id="@+id/tvInfoDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/primary_text_color"
+                android:textSize="13.5sp"
+                android:fontFamily="@font/open_sans_semibold"
+                android:text="14.10.2026 15:30" />
+
+            <!-- Path with Copy Button -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Путь к файлу"
+                android:textColor="@color/player_item_inactive_text"
+                android:textSize="11.5sp"
+                android:fontFamily="@font/open_sans" />
+
+            <LinearLayout
+                android:id="@+id/layoutCopyPath"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_search_pill_badge"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tvInfoPath"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/accent_text_color"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/open_sans"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:text="/storage/emulated/0/Download/video.mp4" />
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_copy"
+                    app:tint="@color/purple_primary"
+                    android:contentDescription="Скопировать путь" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public class VideoItem implements Serializable {
     private final long id;
-    private final String title;
+    private String title;
     private final String path;
     private final String uriString;
     private final long durationMs;
@@ -32,6 +32,42 @@ public class VideoItem implements Serializable {
 
     public long getId() { return id; }
     public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getDisplayTitle() {
+        if (title == null) return "";
+        int dot = title.lastIndexOf('.');
+        if (dot > 0) {
+            return title.substring(0, dot);
+        }
+        return title;
+    }
+
+    public String getFileExtension() {
+        String source = title;
+        if (source != null && source.contains(".")) {
+            int dot = source.lastIndexOf('.');
+            if (dot > 0 && dot < source.length() - 1) {
+                return source.substring(dot + 1).toUpperCase(Locale.ROOT);
+            }
+        }
+        if (path != null && path.contains(".")) {
+            int dot = path.lastIndexOf('.');
+            if (dot > 0 && dot < path.length() - 1) {
+                return path.substring(dot + 1).toUpperCase(Locale.ROOT);
+            }
+        }
+        return "";
+    }
+
+    public boolean isNew() {
+        if (dateModified <= 0) return false;
+        long timeMs = dateModified * 1000L;
+        long now = System.currentTimeMillis();
+        long diff = now - timeMs;
+        // Video was added or modified within the last 7 days
+        return diff >= -86400000L && diff <= 7L * 24 * 60 * 60 * 1000L;
+    }
     public String getPath() { return path; }
     public Uri getUri() { return uriString != null && !uriString.isEmpty() ? Uri.parse(uriString) : null; }
     public String getUriString() { return uriString; }
