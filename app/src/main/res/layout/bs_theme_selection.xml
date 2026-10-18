@@ -249,9 +249,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- 1. Cyber Cyan -->
+                <!-- 1. AnimeLIB Purple -->
                 <LinearLayout
-                    android:id="@+id/accentCyanOption"
+                    android:id="@+id/accentPurpleOption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -267,7 +267,48 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:background="@drawable/bg_m3_unselected_circle"
-                        android:backgroundTint="#00D2FF"
+                        android:backgroundTint="#8B5CF6"
+                        android:layout_marginEnd="14dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Фиолетовый (AnimeLIB Purple)"
+                        android:textColor="@color/primary_text_color"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="14.5sp" />
+
+                    <TextView
+                        android:id="@+id/tagPurpleCurrent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="АКТИВЕН"
+                        android:textColor="#8B5CF6"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:visibility="visible" />
+                </LinearLayout>
+
+                <!-- 2. Cyber Cyan -->
+                <LinearLayout
+                    android:id="@+id/accentCyanOption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="12dp"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/bg_m3_item_middle"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <View
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/bg_m3_unselected_circle"
+                        android:backgroundTint="#00E5FF"
                         android:layout_marginEnd="14dp" />
 
                     <TextView
@@ -284,13 +325,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="АКТИВЕН"
-                        android:textColor="#00D2FF"
+                        android:textColor="#00E5FF"
                         android:textSize="11sp"
                         android:fontFamily="@font/open_sans_bold"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- 2. Electric Cobalt -->
+                <!-- 3. Electric Cobalt -->
                 <LinearLayout
                     android:id="@+id/accentCobaltOption"
                     android:layout_width="match_parent"
@@ -308,7 +349,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:background="@drawable/bg_m3_unselected_circle"
-                        android:backgroundTint="#2563EB"
+                        android:backgroundTint="#3B82F6"
                         android:layout_marginEnd="14dp" />
 
                     <TextView
@@ -325,13 +366,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="АКТИВЕН"
-                        android:textColor="#2563EB"
+                        android:textColor="#3B82F6"
                         android:textSize="11sp"
                         android:fontFamily="@font/open_sans_bold"
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- 3. Neon Emerald -->
+                <!-- 4. Neon Emerald -->
                 <LinearLayout
                     android:id="@+id/accentEmeraldOption"
                     android:layout_width="match_parent"
@@ -372,7 +413,7 @@
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- 4. Cinema Crimson -->
+                <!-- 5. Cinema Crimson -->
                 <LinearLayout
                     android:id="@+id/accentCrimsonOption"
                     android:layout_width="match_parent"
@@ -413,7 +454,7 @@
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- 5. Sunset Amber -->
+                <!-- 6. Sunset Amber -->
                 <LinearLayout
                     android:id="@+id/accentAmberOption"
                     android:layout_width="match_parent"
@@ -454,9 +495,50 @@
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- 6. Classic Purple -->
+                <!-- 7. Cosmic Indigo -->
                 <LinearLayout
-                    android:id="@+id/accentPurpleOption"
+                    android:id="@+id/accentIndigoOption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="12dp"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/bg_m3_item_middle"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <View
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/bg_m3_unselected_circle"
+                        android:backgroundTint="#6366F1"
+                        android:layout_marginEnd="14dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Космический Индиго (Cosmic Indigo)"
+                        android:textColor="@color/primary_text_color"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textSize="14.5sp" />
+
+                    <TextView
+                        android:id="@+id/tagIndigoCurrent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="АКТИВЕН"
+                        android:textColor="#6366F1"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <!-- 8. Sakura Pink -->
+                <LinearLayout
+                    android:id="@+id/accentSakuraOption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -471,24 +553,24 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:background="@drawable/bg_m3_unselected_circle"
-                        android:backgroundTint="#8852DE"
+                        android:backgroundTint="#EC4899"
                         android:layout_marginEnd="14dp" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Фиолетовый (AnimeLib Purple)"
+                        android:text="Сакура Неон (Sakura Pink)"
                         android:textColor="@color/primary_text_color"
                         android:fontFamily="@font/open_sans_bold"
                         android:textSize="14.5sp" />
 
                     <TextView
-                        android:id="@+id/tagPurpleCurrent"
+                        android:id="@+id/tagSakuraCurrent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="АКТИВЕН"
-                        android:textColor="#8852DE"
+                        android:textColor="#EC4899"
                         android:textSize="11sp"
                         android:fontFamily="@font/open_sans_bold"
                         android:visibility="gone" />

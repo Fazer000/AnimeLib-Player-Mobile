@@ -202,16 +202,21 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         VideoViewHolder holder = (VideoViewHolder) rawHolder;
         VideoItem video = (VideoItem) itemObj;
 
+        Context context = holder.itemView.getContext();
+        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
+
         holder.tvVideoTitle.setText(video.getDisplayTitle());
 
         // "НОВОЕ" Tag
         if (holder.tvVideoNewTag != null) {
+            holder.tvVideoNewTag.setTextColor(accentColor);
             holder.tvVideoNewTag.setVisibility(video.isNew() ? View.VISIBLE : View.GONE);
         }
 
         // Extension Tag
         String extension = video.getFileExtension();
         if (holder.tvVideoExtensionTag != null) {
+            holder.tvVideoExtensionTag.setTextColor(accentColor);
             if (!extension.isEmpty() && extension.length() <= 5) {
                 holder.tvVideoExtensionTag.setText(extension);
                 holder.tvVideoExtensionTag.setVisibility(View.VISIBLE);
@@ -234,6 +239,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (video.getProgressPercent() > 0) {
             holder.pbWatchProgress.setVisibility(View.VISIBLE);
+            holder.pbWatchProgress.setIndicatorColor(accentColor);
             holder.pbWatchProgress.setProgress(video.getProgressPercent(), false);
             holder.tvWatchProgressStatus.setVisibility(View.VISIBLE);
             holder.tvWatchProgressStatus.setText(video.getProgressPercent() + "%");
@@ -251,6 +257,10 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     break;
                 }
             }
+        }
+
+        if (holder.tvSelectionBadge != null) {
+            holder.tvSelectionBadge.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accentColor));
         }
 
         if (selectionIndex >= 0) {

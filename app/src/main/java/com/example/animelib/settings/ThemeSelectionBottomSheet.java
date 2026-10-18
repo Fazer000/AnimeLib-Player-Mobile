@@ -61,26 +61,36 @@ public class ThemeSelectionBottomSheet extends FlexibleBottomSheetDialog {
         themeDarkUnselected = view.findViewById(R.id.themeDarkUnselected);
         
         // Accent color options
+        View accentPurple = view.findViewById(R.id.accentPurpleOption);
         View accentCyan = view.findViewById(R.id.accentCyanOption);
         View accentCobalt = view.findViewById(R.id.accentCobaltOption);
         View accentEmerald = view.findViewById(R.id.accentEmeraldOption);
         View accentCrimson = view.findViewById(R.id.accentCrimsonOption);
         View accentAmber = view.findViewById(R.id.accentAmberOption);
-        View accentPurple = view.findViewById(R.id.accentPurpleOption);
+        View accentIndigo = view.findViewById(R.id.accentIndigoOption);
+        View accentSakura = view.findViewById(R.id.accentSakuraOption);
 
-        View tagCyan = view.findViewById(R.id.tagCyanCurrent);
-        View tagCobalt = view.findViewById(R.id.tagCobaltCurrent);
-        View tagEmerald = view.findViewById(R.id.tagEmeraldCurrent);
-        View tagCrimson = view.findViewById(R.id.tagCrimsonCurrent);
-        View tagAmber = view.findViewById(R.id.tagAmberCurrent);
-        View tagPurple = view.findViewById(R.id.tagPurpleCurrent);
+        // Accent color tags
+        tagPurple = view.findViewById(R.id.tagPurpleCurrent);
+        tagCyan = view.findViewById(R.id.tagCyanCurrent);
+        tagCobalt = view.findViewById(R.id.tagCobaltCurrent);
+        tagEmerald = view.findViewById(R.id.tagEmeraldCurrent);
+        tagCrimson = view.findViewById(R.id.tagCrimsonCurrent);
+        tagAmber = view.findViewById(R.id.tagAmberCurrent);
+        tagIndigo = view.findViewById(R.id.tagIndigoCurrent);
+        tagSakura = view.findViewById(R.id.tagSakuraCurrent);
 
-        if (accentCyan != null) accentCyan.setOnClickListener(v -> selectAccent("Cyber Cyan", tagCyan, tagCobalt, tagEmerald, tagCrimson, tagAmber, tagPurple));
-        if (accentCobalt != null) accentCobalt.setOnClickListener(v -> selectAccent("Electric Cobalt", tagCobalt, tagCyan, tagEmerald, tagCrimson, tagAmber, tagPurple));
-        if (accentEmerald != null) accentEmerald.setOnClickListener(v -> selectAccent("Neon Emerald", tagEmerald, tagCyan, tagCobalt, tagCrimson, tagAmber, tagPurple));
-        if (accentCrimson != null) accentCrimson.setOnClickListener(v -> selectAccent("Cinema Crimson", tagCrimson, tagCyan, tagCobalt, tagEmerald, tagAmber, tagPurple));
-        if (accentAmber != null) accentAmber.setOnClickListener(v -> selectAccent("Sunset Amber", tagAmber, tagCyan, tagCobalt, tagEmerald, tagCrimson, tagPurple));
-        if (accentPurple != null) accentPurple.setOnClickListener(v -> selectAccent("AnimeLib Purple", tagPurple, tagCyan, tagCobalt, tagEmerald, tagCrimson, tagAmber));
+        String savedAccent = ThemeUtils.getSavedAccentColor(getContext());
+        updateAccentTags(savedAccent);
+
+        if (accentPurple != null) accentPurple.setOnClickListener(v -> selectAccent(ThemeUtils.ACCENT_PURPLE, "AnimeLIB Purple"));
+        if (accentCyan != null) accentCyan.setOnClickListener(v -> selectAccent(ThemeUtils.ACCENT_CYAN, "Cyber Cyan"));
+        if (accentCobalt != null) accentCobalt.setOnClickListener(v -> selectAccent(ThemeUtils.ACCENT_COBALT, "Electric Cobalt"));
+        if (accentEmerald != null) accentEmerald.setOnClickListener(v -> selectAccent(ThemeUtils.ACCENT_EMERALD, "Neon Emerald"));
+        if (accentCrimson != null) accentCrimson.setOnClickListener(v -> selectAccent(ThemeUtils.ACCENT_CRIMSON, "Cinema Crimson"));
+        if (accentAmber != null) accentAmber.setOnClickListener(v -> selectAccent(ThemeUtils.ACCENT_AMBER, "Sunset Amber"));
+        if (accentIndigo != null) accentIndigo.setOnClickListener(v -> selectAccent(ThemeUtils.ACCENT_INDIGO, "Cosmic Indigo"));
+        if (accentSakura != null) accentSakura.setOnClickListener(v -> selectAccent(ThemeUtils.ACCENT_SAKURA, "Sakura Pink"));
 
         // Устанавливаем текущую тему
         updateThemeSelection();
@@ -104,12 +114,39 @@ public class ThemeSelectionBottomSheet extends FlexibleBottomSheetDialog {
         setCanceledOnTouchOutside(true);
     }
 
-    private void selectAccent(String name, View activeTag, View... otherTags) {
-        if (activeTag != null) activeTag.setVisibility(View.VISIBLE);
-        for (View t : otherTags) {
-            if (t != null) t.setVisibility(View.GONE);
+    private View tagPurple, tagCyan, tagCobalt, tagEmerald, tagCrimson, tagAmber, tagIndigo, tagSakura;
+
+    private void updateAccentTags(String accentKey) {
+        if (tagPurple != null) tagPurple.setVisibility(ThemeUtils.ACCENT_PURPLE.equals(accentKey) ? View.VISIBLE : View.GONE);
+        if (tagCyan != null) tagCyan.setVisibility(ThemeUtils.ACCENT_CYAN.equals(accentKey) ? View.VISIBLE : View.GONE);
+        if (tagCobalt != null) tagCobalt.setVisibility(ThemeUtils.ACCENT_COBALT.equals(accentKey) ? View.VISIBLE : View.GONE);
+        if (tagEmerald != null) tagEmerald.setVisibility(ThemeUtils.ACCENT_EMERALD.equals(accentKey) ? View.VISIBLE : View.GONE);
+        if (tagCrimson != null) tagCrimson.setVisibility(ThemeUtils.ACCENT_CRIMSON.equals(accentKey) ? View.VISIBLE : View.GONE);
+        if (tagAmber != null) tagAmber.setVisibility(ThemeUtils.ACCENT_AMBER.equals(accentKey) ? View.VISIBLE : View.GONE);
+        if (tagIndigo != null) tagIndigo.setVisibility(ThemeUtils.ACCENT_INDIGO.equals(accentKey) ? View.VISIBLE : View.GONE);
+        if (tagSakura != null) tagSakura.setVisibility(ThemeUtils.ACCENT_SAKURA.equals(accentKey) ? View.VISIBLE : View.GONE);
+    }
+
+    private android.app.Activity getActivityFromContext(Context context) {
+        if (context == null) return null;
+        if (context instanceof android.app.Activity) {
+            return (android.app.Activity) context;
         }
-        com.example.animelib.util.CustomToast.showSuccess(getContext(), "Выбран акцент: " + name);
+        if (context instanceof android.content.ContextWrapper) {
+            return getActivityFromContext(((android.content.ContextWrapper) context).getBaseContext());
+        }
+        return null;
+    }
+
+    private void selectAccent(String accentKey, String name) {
+        ThemeUtils.saveAccentColor(getContext(), accentKey);
+        updateAccentTags(accentKey);
+        com.example.animelib.util.CustomToast.showSuccess(getContext(), "Выбран цвет: " + name);
+        dismiss();
+        android.app.Activity activity = getActivityFromContext(getContext());
+        if (activity != null) {
+            activity.recreate();
+        }
     }
     
     private void selectTheme(int themeMode) {
@@ -117,9 +154,9 @@ public class ThemeSelectionBottomSheet extends FlexibleBottomSheetDialog {
             currentTheme = themeMode;
             updateThemeSelection();
             
-            // Применяем тему без перезагрузки активности
-            if (getContext() instanceof android.app.Activity) {
-                ThemeUtils.applyThemeToActivity((android.app.Activity) getContext(), themeMode);
+            android.app.Activity activity = getActivityFromContext(getContext());
+            if (activity != null) {
+                ThemeUtils.applyThemeToActivity(activity, themeMode);
             } else {
                 ThemeUtils.applyTheme(themeMode);
             }

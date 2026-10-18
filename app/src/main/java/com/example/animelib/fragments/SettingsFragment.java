@@ -169,7 +169,8 @@ public class SettingsFragment extends Fragment {
         // Theme
         if (tvCurrentTheme != null) {
             int theme = ThemeUtils.getSavedThemePreference(requireContext());
-            tvCurrentTheme.setText(ThemeUtils.getThemeName(theme));
+            String accent = ThemeUtils.getSavedAccentColor(requireContext());
+            tvCurrentTheme.setText(ThemeUtils.getThemeName(theme) + " • " + ThemeUtils.getAccentName(accent));
         }
     }
 

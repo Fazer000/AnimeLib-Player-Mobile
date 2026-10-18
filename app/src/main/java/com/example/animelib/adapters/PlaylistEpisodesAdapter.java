@@ -102,6 +102,8 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         Context context = holder.itemView.getContext();
         boolean isCurrent = (position == currentIndex);
 
+        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
+
         // Transparent background & no stroke (identical to VideoFilesAdapter)
         holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
         holder.cardView.setStrokeWidth(0);
@@ -109,19 +111,21 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         // Title
         holder.tvVideoTitle.setText(video.getDisplayTitle());
         if (isCurrent) {
-            holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
+            holder.tvVideoTitle.setTextColor(accentColor);
         } else {
             holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.primary_text_color));
         }
 
         // "НОВОЕ" Tag
         if (holder.tvVideoNewTag != null) {
+            holder.tvVideoNewTag.setTextColor(accentColor);
             holder.tvVideoNewTag.setVisibility(video.isNew() ? View.VISIBLE : View.GONE);
         }
 
         // Extension Tag
         String extension = video.getFileExtension();
         if (holder.tvVideoExtensionTag != null) {
+            holder.tvVideoExtensionTag.setTextColor(accentColor);
             if (!extension.isEmpty() && extension.length() <= 5) {
                 holder.tvVideoExtensionTag.setText(extension);
                 holder.tvVideoExtensionTag.setVisibility(View.VISIBLE);

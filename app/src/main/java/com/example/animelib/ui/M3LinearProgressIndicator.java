@@ -73,8 +73,8 @@ public class M3LinearProgressIndicator extends View {
         gapSize = 4f * density;
         stopDotSize = 4f * density;
 
-        indicatorColor = ContextCompat.getColor(context, R.color.purple_primary);
-        trackColor = ContextCompat.getColor(context, R.color.purple_alpha_25);
+        indicatorColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
+        trackColor = (0x33 << 24) | (indicatorColor & 0x00FFFFFF);
         stopDotColor = indicatorColor;
 
         if (attrs != null) {

@@ -245,11 +245,33 @@ public class ExplorerFragment extends Fragment {
         setupRecyclerViews();
         setupListeners();
         loadAndDisplayLastPlayedVideo();
+        applyAccentColors();
 
         if (hasStoragePermission()) {
             loadVideosFromStorage();
         } else {
             showPermissionDeniedState();
+        }
+    }
+
+
+    private void applyAccentColors() {
+        if (!isAdded() || getContext() == null) return;
+        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(requireContext());
+        if (btnEmptyAction != null) {
+            btnEmptyAction.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accentColor));
+        }
+        if (progressBar != null) {
+            progressBar.setIndeterminateTintList(android.content.res.ColorStateList.valueOf(accentColor));
+        }
+        if (pbLastPlayedProgress != null) {
+            pbLastPlayedProgress.setIndicatorColor(accentColor);
+        }
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setColorSchemeColors(accentColor);
+        }
+        if (videoFilesAdapter != null) {
+            videoFilesAdapter.notifyDataSetChanged();
         }
     }
 
@@ -321,6 +343,7 @@ public class ExplorerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        applyAccentColors();
         if (hasStoragePermission()) {
             loadVideosFromStorage();
         }

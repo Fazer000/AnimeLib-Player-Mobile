@@ -268,6 +268,30 @@ public class DatabaseManager {
         }
     }
 
+    public void saveAccentColorSetting(String accentKey) {
+        executor.execute(() -> {
+            try {
+                AppSettings settings = db.appSettingsDao().getSettingsSync();
+                if (settings == null) {
+                    settings = new AppSettings();
+                }
+                settings.setAccentColor(accentKey);
+                db.appSettingsDao().upsert(settings);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to save accent color setting", e);
+            }
+        });
+    }
+
+    public String loadAccentColorSettingFromDb() {
+        try {
+            AppSettings settings = db.appSettingsDao().getSettingsSync();
+            return (settings != null && settings.getAccentColor() != null) ? settings.getAccentColor() : "purple";
+        } catch (Exception e) {
+            return "purple";
+        }
+    }
+
     public int loadThemeSetting() {
         return com.example.animelib.util.ThemeUtils.getSavedThemePreference(context);
     }
