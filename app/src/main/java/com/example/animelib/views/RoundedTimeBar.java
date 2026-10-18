@@ -134,7 +134,7 @@ public class RoundedTimeBar extends DefaultTimeBar {
 
             // Fallback colors if defined as transparent in XML
             if (playedPaint != null && (playedPaint.getColor() == Color.TRANSPARENT || playedPaint.getColor() == 0)) {
-                playedPaint.setColor(Color.parseColor("#8852DE")); // purple_primary
+                playedPaint.setColor(androidx.core.content.ContextCompat.getColor(getContext(), com.example.animelib.R.color.purple_primary));
             }
             if (bufferedPaint != null && (bufferedPaint.getColor() == Color.TRANSPARENT || bufferedPaint.getColor() == 0)) {
                 bufferedPaint.setColor(Color.parseColor("#80FFFFFF"));

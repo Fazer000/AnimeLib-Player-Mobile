@@ -189,6 +189,13 @@ public class SpeedBottomSheet extends FlexibleBottomSheetDialog {
         int secondaryColor = ContextCompat.getColor(getContext(), R.color.secondary_text_color);
         int primaryColor = ContextCompat.getColor(getContext(), R.color.primary_text_color);
 
+        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(getContext());
+        float density = getContext().getResources().getDisplayMetrics().density;
+        android.graphics.drawable.GradientDrawable selectedChipBg = new android.graphics.drawable.GradientDrawable();
+        selectedChipBg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        selectedChipBg.setCornerRadius(10 * density);
+        selectedChipBg.setColor(accentColor);
+
         for (Map.Entry<Float, TextView> entry : presetButtons.entrySet()) {
             float presetSpeed = entry.getKey();
             TextView chip = entry.getValue();
@@ -197,8 +204,8 @@ public class SpeedBottomSheet extends FlexibleBottomSheetDialog {
             boolean isSelected = Math.abs(presetSpeed - speed) < 0.01f;
 
             if (isSelected) {
-                chip.setBackgroundResource(R.drawable.chip_selected);
-                chip.setTextColor(secondaryColor);
+                chip.setBackground(selectedChipBg.getConstantState() != null ? selectedChipBg.getConstantState().newDrawable() : selectedChipBg);
+                chip.setTextColor(ContextCompat.getColor(getContext(), R.color.white_color));
             } else {
                 chip.setBackgroundResource(R.drawable.chip_unselected);
                 if (presetSpeed == 10.0f) {

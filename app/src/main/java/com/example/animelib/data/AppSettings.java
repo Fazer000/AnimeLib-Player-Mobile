@@ -19,6 +19,7 @@ public class AppSettings {
     private boolean autoPlay = true;
     private int longSkipDuration = 85; // seconds
     private int themeMode = 0; // 0 = light, 1 = dark, 2 = system
+    private String accentColor = "purple";
     private boolean subtitlesEnabled = true;
     private String subtitleFormat = "ass"; // "ass", "vtt", "auto"
     private float subtitleTextSize = 18f;
@@ -145,6 +146,14 @@ public class AppSettings {
 
     public void setThemeMode(int themeMode) {
         this.themeMode = themeMode;
+    }
+
+    public String getAccentColor() {
+        return accentColor != null ? accentColor : "purple";
+    }
+
+    public void setAccentColor(String accentColor) {
+        this.accentColor = accentColor;
     }
 
     public boolean isSubtitlesEnabled() {

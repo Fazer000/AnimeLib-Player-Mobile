@@ -2,6 +2,7 @@
 <resources>
     <color name="dt_primary_color">#131316</color>
     <color name="dt_header_color">#131316</color>
+    <color name="dt_secondary_color">@color/brand_primary</color>
     <color name="dt_card_background">#1C1C1E</color>
     <color name="dt_player_item_background">#1C1C1E</color>
     <color name="dt_related_panel_background">#1C1C1E</color>
@@ -9,12 +10,12 @@
     <!-- Unified Text Colors (Dark Mode Overrides) -->
     <color name="app_text_primary">#BFBFBF</color>
     <color name="app_text_secondary">#8A8A8E</color>
-    <color name="app_text_brand_button">@color/purple_primary</color>
+    <color name="app_text_brand_button">@color/brand_primary</color>
     <color name="app_text_accent_blue">#79A5D8</color>
 
     <!-- Semantic Theme Colors (Dark Override) -->
-    <color name="resize_card_selected_bg">@color/purple_secondary_dark</color>
-    <color name="resize_card_selected_stroke">@color/purple_primary</color>
+    <color name="resize_card_selected_bg">@color/brand_secondary_dark</color>
+    <color name="resize_card_selected_stroke">@color/brand_primary</color>
     <color name="resize_card_unselected_bg">#1C1C1E</color>
     <color name="resize_card_unselected_stroke">#33333C</color>
     <color name="resize_preview_inner_bg">#2A323D</color>
@@ -31,8 +32,8 @@
     <color name="accent_text_color">#8A8A8E</color>
     <color name="comment_input_bg">#1C1C1E</color>
     <color name="comment_input_stroke">#33333C</color>
-    <color name="chip_selected_bg">@color/purple_secondary_dark</color>
-    <color name="chip_selected_stroke">@color/purple_primary</color>
+    <color name="chip_selected_bg">@color/brand_secondary_dark</color>
+    <color name="chip_selected_stroke">@color/brand_primary</color>
     <color name="chip_unselected_bg">#1C1C1E</color>
     <color name="chip_unselected_stroke">#33333C</color>
     <color name="close_btn_bg">#20FFFFFF</color>
@@ -48,7 +49,7 @@
     <color name="player_item_inactive_text">#CBD5E1</color>
     <color name="player_item_inactive_stroke">#33FFFFFF</color>
     <color name="player_item_active_text">#FFFFFF</color>
-    <color name="player_item_active_stroke">@color/purple_primary</color>
+    <color name="player_item_active_stroke">@color/player_primary</color>
 
     <!-- Dialog Colors (Dark Theme Overrides) -->
     <color name="m3_item_bg">#1E1E1E</color>
@@ -74,6 +75,6 @@
     <color name="dialog_btn_secondary_text">#D1D5DB</color>
 
     <color name="dialog_ripple_color">#33FFFFFF</color>
-    <color name="dialog_rules_num_bg">#36363C</color>
+    <color name="dialog_rules_num_bg">@color/brand_primary</color>
     <color name="dialog_rules_num_text">#FFFFFF</color>
 </resources>

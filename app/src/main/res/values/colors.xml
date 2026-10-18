@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Accent / Primary Purple Brand Colors -->
-    <color name="purple_primary">#8852DE</color>
-    <color name="purple_secondary">#F3E8FF</color>
-    <color name="purple_secondary_dark">#241E38</color>
-    <color name="purple_alpha_10">#1A8852DE</color>
-    <color name="purple_alpha_25">#408852DE</color>
+    <!-- Accent / Primary Brand Colors (Orange) -->
+    <color name="brand_primary">#FF7A00</color>
+    <color name="brand_alpha_12">#1FFF7A00</color>
+    <color name="brand_alpha_16">#2AFF7A00</color>
+    <color name="brand_alpha_20">#33FF7A00</color>
+    <color name="brand_alpha_60">#99FF7A00</color>
+    <color name="purple_primary">@color/brand_primary</color>
+    <color name="purple_secondary">#FFF7ED</color>
+    <color name="purple_secondary_dark">#2E1E12</color>
+    <color name="purple_alpha_10">#1AFF7A00</color>
+    <color name="purple_alpha_25">#40FF7A00</color>
     <color name="switch_track_unchecked">#E3E2E6</color>
     <color name="switch_thumb_unchecked">#79747E</color>
     <color name="switch_track_outline_unchecked">#79747E</color>
