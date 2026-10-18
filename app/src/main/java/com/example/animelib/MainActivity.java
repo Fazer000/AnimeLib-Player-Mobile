@@ -57,36 +57,70 @@ public class MainActivity extends AppCompatActivity {
         setupTabListeners();
     }
 
+    private int cachedImeInset = 0;
+
     private void setupWindowInsets() {
         View fragmentContainer = findViewById(R.id.fragmentContainer);
+        View layoutBottomBar = findViewById(R.id.layoutBottomBar);
         if (fragmentContainer != null) {
             ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer, (v, insets) -> {
                 Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
                 Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+                Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
                 cachedTopInset = statusBarInsets.top;
                 cachedBottomInset = navBarInsets.bottom;
+                cachedImeInset = imeInsets.bottom;
 
                 v.setPadding(0, 0, 0, 0);
 
-                View layoutBottomBar = findViewById(R.id.layoutBottomBar);
                 if (layoutBottomBar != null) {
-                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) layoutBottomBar.getLayoutParams();
-                    int defaultBottomMargin = (int) (16 * getResources().getDisplayMetrics().density);
-                    lp.bottomMargin = cachedBottomInset + defaultBottomMargin;
-                    layoutBottomBar.setLayoutParams(lp);
+                    if (imeInsets.bottom > navBarInsets.bottom) {
+                        layoutBottomBar.setVisibility(View.GONE);
+                    } else {
+                        layoutBottomBar.setVisibility(View.VISIBLE);
+                        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) layoutBottomBar.getLayoutParams();
+                        int defaultBottomMargin = (int) (16 * getResources().getDisplayMetrics().density);
+                        lp.bottomMargin = cachedBottomInset + defaultBottomMargin;
+                        layoutBottomBar.setLayoutParams(lp);
+                    }
                 }
 
-                dispatchWindowInsetsToFragments(cachedTopInset, cachedBottomInset);
+                dispatchWindowInsetsToFragments(cachedTopInset, cachedBottomInset, cachedImeInset);
                 return insets;
+            });
+
+            ViewCompat.setWindowInsetsAnimationCallback(fragmentContainer, new androidx.core.view.WindowInsetsAnimationCompat.Callback(androidx.core.view.WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_STOP) {
+                @NonNull
+                @Override
+                public WindowInsetsCompat onProgress(@NonNull WindowInsetsCompat insets, @NonNull java.util.List<androidx.core.view.WindowInsetsAnimationCompat> runningAnimations) {
+                    Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+                    Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+                    Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+                    cachedTopInset = statusBarInsets.top;
+                    cachedBottomInset = navBarInsets.bottom;
+                    cachedImeInset = imeInsets.bottom;
+
+                    if (layoutBottomBar != null) {
+                        if (imeInsets.bottom > navBarInsets.bottom) {
+                            layoutBottomBar.setVisibility(View.GONE);
+                        } else {
+                            layoutBottomBar.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    dispatchWindowInsetsToFragments(statusBarInsets.top, navBarInsets.bottom, imeInsets.bottom);
+                    return insets;
+                }
             });
         }
     }
 
-    public void dispatchWindowInsetsToFragments(int topInset, int bottomInset) {
+    public void dispatchWindowInsetsToFragments(int topInset, int bottomInset, int imeInset) {
         this.cachedTopInset = topInset;
         this.cachedBottomInset = bottomInset;
+        this.cachedImeInset = imeInset;
         if (explorerFragment != null && explorerFragment.isAdded()) {
-            explorerFragment.updateWindowInsets(topInset, bottomInset);
+            explorerFragment.updateWindowInsets(topInset, bottomInset, imeInset);
         }
         if (playlistsFragment != null && playlistsFragment.isAdded()) {
             playlistsFragment.updateWindowInsets(topInset, bottomInset);
@@ -94,6 +128,10 @@ public class MainActivity extends AppCompatActivity {
         if (settingsFragment != null && settingsFragment.isAdded()) {
             settingsFragment.updateWindowInsets(topInset, bottomInset);
         }
+    }
+
+    public void dispatchWindowInsetsToFragments(int topInset, int bottomInset) {
+        dispatchWindowInsetsToFragments(topInset, bottomInset, cachedImeInset);
     }
 
     private void initViews() {

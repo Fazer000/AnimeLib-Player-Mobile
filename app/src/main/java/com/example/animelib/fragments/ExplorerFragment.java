@@ -110,7 +110,8 @@ public class ExplorerFragment extends Fragment {
     }
 
     private int currentTopInset = 0;
-    private int currentBottomInset = 0;
+    private int currentNavBarBottomInset = 0;
+    private int currentImeBottomInset = 0;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -119,8 +120,36 @@ public class ExplorerFragment extends Fragment {
         ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
             Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
             Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
-            updateWindowInsets(statusBarInsets.top, navBarInsets.bottom);
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+            updateWindowInsets(statusBarInsets.top, navBarInsets.bottom, imeInsets.bottom);
             return insets;
+        });
+
+        ViewCompat.setWindowInsetsAnimationCallback(view, new androidx.core.view.WindowInsetsAnimationCompat.Callback(androidx.core.view.WindowInsetsAnimationCompat.Callback.DISPATCH_MODE_STOP) {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onProgress(@NonNull WindowInsetsCompat insets, @NonNull java.util.List<androidx.core.view.WindowInsetsAnimationCompat> runningAnimations) {
+                Insets statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+                Insets navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+                Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+                updateWindowInsets(statusBarInsets.top, navBarInsets.bottom, imeInsets.bottom);
+                return insets;
+            }
+        });
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (layoutExpandedSearch != null && layoutExpandedSearch.getVisibility() == View.VISIBLE) {
+                    closeSearchAnimated();
+                } else if (isPlaylistCreationMode) {
+                    exitPlaylistCreationMode();
+                } else {
+                    setEnabled(false);
+                    requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
         });
 
         databaseManager = DatabaseManager.getInstance(requireContext());
@@ -140,8 +169,16 @@ public class ExplorerFragment extends Fragment {
         View layoutFloatingExplorerControls = view.findViewById(R.id.layoutFloatingExplorerControls);
         if (layoutFloatingExplorerControls != null) {
             layoutFloatingExplorerControls.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                if (bottom != oldBottom || top != oldTop) {
-                    updateWindowInsets(currentTopInset, currentBottomInset);
+                int newHeight = bottom - top;
+                int oldHeight = oldBottom - oldTop;
+                if (newHeight != oldHeight && rvVideos != null && isAdded()) {
+                    float density = getResources().getDisplayMetrics().density;
+                    int currentBottomMargin = 0;
+                    if (layoutFloatingExplorerControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                        currentBottomMargin = ((ViewGroup.MarginLayoutParams) layoutFloatingExplorerControls.getLayoutParams()).bottomMargin;
+                    }
+                    int totalPaddingBottom = currentBottomMargin + newHeight + (int) (16 * density);
+                    rvVideos.setPadding(rvVideos.getPaddingLeft(), rvVideos.getPaddingTop(), rvVideos.getPaddingRight(), totalPaddingBottom);
                 }
             });
         }
@@ -170,18 +207,28 @@ public class ExplorerFragment extends Fragment {
         }
     }
 
-    public void updateWindowInsets(int topInset, int bottomInset) {
+    public void updateWindowInsets(int topInset, int navBarBottomInset, int imeBottomInset) {
         this.currentTopInset = topInset;
-        this.currentBottomInset = bottomInset;
-        if (getView() == null) return;
+        this.currentNavBarBottomInset = navBarBottomInset;
+        this.currentImeBottomInset = imeBottomInset;
+        if (getView() == null || !isAdded()) return;
 
         float density = getResources().getDisplayMetrics().density;
         int topPadding = topInset + (int) (12 * density);
 
         View layoutFloatingExplorerControls = getView().findViewById(R.id.layoutFloatingExplorerControls);
-        int targetBottomMargin = bottomInset + (int) (88 * density);
+        if (layoutFloatingExplorerControls == null) return;
 
-        if (layoutFloatingExplorerControls != null && layoutFloatingExplorerControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+        int targetBottomMargin;
+        if (imeBottomInset > navBarBottomInset) {
+            // Software keyboard is active: position controls right above the keyboard
+            targetBottomMargin = imeBottomInset + (int) (12 * density);
+        } else {
+            // Keyboard is dismissed: position controls above the floating bottom navigation bar
+            targetBottomMargin = navBarBottomInset + (int) (88 * density);
+        }
+
+        if (layoutFloatingExplorerControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) layoutFloatingExplorerControls.getLayoutParams();
             if (lp.bottomMargin != targetBottomMargin) {
                 lp.bottomMargin = targetBottomMargin;
@@ -190,12 +237,16 @@ public class ExplorerFragment extends Fragment {
         }
 
         if (rvVideos != null) {
-            int controlsHeight = layoutFloatingExplorerControls != null ? layoutFloatingExplorerControls.getHeight() : 0;
+            int controlsHeight = layoutFloatingExplorerControls.getHeight();
             int totalPaddingBottom = targetBottomMargin + controlsHeight + (int) (16 * density);
             rvVideos.setPadding(0, topPadding, 0, totalPaddingBottom);
             rvVideos.setClipToPadding(false);
             rvVideos.setClipChildren(false);
         }
+    }
+
+    public void updateWindowInsets(int topInset, int bottomInset) {
+        updateWindowInsets(topInset, bottomInset, currentImeBottomInset);
     }
 
     @Override
