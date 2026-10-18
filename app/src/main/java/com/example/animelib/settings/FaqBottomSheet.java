@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -65,15 +67,7 @@ public class FaqBottomSheet extends FlexibleBottomSheetDialog {
                 @Override
                 public void onTabReselected(TabLayout.Tab tab) {}
             });
-        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(getContext());
-        if (tabLayout != null) {
-            tabLayout.setSelectedTabIndicatorColor(accentColor);
-            tabLayout.setTabTextColors(
-                androidx.core.content.ContextCompat.getColor(getContext(), R.color.player_item_inactive_text),
-                accentColor
-            );
         }
-        applyAccentToIcons(view, accentColor);
 
         if (backButton != null) {
             backButton.setOnClickListener(v -> {
@@ -89,13 +83,15 @@ public class FaqBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void applyAccentToIcons(View root, int accentColor) {
-        if (root == null) return;
-        if (root instanceof android.widget.ImageView && root.getId() != R.id.bs_faq_back) {
-            ((android.widget.ImageView) root).setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
-        } else if (root instanceof android.view.ViewGroup) {
-            android.view.ViewGroup vg = (android.view.ViewGroup) root;
-            for (int i = 0; i < vg.getChildCount(); i++) {
-                applyAccentToIcons(vg.getChildAt(i), accentColor);
+        if (root instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) root;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                applyAccentToIcons(group.getChildAt(i), accentColor);
+            }
+        } else if (root instanceof ImageView) {
+            ImageView iv = (ImageView) root;
+            if (iv.getBackground() != null) {
+                iv.setColorFilter(accentColor);
             }
         }
     }
