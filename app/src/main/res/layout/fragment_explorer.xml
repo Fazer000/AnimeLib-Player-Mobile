@@ -223,7 +223,7 @@
                         android:layout_height="match_parent"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_search"
-                        app:tint="@color/purple_primary"
+                        app:tint="@color/primary_text_color"
                         android:padding="8dp"
                         android:contentDescription="Поиск" />
                 </androidx.cardview.widget.CardView>
@@ -250,7 +250,6 @@
                     android:paddingHorizontal="14dp">
 
                     <ImageView
-                        android:id="@+id/ivSearchFieldIcon"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_search"

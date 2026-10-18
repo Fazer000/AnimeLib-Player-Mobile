@@ -125,25 +125,21 @@ public class SettingsFragment extends Fragment {
         // Subtitles
         if (switchSubtitles != null) {
             switchSubtitles.setChecked(databaseManager.loadSubtitlesEnabledSetting());
-            ThemeUtils.applyAccentToSwitch(switchSubtitles, requireContext());
         }
 
         // Ambient Light
         if (switchAmbientLight != null) {
             switchAmbientLight.setChecked(databaseManager.loadAmbientLightSetting());
-            ThemeUtils.applyAccentToSwitch(switchAmbientLight, requireContext());
         }
 
         // AutoPlay
         if (switchAutoPlay != null) {
             switchAutoPlay.setChecked(databaseManager.loadAutoPlaySetting());
-            ThemeUtils.applyAccentToSwitch(switchAutoPlay, requireContext());
         }
 
         // Surround Sound
         if (switchSurroundSound != null) {
             switchSurroundSound.setChecked(databaseManager.loadSurroundSoundSetting());
-            ThemeUtils.applyAccentToSwitch(switchSurroundSound, requireContext());
         }
         if (tvCurrentSurroundSound != null) {
             int mode = databaseManager.loadSurround3DMode();
@@ -168,14 +164,12 @@ public class SettingsFragment extends Fragment {
         // Test Mode
         if (switchTestMode != null) {
             switchTestMode.setChecked(databaseManager.loadTestModeSetting());
-            ThemeUtils.applyAccentToSwitch(switchTestMode, requireContext());
         }
 
         // Theme
         if (tvCurrentTheme != null) {
             int theme = ThemeUtils.getSavedThemePreference(requireContext());
-            String accent = ThemeUtils.getSavedAccentColor(requireContext());
-            tvCurrentTheme.setText(ThemeUtils.getThemeName(theme) + " • " + ThemeUtils.getAccentName(accent));
+            tvCurrentTheme.setText(ThemeUtils.getThemeName(theme));
         }
     }
 

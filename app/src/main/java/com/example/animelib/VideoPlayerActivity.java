@@ -1066,7 +1066,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     private void applyRoundedCornersToTimeBar(View timeBarView) {
         if (timeBarView == null) return;
         try {
-            int accentColor = ThemeUtils.getAccentColorInt(this);
             float density = getResources().getDisplayMetrics().density;
             if (timeBarView instanceof com.example.animelib.views.RoundedTimeBar) {
                 ((com.example.animelib.views.RoundedTimeBar) timeBarView).setCornerRadius(-1f);
@@ -1084,9 +1083,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                             paint.setPathEffect(pathEffect);
                             paint.setStrokeCap(Paint.Cap.ROUND);
                             paint.setStrokeJoin(Paint.Join.ROUND);
-                            if (field.getName().toLowerCase().contains("played") || field.getName().toLowerCase().contains("scrubber")) {
-                                paint.setColor(accentColor);
-                            }
                         }
                     }
                 }

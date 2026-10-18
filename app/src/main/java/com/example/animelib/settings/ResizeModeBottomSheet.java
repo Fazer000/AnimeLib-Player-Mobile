@@ -99,49 +99,19 @@ public class ResizeModeBottomSheet extends FlexibleBottomSheetDialog {
     }
 
     private void updateSelection() {
-        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(getContext());
-        float density = getContext().getResources().getDisplayMetrics().density;
-        android.graphics.drawable.GradientDrawable selectedDrawable = new android.graphics.drawable.GradientDrawable();
-        selectedDrawable.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-        selectedDrawable.setCornerRadius(10 * density);
-        selectedDrawable.setColor((0x25 << 24) | (accentColor & 0x00FFFFFF));
-        selectedDrawable.setStroke((int) (1.5f * density), accentColor);
-
         if (resizeFitCardBox != null) {
-            if (currentResizeMode == 0) {
-                resizeFitCardBox.setBackground(selectedDrawable.getConstantState() != null ? selectedDrawable.getConstantState().newDrawable() : selectedDrawable);
-            } else {
-                resizeFitCardBox.setBackgroundResource(R.drawable.card_resize_unselected);
-            }
+            resizeFitCardBox.setBackgroundResource(currentResizeMode == 0 ? R.drawable.card_resize_selected : R.drawable.card_resize_unselected);
         }
         if (resizeFillCardBox != null) {
-            if (currentResizeMode == 3) {
-                resizeFillCardBox.setBackground(selectedDrawable.getConstantState() != null ? selectedDrawable.getConstantState().newDrawable() : selectedDrawable);
-            } else {
-                resizeFillCardBox.setBackgroundResource(R.drawable.card_resize_unselected);
-            }
+            resizeFillCardBox.setBackgroundResource(currentResizeMode == 3 ? R.drawable.card_resize_selected : R.drawable.card_resize_unselected);
         }
         if (resizeZoomCardBox != null) {
-            if (currentResizeMode == 4) {
-                resizeZoomCardBox.setBackground(selectedDrawable.getConstantState() != null ? selectedDrawable.getConstantState().newDrawable() : selectedDrawable);
-            } else {
-                resizeZoomCardBox.setBackgroundResource(R.drawable.card_resize_unselected);
-            }
+            resizeZoomCardBox.setBackgroundResource(currentResizeMode == 4 ? R.drawable.card_resize_selected : R.drawable.card_resize_unselected);
         }
 
-        android.content.res.ColorStateList tintList = android.content.res.ColorStateList.valueOf(accentColor);
-        if (resizeFitCheck != null) {
-            resizeFitCheck.setImageTintList(tintList);
-            resizeFitCheck.setVisibility(currentResizeMode == 0 ? View.VISIBLE : View.GONE);
-        }
-        if (resizeFillCheck != null) {
-            resizeFillCheck.setImageTintList(tintList);
-            resizeFillCheck.setVisibility(currentResizeMode == 3 ? View.VISIBLE : View.GONE);
-        }
-        if (resizeZoomCheck != null) {
-            resizeZoomCheck.setImageTintList(tintList);
-            resizeZoomCheck.setVisibility(currentResizeMode == 4 ? View.VISIBLE : View.GONE);
-        }
+        if (resizeFitCheck != null) resizeFitCheck.setVisibility(currentResizeMode == 0 ? View.VISIBLE : View.GONE);
+        if (resizeFillCheck != null) resizeFillCheck.setVisibility(currentResizeMode == 3 ? View.VISIBLE : View.GONE);
+        if (resizeZoomCheck != null) resizeZoomCheck.setVisibility(currentResizeMode == 4 ? View.VISIBLE : View.GONE);
     }
 
     public static String getResizeModeText(int mode) {

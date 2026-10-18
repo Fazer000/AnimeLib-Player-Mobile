@@ -45,8 +45,8 @@ public class ExpressiveSlider extends Slider {
         endDotPaint.setStyle(Paint.Style.FILL);
         activeDotPaint.setStyle(Paint.Style.FILL);
 
-        int primaryColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
-        int inactiveColor = (0x33 << 24) | (primaryColor & 0x00FFFFFF);
+        int primaryColor = ContextCompat.getColor(context, R.color.purple_primary);
+        int inactiveColor = ContextCompat.getColor(context, R.color.purple_alpha_25);
 
         activeTrackPaint.setColor(primaryColor);
         inactiveTrackPaint.setColor(inactiveColor);
@@ -61,11 +61,6 @@ public class ExpressiveSlider extends Slider {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         // Do NOT call super.onDraw(canvas) so Material 3 default track artwork isn't rendered under our custom layout.
-        int accent = com.example.animelib.util.ThemeUtils.getAccentColorInt(getContext());
-        activeTrackPaint.setColor(accent);
-        thumbPaint.setColor(accent);
-        endDotPaint.setColor(accent);
-        inactiveTrackPaint.setColor((0x33 << 24) | (accent & 0x00FFFFFF));
 
         float density = getResources().getDisplayMetrics().density;
 
@@ -77,7 +72,23 @@ public class ExpressiveSlider extends Slider {
         float dotRadius = 2.2f * density;
         float dotMarginRight = 7f * density;
 
-
+        // Update colors from Slider tint lists if configured
+        ColorStateList activeTint = getTrackActiveTintList();
+        if (activeTint != null) {
+            int color = activeTint.getColorForState(getDrawableState(), activeTrackPaint.getColor());
+            activeTrackPaint.setColor(color);
+            endDotPaint.setColor(color);
+        }
+        ColorStateList thumbTint = getThumbTintList();
+        if (thumbTint != null) {
+            int color = thumbTint.getColorForState(getDrawableState(), thumbPaint.getColor());
+            thumbPaint.setColor(color);
+        }
+        ColorStateList inactiveTint = getTrackInactiveTintList();
+        if (inactiveTint != null) {
+            int color = inactiveTint.getColorForState(getDrawableState(), inactiveTrackPaint.getColor());
+            inactiveTrackPaint.setColor(color);
+        }
 
         if (!isEnabled()) {
             activeTrackPaint.setAlpha(128);
