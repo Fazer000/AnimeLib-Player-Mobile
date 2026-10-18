@@ -84,6 +84,10 @@ public class DialogUtils {
             if (isDanger) {
                 btnPos.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.dialog_danger_bg));
                 btnPos.setTextColor(ContextCompat.getColor(context, R.color.dialog_danger_text));
+            } else {
+                int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
+                btnPos.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accentColor));
+                btnPos.setTextColor(ContextCompat.getColor(context, R.color.white_color));
             }
             btnPos.setOnClickListener(v -> {
                 dialog.dismiss();
@@ -148,6 +152,9 @@ public class DialogUtils {
         }
 
         if (btnPos != null) {
+            int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
+            btnPos.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accentColor));
+            btnPos.setTextColor(ContextCompat.getColor(context, R.color.white_color));
             btnPos.setText(posText != null ? posText : "Сохранить");
             btnPos.setOnClickListener(v -> {
                 String text = etInput != null ? etInput.getText().toString().trim() : "";
@@ -287,14 +294,16 @@ public class DialogUtils {
                 TextView tvChoice = itemView.findViewById(R.id.tvChoiceTitle);
                 ImageView ivIndicator = itemView.findViewById(R.id.ivChoiceIndicator);
 
+                int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
                 if (tvChoice != null) {
                     tvChoice.setText(items[i]);
                     if (index == selectedIndex) {
-                        tvChoice.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
+                        tvChoice.setTextColor(accentColor);
                     }
                 }
 
                 if (ivIndicator != null) {
+                    ivIndicator.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
                     if (index == selectedIndex) {
                         ivIndicator.setVisibility(View.VISIBLE);
                         itemView.setBackgroundResource(R.drawable.bg_sort_popup_item_selected);

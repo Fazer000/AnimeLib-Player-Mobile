@@ -267,8 +267,32 @@ public class ExplorerFragment extends Fragment {
         if (pbLastPlayedProgress != null) {
             pbLastPlayedProgress.setIndicatorColor(accentColor);
         }
+        if (btnCreatePlaylist != null) {
+            btnCreatePlaylist.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
+        }
+        if (btnDonePlaylist != null) {
+            btnDonePlaylist.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
+        }
+        if (btnSearchToggle != null) {
+            btnSearchToggle.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
+        }
+        if (getView() != null) {
+            android.widget.ImageView ivSearchIcon = getView().findViewById(R.id.ivSearchFieldIcon);
+            if (ivSearchIcon != null) {
+                ivSearchIcon.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
+            }
+        }
+        if (btnLastPlayedPlayCard instanceof androidx.cardview.widget.CardView) {
+            ((androidx.cardview.widget.CardView) btnLastPlayedPlayCard).setCardBackgroundColor(accentColor);
+        }
+        if (btnLastPlayedPlaylist != null) {
+            btnLastPlayedPlaylist.setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
+        }
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setColorSchemeColors(accentColor);
+        }
+        if (videoFoldersAdapter != null) {
+            videoFoldersAdapter.notifyDataSetChanged();
         }
         if (videoFilesAdapter != null) {
             videoFilesAdapter.notifyDataSetChanged();

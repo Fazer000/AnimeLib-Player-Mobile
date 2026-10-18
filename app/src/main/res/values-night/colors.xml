@@ -48,7 +48,7 @@
     <color name="player_item_inactive_text">#CBD5E1</color>
     <color name="player_item_inactive_stroke">#33FFFFFF</color>
     <color name="player_item_active_text">#FFFFFF</color>
-    <color name="player_item_active_stroke">@color/purple_primary</color>
+    <color name="player_item_active_stroke">@color/player_primary</color>
 
     <!-- Dialog Colors (Dark Theme Overrides) -->
     <color name="m3_item_bg">#1E1E1E</color>

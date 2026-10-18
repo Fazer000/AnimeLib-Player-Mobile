@@ -45,7 +45,12 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
         holder.tvFolderChip.setText(folder.getName() + " (" + folder.getCount() + ")");
 
         if (position == selectedPosition) {
-            holder.tvFolderChip.setBackgroundResource(R.drawable.chip_selected);
+            int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(context);
+            android.graphics.drawable.GradientDrawable gd = new android.graphics.drawable.GradientDrawable();
+            gd.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+            gd.setCornerRadius(com.example.animelib.util.DisplayUtils.dpToPx(context, 10));
+            gd.setColor(accentColor);
+            holder.tvFolderChip.setBackground(gd);
             holder.tvFolderChip.setTextColor(ContextCompat.getColor(context, R.color.white_color));
         } else {
             holder.tvFolderChip.setBackgroundResource(R.drawable.chip_unselected);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -198,5 +199,51 @@ public class ThemeUtils {
             default:
                 return "Фиолетовый";
         }
+    }
+
+    public static void applyAccentToSwitch(android.widget.CompoundButton switchView, Context context) {
+        if (switchView == null || context == null) return;
+        int accent = getAccentColorInt(context);
+        int uncheckedTrack = androidx.core.content.ContextCompat.getColor(context, com.example.animelib.R.color.switch_track_unchecked);
+        int uncheckedThumb = androidx.core.content.ContextCompat.getColor(context, com.example.animelib.R.color.switch_thumb_unchecked);
+
+        int[][] states = new int[][] {
+            new int[] { android.R.attr.state_checked },
+            new int[] { -android.R.attr.state_checked }
+        };
+
+        int[] thumbColors = new int[] { accent, uncheckedThumb };
+        int[] trackColors = new int[] { (0x66 << 24) | (accent & 0x00FFFFFF), uncheckedTrack };
+
+        if (switchView instanceof com.google.android.material.materialswitch.MaterialSwitch) {
+            com.google.android.material.materialswitch.MaterialSwitch ms = (com.google.android.material.materialswitch.MaterialSwitch) switchView;
+            ms.setThumbTintList(new android.content.res.ColorStateList(states, thumbColors));
+            ms.setTrackTintList(new android.content.res.ColorStateList(states, trackColors));
+            ms.setTrackDecorationTintList(new android.content.res.ColorStateList(states, thumbColors));
+        } else {
+            switchView.setButtonTintList(new android.content.res.ColorStateList(states, thumbColors));
+        }
+    }
+
+    public static void applyAccentToButton(View button, Context context) {
+        if (button == null || context == null) return;
+        int accent = getAccentColorInt(context);
+        android.content.res.ColorStateList tintList = android.content.res.ColorStateList.valueOf(accent);
+        if (button instanceof com.google.android.material.button.MaterialButton) {
+            ((com.google.android.material.button.MaterialButton) button).setBackgroundTintList(tintList);
+        } else if (button instanceof android.widget.Button) {
+            button.setBackgroundTintList(tintList);
+        } else {
+            button.setBackgroundTintList(tintList);
+        }
+    }
+
+    public static void applyAccentToProgressBar(android.widget.ProgressBar pb, Context context) {
+        if (pb == null || context == null) return;
+        int accent = getAccentColorInt(context);
+        android.content.res.ColorStateList tintList = android.content.res.ColorStateList.valueOf(accent);
+        pb.setIndeterminateTintList(tintList);
+        pb.setProgressTintList(tintList);
+        pb.setSecondaryProgressTintList(android.content.res.ColorStateList.valueOf((0x33 << 24) | (accent & 0x00FFFFFF)));
     }
 }

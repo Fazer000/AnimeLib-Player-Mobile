@@ -303,7 +303,11 @@ public class M3LinearProgressIndicator extends View {
 
     public void setIndicatorColor(@ColorInt int color) {
         this.indicatorColor = color;
+        this.stopDotColor = color;
+        this.trackColor = (0x33 << 24) | (color & 0x00FFFFFF);
         indicatorPaint.setColor(color);
+        stopDotPaint.setColor(color);
+        trackPaint.setColor(this.trackColor);
         postInvalidateOnAnimation();
     }
 

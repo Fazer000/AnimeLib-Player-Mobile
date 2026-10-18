@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Accent / Primary Brand Colors (AnimeLIB Violet Purple Default) -->
-    <color name="purple_primary">#8B5CF6</color>
-    <color name="purple_secondary">#F3E8FF</color>
-    <color name="purple_secondary_dark">#2E1065</color>
-    <color name="purple_alpha_10">#1A8B5CF6</color>
-    <color name="purple_alpha_25">#408B5CF6</color>
+    <!-- Option 2: AnimeLib (Vivid Orange) & Player (Electric Cobalt Blue) -->
+    <!-- Core Brand / AnimeLib Colors -->
+    <color name="brand_primary">#FF6B00</color>
+    <color name="brand_secondary">#FFF0E5</color>
+    <color name="brand_secondary_dark">#381E0A</color>
+    <color name="brand_alpha_10">#1AFF6B00</color>
+    <color name="brand_alpha_25">#40FF6B00</color>
+    <color name="brand_alpha_50">#80FF6B00</color>
 
-    <!-- Available Accent Palettes -->
-    <color name="accent_purple_primary">#8B5CF6</color>
-    <color name="accent_cyan_primary">#00E5FF</color>
-    <color name="accent_cobalt_primary">#3B82F6</color>
-    <color name="accent_emerald_primary">#10B981</color>
-    <color name="accent_crimson_primary">#FF2E63</color>
-    <color name="accent_amber_primary">#F59E0B</color>
-    <color name="accent_indigo_primary">#6366F1</color>
-    <color name="accent_sakura_primary">#EC4899</color>
+    <!-- Dedicated Video Player Colors (Unified Orange Accent) -->
+    <color name="player_primary">@color/brand_primary</color>
+    <color name="player_secondary">@color/brand_secondary</color>
+    <color name="player_secondary_dark">@color/brand_secondary_dark</color>
+    <color name="player_alpha_10">@color/brand_alpha_10</color>
+    <color name="player_alpha_25">@color/brand_alpha_25</color>
+    <color name="player_alpha_50">@color/brand_alpha_50</color>
+
+    <!-- AnimeLib Module Semantic Colors -->
+    <color name="animelib_primary">@color/brand_primary</color>
+    <color name="animelib_secondary">@color/brand_secondary</color>
+    <color name="animelib_secondary_dark">@color/brand_secondary_dark</color>
+    <color name="animelib_alpha_10">@color/brand_alpha_10</color>
+    <color name="animelib_alpha_25">@color/brand_alpha_25</color>
+
+    <!-- Backward Compatibility / Primary Legacy Aliases -->
+    <color name="purple_primary">@color/brand_primary</color>
+    <color name="purple_secondary">@color/brand_secondary</color>
+    <color name="purple_secondary_dark">@color/brand_secondary_dark</color>
+    <color name="purple_alpha_10">@color/brand_alpha_10</color>
+    <color name="purple_alpha_25">@color/brand_alpha_25</color>
     <color name="switch_track_unchecked">#E3E2E6</color>
     <color name="switch_thumb_unchecked">#79747E</color>
     <color name="switch_track_outline_unchecked">#79747E</color>
@@ -139,7 +153,7 @@
     <color name="player_item_inactive_text">#374151</color>
     <color name="player_item_inactive_stroke">#33FFFFFF</color>
     <color name="player_item_active_text">#FFFFFF</color>
-    <color name="player_item_active_stroke">@color/purple_primary</color>
+    <color name="player_item_active_stroke">@color/player_primary</color>
 
     <!-- Dialog Colors (Unified Defaults) -->
     <color name="m3_item_bg">#12000000</color>

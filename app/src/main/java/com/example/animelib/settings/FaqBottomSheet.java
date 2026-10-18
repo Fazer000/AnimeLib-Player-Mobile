@@ -65,7 +65,15 @@ public class FaqBottomSheet extends FlexibleBottomSheetDialog {
                 @Override
                 public void onTabReselected(TabLayout.Tab tab) {}
             });
+        int accentColor = com.example.animelib.util.ThemeUtils.getAccentColorInt(getContext());
+        if (tabLayout != null) {
+            tabLayout.setSelectedTabIndicatorColor(accentColor);
+            tabLayout.setTabTextColors(
+                androidx.core.content.ContextCompat.getColor(getContext(), R.color.player_item_inactive_text),
+                accentColor
+            );
         }
+        applyAccentToIcons(view, accentColor);
 
         if (backButton != null) {
             backButton.setOnClickListener(v -> {
@@ -78,5 +86,17 @@ public class FaqBottomSheet extends FlexibleBottomSheetDialog {
 
         setCancelable(true);
         setCanceledOnTouchOutside(true);
+    }
+
+    private void applyAccentToIcons(View root, int accentColor) {
+        if (root == null) return;
+        if (root instanceof android.widget.ImageView && root.getId() != R.id.bs_faq_back) {
+            ((android.widget.ImageView) root).setImageTintList(android.content.res.ColorStateList.valueOf(accentColor));
+        } else if (root instanceof android.view.ViewGroup) {
+            android.view.ViewGroup vg = (android.view.ViewGroup) root;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                applyAccentToIcons(vg.getChildAt(i), accentColor);
+            }
+        }
     }
 }
