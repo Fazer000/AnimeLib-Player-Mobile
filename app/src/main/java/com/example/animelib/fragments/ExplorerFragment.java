@@ -688,6 +688,12 @@ public class ExplorerFragment extends Fragment {
                     if (title == null || title.trim().isEmpty()) {
                         title = file.getName();
                     }
+                    if (title != null && title.contains(".")) {
+                        int dot = title.lastIndexOf('.');
+                        if (dot > 0) {
+                            title = title.substring(0, dot);
+                        }
+                    }
                     tvLastPlayedTitle.setText(title);
 
                     String subtitle;

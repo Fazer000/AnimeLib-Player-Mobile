@@ -305,12 +305,11 @@
             android:id="@+id/cardLastPlayedVideo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="6dp"
             app:cardBackgroundColor="@color/card_bg_color"
             app:cardCornerRadius="18dp"
             app:cardElevation="8dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/purple_alpha_25"
+            app:strokeWidth="0dp"
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone">
@@ -330,8 +329,7 @@
                     android:layout_height="54dp"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="0dp"
-                    app:strokeWidth="0.5dp"
-                    app:strokeColor="@color/purple_alpha_25"
+                    app:strokeWidth="0dp"
                     app:cardBackgroundColor="#0A0C14">
 
                     <FrameLayout
@@ -440,9 +438,9 @@
                         android:id="@+id/btnLastPlayedPlayCard"
                         android:layout_width="38dp"
                         android:layout_height="38dp"
-                        app:cardBackgroundColor="@color/purple_primary"
+                        app:cardBackgroundColor="@android:color/transparent"
                         app:cardCornerRadius="19dp"
-                        app:cardElevation="4dp"
+                        app:cardElevation="0dp"
                         app:cardPreventCornerOverlap="false">
 
                         <ImageButton
@@ -461,10 +459,10 @@
                         android:id="@+id/btnLastPlayedPlaylistCard"
                         android:layout_width="38dp"
                         android:layout_height="38dp"
-                        android:layout_marginStart="6dp"
-                        app:cardBackgroundColor="@color/card_bg_color"
+                        android:layout_marginStart="2dp"
+                        app:cardBackgroundColor="@android:color/transparent"
                         app:cardCornerRadius="19dp"
-                        app:cardElevation="4dp"
+                        app:cardElevation="0dp"
                         app:cardPreventCornerOverlap="false"
                         android:visibility="gone">
 
@@ -474,7 +472,7 @@
                             android:layout_height="match_parent"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/ic_episodes"
-                            app:tint="@color/purple_primary"
+                            app:tint="@color/white_color"
                             android:padding="8dp"
                             android:contentDescription="Плейлист" />
                     </androidx.cardview.widget.CardView>
@@ -489,7 +487,7 @@
             android:id="@+id/cardFolderCarousel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="0dp"
             app:cardBackgroundColor="@color/card_bg_color"
             app:cardCornerRadius="20dp"
             app:cardElevation="8dp"

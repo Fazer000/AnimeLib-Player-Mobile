@@ -68,9 +68,6 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
     @Override
     public EpisodeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_video_card, parent, false);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        params.setMargins(0, params.topMargin, 0, params.bottomMargin);
-        view.setLayoutParams(params);
         return new EpisodeViewHolder(view);
     }
 
@@ -79,7 +76,34 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         String title = position < titles.size() ? titles.get(position) : "Серия " + (position + 1);
         String path = (paths != null && position < paths.size()) ? paths.get(position) : "";
 
-        holder.tvVideoTitle.setText(title);
+        String cleanTitle = title;
+        String extension = "";
+        if (title != null && title.contains(".")) {
+            int lastDot = title.lastIndexOf('.');
+            if (lastDot > 0) {
+                cleanTitle = title.substring(0, lastDot);
+                if (lastDot < title.length() - 1) {
+                    extension = title.substring(lastDot + 1).toUpperCase(java.util.Locale.ROOT);
+                }
+            }
+        }
+        if (extension.isEmpty() && !path.isEmpty() && path.contains(".")) {
+            int pathDot = path.lastIndexOf('.');
+            if (pathDot > 0 && pathDot < path.length() - 1) {
+                extension = path.substring(pathDot + 1).toUpperCase(java.util.Locale.ROOT);
+            }
+        }
+
+        holder.tvVideoTitle.setText(cleanTitle);
+
+        if (holder.tvVideoExtensionTag != null) {
+            if (!extension.isEmpty() && extension.length() <= 5) {
+                holder.tvVideoExtensionTag.setText(extension);
+                holder.tvVideoExtensionTag.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvVideoExtensionTag.setVisibility(View.GONE);
+            }
+        }
 
         // Episode Numbering Badge
         holder.tvSelectionBadge.setVisibility(View.VISIBLE);
@@ -199,6 +223,7 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         ImageView ivVideoThumbnail;
         TextView tvVideoDuration;
         TextView tvVideoTitle;
+        TextView tvVideoExtensionTag;
         TextView tvVideoFolder;
         TextView tvVideoSize;
         TextView tvSelectionBadge;
@@ -211,6 +236,7 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
             ivVideoThumbnail = itemView.findViewById(R.id.ivVideoThumbnail);
             tvVideoDuration = itemView.findViewById(R.id.tvVideoDuration);
             tvVideoTitle = itemView.findViewById(R.id.tvVideoTitle);
+            tvVideoExtensionTag = itemView.findViewById(R.id.tvVideoExtensionTag);
             tvVideoFolder = itemView.findViewById(R.id.tvVideoFolder);
             tvVideoSize = itemView.findViewById(R.id.tvVideoSize);
             tvSelectionBadge = itemView.findViewById(R.id.tvSelectionBadge);

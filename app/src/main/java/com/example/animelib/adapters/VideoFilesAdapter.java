@@ -99,8 +99,37 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
         VideoItem video = videos.get(position);
+        String rawTitle = video.getTitle();
+        String cleanTitle = rawTitle;
+        String extension = "";
 
-        holder.tvVideoTitle.setText(video.getTitle());
+        if (rawTitle != null && rawTitle.contains(".")) {
+            int lastDot = rawTitle.lastIndexOf('.');
+            if (lastDot > 0) {
+                cleanTitle = rawTitle.substring(0, lastDot);
+                if (lastDot < rawTitle.length() - 1) {
+                    extension = rawTitle.substring(lastDot + 1).toUpperCase(java.util.Locale.ROOT);
+                }
+            }
+        }
+        if (extension.isEmpty() && video.getPath() != null && video.getPath().contains(".")) {
+            int pathDot = video.getPath().lastIndexOf('.');
+            if (pathDot > 0 && pathDot < video.getPath().length() - 1) {
+                extension = video.getPath().substring(pathDot + 1).toUpperCase(java.util.Locale.ROOT);
+            }
+        }
+
+        holder.tvVideoTitle.setText(cleanTitle);
+
+        if (holder.tvVideoExtensionTag != null) {
+            if (!extension.isEmpty() && extension.length() <= 5) {
+                holder.tvVideoExtensionTag.setText(extension);
+                holder.tvVideoExtensionTag.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvVideoExtensionTag.setVisibility(View.GONE);
+            }
+        }
+
         holder.tvVideoDuration.setText(video.getFormattedDuration());
         holder.tvVideoFolder.setText(video.getFolderName());
         String sizeStr = video.getFormattedSize();
@@ -201,6 +230,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
         ImageView ivVideoThumbnail;
         TextView tvVideoDuration;
         TextView tvVideoTitle;
+        TextView tvVideoExtensionTag;
         TextView tvVideoFolder;
         TextView tvVideoSize;
         TextView tvWatchProgressStatus;
@@ -212,6 +242,7 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<VideoFilesAdapter.Vi
             ivVideoThumbnail = itemView.findViewById(R.id.ivVideoThumbnail);
             tvVideoDuration = itemView.findViewById(R.id.tvVideoDuration);
             tvVideoTitle = itemView.findViewById(R.id.tvVideoTitle);
+            tvVideoExtensionTag = itemView.findViewById(R.id.tvVideoExtensionTag);
             tvVideoFolder = itemView.findViewById(R.id.tvVideoFolder);
             tvVideoSize = itemView.findViewById(R.id.tvVideoSize);
             tvWatchProgressStatus = itemView.findViewById(R.id.tvWatchProgressStatus);
