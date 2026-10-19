@@ -82,7 +82,7 @@
 
 | Платформа / Версия | Последний релиз | Ссылка |
 |-------------------|-----------------|--------|
-| 🎬 **AnimeLib Video Player (Android)** | [![Player Release](https://img.shields.io/badge/release-v1.0.0-FF7A00?style=flat-square)](#) | [Скачать последнюю версию](../../releases) |
+| 🎬 **PlayerLib (Android)** | [![Player Release](https://img.shields.io/badge/release-v1.0.0-FF7A00?style=flat-square)](#) | [Скачать последнюю версию](../../releases) |
 | 📱 **AnimeLib Mobile (Android)** | [![Mobile Release](https://img.shields.io/github/v/release/Fazer000/AnimeLib-Mobile?label=mobile&style=flat-square)](https://github.com/Fazer000/AnimeLib-Mobile/releases) | [Скачать оригинальную мобильную версию](https://github.com/Fazer000/AnimeLib-Mobile/releases) |
 | 🖥️ **AnimeLib Desktop (ПК)** | [![Desktop Release](https://img.shields.io/github/v/release/Fazer000/AnimeLib-Desktop?label=desktop&style=flat-square)](https://github.com/Fazer000/AnimeLib-Desktop/releases) | [Скачать PC версию](https://github.com/Fazer000/AnimeLib-Desktop/releases) |
 
