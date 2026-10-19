@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (targetFragment != null) {
             fm.beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .setCustomAnimations(R.anim.fragment_scale_fade_in, R.anim.fragment_scale_fade_out)
                     .hide(activeFragment)
                     .show(targetFragment)
                     .commit();
@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView[] icons = {ivTabExplorerIcon, ivTabPlaylistsIcon, ivTabSettingsIcon};
 
         if (animate && tabs[0] != null && tabs[0].getParent() instanceof ViewGroup) {
-            android.transition.TransitionManager.beginDelayedTransition((ViewGroup) tabs[0].getParent(), new android.transition.AutoTransition().setDuration(220));
+            android.transition.TransitionManager.beginDelayedTransition((ViewGroup) tabs[0].getParent(), new android.transition.AutoTransition().setDuration(130));
         }
 
         for (int i = 0; i < 3; i++) {
@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (animate) {
                     android.animation.ValueAnimator animator = android.animation.ValueAnimator.ofFloat(0f, 1f);
-                    animator.setDuration(220);
+                    animator.setDuration(130);
                     animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
                     int finalStartWidth = startWidth;
                     float finalStartTranslationX = startTranslationX;

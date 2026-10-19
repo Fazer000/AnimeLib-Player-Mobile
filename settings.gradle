@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AnimeLib Player"
+rootProject.name = "PlayerLib"
 include ':app'

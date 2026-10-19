@@ -1,6 +1,6 @@
 <resources>
     <dimen name="dialog_margin">10dp</dimen>
-    <string name="app_name">AnimeLib Player</string>
+    <string name="app_name">PlayerLib</string>
     <string name="site_url">v5.animelib.org</string>
 
     <!-- Domain Selection Strings -->
