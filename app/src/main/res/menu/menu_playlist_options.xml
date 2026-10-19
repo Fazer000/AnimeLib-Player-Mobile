@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_playlist_play_all"
+        android:title="Воспроизвести всё"
+        android:icon="@drawable/ic_play" />
+    <item
+        android:id="@+id/action_playlist_rename"
+        android:title="Переименовать"
+        android:icon="@drawable/ic_edit_pencil" />
+    <item
+        android:id="@+id/action_playlist_clear"
+        android:title="Очистить список"
+        android:icon="@drawable/ic_eraser" />
+    <item
+        android:id="@+id/action_playlist_delete"
+        android:title="Удалить плейлист"
+        android:icon="@drawable/ic_trash_delete" />
+</menu>

@@ -3,19 +3,18 @@ package com.example.animelib.fragments;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.transition.AutoTransition;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.graphics.Bitmap;
 import android.widget.EditText;
@@ -37,6 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.animelib.MainActivity;
 import com.example.animelib.R;
 import com.example.animelib.VideoPlayerActivity;
 import com.example.animelib.adapters.VideoFilesAdapter;
@@ -437,36 +437,45 @@ public class ExplorerFragment extends Fragment {
     }
 
     private void openSearchAnimated() {
-        if (layoutExpandedSearch == null || layoutNormalButtons == null) return;
+        if (layoutExpandedSearch == null || layoutNormalButtons == null || layoutControlButtonsContainer == null) return;
 
-        if (layoutControlButtonsContainer instanceof ViewGroup) {
-            TransitionManager.beginDelayedTransition((ViewGroup) layoutControlButtonsContainer, new AutoTransition().setDuration(220));
-        }
-
-        layoutNormalButtons.setVisibility(View.GONE);
-        layoutExpandedSearch.setVisibility(View.VISIBLE);
-
-        layoutExpandedSearch.post(() -> {
+        layoutControlButtonsContainer.post(() -> {
             if (!isAdded() || getView() == null) return;
-            int cx = layoutExpandedSearch.getRight() - (int) (28 * getResources().getDisplayMetrics().density);
-            int cy = layoutExpandedSearch.getHeight() / 2;
-            float finalRadius = (float) Math.hypot(layoutExpandedSearch.getWidth(), layoutExpandedSearch.getHeight());
+            int totalWidth = layoutControlButtonsContainer.getWidth();
+            int startWidth = (int) (48 * getResources().getDisplayMetrics().density);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && cx > 0 && cy > 0) {
-                try {
-                    Animator anim = ViewAnimationUtils.createCircularReveal(layoutExpandedSearch, cx, cy, 0f, finalRadius);
-                    anim.setDuration(280);
-                    anim.setInterpolator(new AccelerateDecelerateInterpolator());
-                    anim.start();
-                } catch (Exception ignored) {}
+            layoutNormalButtons.setVisibility(View.GONE);
+            layoutExpandedSearch.setVisibility(View.VISIBLE);
+
+            ViewGroup.LayoutParams lp = layoutExpandedSearch.getLayoutParams();
+            lp.width = startWidth;
+            layoutExpandedSearch.setLayoutParams(lp);
+
+            ValueAnimator animator = ValueAnimator.ofInt(startWidth, totalWidth);
+            animator.setDuration(220);
+            animator.setInterpolator(new DecelerateInterpolator(1.6f));
+            animator.addUpdateListener(animation -> {
+                int val = (Integer) animation.getAnimatedValue();
+                ViewGroup.LayoutParams p = layoutExpandedSearch.getLayoutParams();
+                p.width = val;
+                layoutExpandedSearch.setLayoutParams(p);
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    ViewGroup.LayoutParams p = layoutExpandedSearch.getLayoutParams();
+                    p.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    layoutExpandedSearch.setLayoutParams(p);
+                }
+            });
+            animator.start();
+
+            etSearchVideos.requestFocus();
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.showSoftInput(etSearchVideos, InputMethodManager.SHOW_IMPLICIT);
             }
         });
-
-        etSearchVideos.requestFocus();
-        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.showSoftInput(etSearchVideos, InputMethodManager.SHOW_IMPLICIT);
-        }
     }
 
     private void closeSearchAnimated() {
@@ -477,37 +486,30 @@ public class ExplorerFragment extends Fragment {
             imm.hideSoftInputFromWindow(etSearchVideos.getWindowToken(), 0);
         }
 
-        int cx = layoutExpandedSearch.getRight() - (int) (28 * getResources().getDisplayMetrics().density);
-        int cy = layoutExpandedSearch.getHeight() / 2;
-        float initialRadius = (float) Math.hypot(layoutExpandedSearch.getWidth(), layoutExpandedSearch.getHeight());
+        int currentWidth = layoutExpandedSearch.getWidth();
+        int targetWidth = (int) (48 * getResources().getDisplayMetrics().density);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && layoutExpandedSearch.isAttachedToWindow() && cx > 0 && cy > 0) {
-            try {
-                Animator anim = ViewAnimationUtils.createCircularReveal(layoutExpandedSearch, cx, cy, initialRadius, 0f);
-                anim.setDuration(220);
-                anim.setInterpolator(new AccelerateDecelerateInterpolator());
-                anim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        etSearchVideos.setText("");
-                        layoutExpandedSearch.setVisibility(View.GONE);
-                        if (layoutControlButtonsContainer instanceof ViewGroup) {
-                            TransitionManager.beginDelayedTransition((ViewGroup) layoutControlButtonsContainer, new AutoTransition().setDuration(180));
-                        }
-                        layoutNormalButtons.setVisibility(View.VISIBLE);
-                    }
-                });
-                anim.start();
-                return;
-            } catch (Exception ignored) {}
-        }
-
-        etSearchVideos.setText("");
-        if (layoutControlButtonsContainer instanceof ViewGroup) {
-            TransitionManager.beginDelayedTransition((ViewGroup) layoutControlButtonsContainer, new AutoTransition().setDuration(200));
-        }
-        layoutExpandedSearch.setVisibility(View.GONE);
-        layoutNormalButtons.setVisibility(View.VISIBLE);
+        ValueAnimator animator = ValueAnimator.ofInt(currentWidth, targetWidth);
+        animator.setDuration(180);
+        animator.setInterpolator(new AccelerateInterpolator(1.6f));
+        animator.addUpdateListener(animation -> {
+            int val = (Integer) animation.getAnimatedValue();
+            ViewGroup.LayoutParams lp = layoutExpandedSearch.getLayoutParams();
+            lp.width = val;
+            layoutExpandedSearch.setLayoutParams(lp);
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                etSearchVideos.setText("");
+                layoutExpandedSearch.setVisibility(View.GONE);
+                ViewGroup.LayoutParams lp = layoutExpandedSearch.getLayoutParams();
+                lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                layoutExpandedSearch.setLayoutParams(lp);
+                layoutNormalButtons.setVisibility(View.VISIBLE);
+            }
+        });
+        animator.start();
     }
 
     public void loadVideosFromStorage() {
@@ -653,6 +655,9 @@ public class ExplorerFragment extends Fragment {
                                 single.add(video);
                                 databaseManager.createPlaylist(input.trim(), single);
                                 CustomToast.showSuccess(requireContext(), "Плейлист создан и видео добавлено");
+                                if (getActivity() instanceof MainActivity) {
+                                    ((MainActivity) getActivity()).notifyPlaylistsChanged();
+                                }
                             }
 
                             @Override
@@ -663,6 +668,9 @@ public class ExplorerFragment extends Fragment {
                         String path = video.getPath() != null && !video.getPath().isEmpty() ? video.getPath() : video.getUriString();
                         databaseManager.addVideoToPlaylist(chosen.getId(), path, video.getTitle());
                         CustomToast.showSuccess(requireContext(), "Добавлено в " + chosen.getName());
+                        if (getActivity() instanceof MainActivity) {
+                            ((MainActivity) getActivity()).notifyPlaylistsChanged();
+                        }
                     }
                 });
             });
@@ -817,6 +825,9 @@ public class ExplorerFragment extends Fragment {
                 if (id > 0) {
                     CustomToast.showSuccess(requireContext(), "Плейлист «" + input + "» создан!");
                     exitPlaylistCreationMode();
+                    if (getActivity() instanceof MainActivity) {
+                        ((MainActivity) getActivity()).notifyPlaylistsChanged();
+                    }
                 } else {
                     CustomToast.showWarning(requireContext(), "Ошибка создания плейлиста");
                 }
@@ -924,6 +935,7 @@ public class ExplorerFragment extends Fragment {
                         btnLastPlayedPlaylistCard.setVisibility(View.VISIBLE);
                         View.OnClickListener playlistClickListener = v -> {
                             PlaylistVideosBottomSheet bs = new PlaylistVideosBottomSheet(requireContext(), playlist);
+                            bs.setOnDismissListener(dialog -> loadAndDisplayLastPlayedVideo());
                             bs.show();
                         };
                         btnLastPlayedPlaylistCard.setOnClickListener(playlistClickListener);

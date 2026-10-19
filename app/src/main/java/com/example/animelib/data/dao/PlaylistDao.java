@@ -41,4 +41,10 @@ public interface PlaylistDao {
 
     @Query("DELETE FROM playlist_videos WHERE playlistId = :playlistId")
     void deleteVideosForPlaylist(long playlistId);
+
+    @Query("UPDATE playlists SET name = :newName WHERE id = :playlistId")
+    void updatePlaylistName(long playlistId, String newName);
+
+    @Query("DELETE FROM playlist_videos WHERE playlistId = :playlistId AND videoPath = :videoPath")
+    void deleteVideoFromPlaylist(long playlistId, String videoPath);
 }

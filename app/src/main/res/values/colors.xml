@@ -182,4 +182,8 @@
     <color name="dialog_ripple_color">#1A000000</color>
     <color name="dialog_rules_num_bg">@color/accent_color</color>
     <color name="dialog_rules_num_text">#FFFFFF</color>
+
+    <!-- Playlist Card Stack Translucent Layers -->
+    <color name="playlist_stack_layer_1">#38000000</color>
+    <color name="playlist_stack_layer_2">#55000000</color>
 </resources>

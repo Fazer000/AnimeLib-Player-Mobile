@@ -249,8 +249,17 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
             activeFragment = targetFragment;
             currentTabIndex = index;
+            if (index == 1 && playlistsFragment != null) {
+                playlistsFragment.loadAndDisplayPlaylists();
+            }
             updateTabSelection(index, true);
             dispatchWindowInsetsToFragments(cachedTopInset, cachedBottomInset);
+        }
+    }
+
+    public void notifyPlaylistsChanged() {
+        if (playlistsFragment != null && playlistsFragment.isAdded()) {
+            playlistsFragment.loadAndDisplayPlaylists();
         }
     }
 

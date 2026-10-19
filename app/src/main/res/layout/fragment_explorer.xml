@@ -235,7 +235,7 @@
                 android:id="@+id/layoutExpandedSearch"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:layout_gravity="center"
+                android:layout_gravity="end|center_vertical"
                 app:cardBackgroundColor="@color/card_bg_color"
                 app:cardCornerRadius="26dp"
                 app:cardElevation="10dp"
@@ -287,16 +287,6 @@
         </FrameLayout>
 
     </LinearLayout>
-
-    <!-- Top shadow gradient spanning full width without side clipping -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:layout_gravity="top"
-        android:layout_marginTop="72dp"
-        android:background="@drawable/bg_tab_shadow"
-        android:clickable="false"
-        android:focusable="false" />
 
     <!-- Bottom Floating Bar: Last Played Video & Folder Carousel -->
     <LinearLayout

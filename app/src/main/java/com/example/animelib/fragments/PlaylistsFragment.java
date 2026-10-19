@@ -22,6 +22,7 @@ import com.example.animelib.data.DatabaseManager;
 import com.example.animelib.data.entity.PlaylistEntity;
 import com.example.animelib.data.entity.PlaylistVideoEntity;
 import com.example.animelib.models.VideoItem;
+import com.example.animelib.settings.PlaylistVideosBottomSheet;
 import com.example.animelib.util.CustomToast;
 import com.example.animelib.util.DialogUtils;
 
@@ -79,6 +80,14 @@ public class PlaylistsFragment extends Fragment {
         loadAndDisplayPlaylists();
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            loadAndDisplayPlaylists();
+        }
+    }
+
     public void loadAndDisplayPlaylists() {
         if (databaseManager == null || getContext() == null) return;
 
@@ -95,15 +104,33 @@ public class PlaylistsFragment extends Fragment {
         PlaylistsAdapter adapter = new PlaylistsAdapter(playlists, new PlaylistsAdapter.OnPlaylistListener() {
             @Override
             public void onPlaylistClick(PlaylistEntity playlist) {
-                loadAndPlaySavedPlaylist(playlist);
+                openPlaylistBottomSheet(playlist);
             }
 
             @Override
             public void onPlaylistDelete(PlaylistEntity playlist) {
-                showPlaylistDeleteDialog(playlist);
+                openPlaylistBottomSheet(playlist);
             }
         });
         rvPlaylists.setAdapter(adapter);
+    }
+
+    private void openPlaylistBottomSheet(PlaylistEntity playlist) {
+        if (playlist == null || getContext() == null) return;
+        PlaylistVideosBottomSheet bs = new PlaylistVideosBottomSheet(requireContext(), playlist);
+        bs.setPlaylistActionListener(new PlaylistVideosBottomSheet.PlaylistActionListener() {
+            @Override
+            public void onPlaylistUpdated(PlaylistEntity updatedPlaylist) {
+                loadAndDisplayPlaylists();
+            }
+
+            @Override
+            public void onPlaylistDeleted(PlaylistEntity deletedPlaylist) {
+                loadAndDisplayPlaylists();
+            }
+        });
+        bs.setOnDismissListener(dialog -> loadAndDisplayPlaylists());
+        bs.show();
     }
 
     private void loadAndPlaySavedPlaylist(PlaylistEntity playlist) {

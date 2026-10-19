@@ -107,4 +107,8 @@
     <color name="dialog_ripple_color">#33FFFFFF</color>
     <color name="dialog_rules_num_bg">#36363C</color>
     <color name="dialog_rules_num_text">#FFFFFF</color>
+
+    <!-- Playlist Card Stack Translucent Layers (Dark Theme) -->
+    <color name="playlist_stack_layer_1">#3DFFFFFF</color>
+    <color name="playlist_stack_layer_2">#66FFFFFF</color>
 </resources>

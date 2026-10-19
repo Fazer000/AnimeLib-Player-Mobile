@@ -556,6 +556,36 @@ public class DatabaseManager {
         });
     }
 
+    public void renamePlaylist(long playlistId, String newName) {
+        executor.execute(() -> {
+            try {
+                db.playlistDao().updatePlaylistName(playlistId, newName);
+            } catch (Exception e) {
+                Log.e(TAG, "Error renaming playlist", e);
+            }
+        });
+    }
+
+    public void clearPlaylistVideos(long playlistId) {
+        executor.execute(() -> {
+            try {
+                db.playlistDao().deleteVideosForPlaylist(playlistId);
+            } catch (Exception e) {
+                Log.e(TAG, "Error clearing playlist videos", e);
+            }
+        });
+    }
+
+    public void removeVideoFromPlaylist(long playlistId, String videoPath) {
+        executor.execute(() -> {
+            try {
+                db.playlistDao().deleteVideoFromPlaylist(playlistId, videoPath);
+            } catch (Exception e) {
+                Log.e(TAG, "Error removing video from playlist", e);
+            }
+        });
+    }
+
     public void addVideoToPlaylist(long playlistId, String path, String title) {
         executor.execute(() -> {
             try {

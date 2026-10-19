@@ -90,12 +90,6 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Play
             if (listener != null) listener.onPlaylistDelete(playlist);
             return true;
         });
-
-        if (holder.btnDeletePlaylist != null) {
-            holder.btnDeletePlaylist.setOnClickListener(v -> {
-                if (listener != null) listener.onPlaylistDelete(playlist);
-            });
-        }
     }
 
     @Override
@@ -107,14 +101,12 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Play
         ImageView ivPlaylistThumbnail;
         TextView tvPlaylistName;
         TextView tvPlaylistVideoCount;
-        ImageButton btnDeletePlaylist;
 
         PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
             ivPlaylistThumbnail = itemView.findViewById(R.id.ivPlaylistThumbnail);
             tvPlaylistName = itemView.findViewById(R.id.tvPlaylistName);
             tvPlaylistVideoCount = itemView.findViewById(R.id.tvPlaylistVideoCount);
-            btnDeletePlaylist = itemView.findViewById(R.id.btnDeletePlaylist);
         }
     }
 }
