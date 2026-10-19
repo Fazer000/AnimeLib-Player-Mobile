@@ -27,15 +27,21 @@ public class VideoOptionsBottomSheet extends FlexibleBottomSheetDialog {
         void onRename(VideoItem video);
         void onInfo(VideoItem video);
         void onDelete(VideoItem video);
+        default void onRemoveFromPlaylist(VideoItem video) {}
     }
 
     private final VideoItem video;
     private final VideoActionCallback callback;
+    private boolean isPlaylistContext = false;
 
     public VideoOptionsBottomSheet(@NonNull Context context, @NonNull VideoItem video, VideoActionCallback callback) {
         super(context, R.style.ThemeOverlay_AnimeLIB_BottomSheetDialog);
         this.video = video;
         this.callback = callback;
+    }
+
+    public void setPlaylistContext(boolean inPlaylist) {
+        this.isPlaylistContext = inPlaylist;
     }
 
     @Override
@@ -56,7 +62,16 @@ public class VideoOptionsBottomSheet extends FlexibleBottomSheetDialog {
         View optAddToPlaylist = view.findViewById(R.id.optVideoAddToPlaylist);
         View optRename = view.findViewById(R.id.optVideoRename);
         View optInfo = view.findViewById(R.id.optVideoInfo);
+        View optRemoveFromPlaylist = view.findViewById(R.id.optVideoRemoveFromPlaylist);
         View optDelete = view.findViewById(R.id.optVideoDelete);
+
+        if (optRemoveFromPlaylist != null) {
+            optRemoveFromPlaylist.setVisibility(isPlaylistContext ? View.VISIBLE : View.GONE);
+            optRemoveFromPlaylist.setOnClickListener(v -> {
+                dismiss();
+                if (callback != null) callback.onRemoveFromPlaylist(video);
+            });
+        }
 
         btnClose.setOnClickListener(v -> dismiss());
 

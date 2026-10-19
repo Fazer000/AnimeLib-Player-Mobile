@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +35,9 @@ public class PlaylistsFragment extends Fragment {
 
     private RecyclerView rvPlaylists;
     private View layoutPlaylistsEmptyState;
+    private View layoutPlaylistsTopBar;
+    private View btnCreatePlaylistHeader;
+    private View btnEmptyCreatePlaylist;
     private DatabaseManager databaseManager;
 
     @Nullable
@@ -57,6 +61,17 @@ public class PlaylistsFragment extends Fragment {
 
         rvPlaylists = view.findViewById(R.id.rvPlaylists);
         layoutPlaylistsEmptyState = view.findViewById(R.id.layoutPlaylistsEmptyState);
+        layoutPlaylistsTopBar = view.findViewById(R.id.layoutPlaylistsTopBar);
+        btnCreatePlaylistHeader = view.findViewById(R.id.btnCreatePlaylistHeader);
+        btnEmptyCreatePlaylist = view.findViewById(R.id.btnEmptyCreatePlaylist);
+
+        if (btnCreatePlaylistHeader != null) {
+            btnCreatePlaylistHeader.setOnClickListener(v -> showCreatePlaylistDialog());
+        }
+
+        if (btnEmptyCreatePlaylist != null) {
+            btnEmptyCreatePlaylist.setOnClickListener(v -> showCreatePlaylistDialog());
+        }
 
         rvPlaylists.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -66,12 +81,18 @@ public class PlaylistsFragment extends Fragment {
     public void updateWindowInsets(int topInset, int bottomInset) {
         if (getView() == null || rvPlaylists == null) return;
         float density = getResources().getDisplayMetrics().density;
-        int totalPaddingTop = topInset + (int) (16 * density);
+        int totalPaddingTop = topInset + (int) (64 * density);
         int totalPaddingBottom = bottomInset + (int) (96 * density);
         int horizontalPadding = 0;
         rvPlaylists.setPadding(horizontalPadding, totalPaddingTop, horizontalPadding, totalPaddingBottom);
         rvPlaylists.setClipToPadding(false);
         rvPlaylists.setClipChildren(false);
+
+        if (layoutPlaylistsTopBar != null) {
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) layoutPlaylistsTopBar.getLayoutParams();
+            lp.topMargin = topInset + (int) (8 * density);
+            layoutPlaylistsTopBar.setLayoutParams(lp);
+        }
     }
 
     @Override
@@ -115,21 +136,64 @@ public class PlaylistsFragment extends Fragment {
         rvPlaylists.setAdapter(adapter);
     }
 
+    public void showCreatePlaylistDialog() {
+        if (!isAdded() || getContext() == null) return;
+
+        DialogUtils.showInputDialog(
+                requireContext(),
+                "Новый плейлист",
+                "Введите название нового плейлиста:",
+                "",
+                "Название плейлиста",
+                "Создать",
+                "Отмена",
+                new DialogUtils.InputDialogListener() {
+                    @Override
+                    public void onInputConfirmed(String input) {
+                        String name = input != null ? input.trim() : "";
+                        if (name.isEmpty()) {
+                            CustomToast.showWarning(requireContext(), "Название не может быть пустым");
+                            return;
+                        }
+                        long playlistId = databaseManager.createPlaylist(name, new ArrayList<>());
+                        if (playlistId > 0) {
+                            CustomToast.showSuccess(requireContext(), "Плейлист «" + name + "» создан");
+                            loadAndDisplayPlaylists();
+                            PlaylistEntity newEntity = databaseManager.getPlaylistById(playlistId);
+                            if (newEntity != null) {
+                                openPlaylistBottomSheet(newEntity);
+                            }
+                        } else {
+                            CustomToast.showWarning(requireContext(), "Не удалось создать плейлист");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled() {}
+                }
+        );
+    }
+
     private void openPlaylistBottomSheet(PlaylistEntity playlist) {
         if (playlist == null || getContext() == null) return;
         PlaylistVideosBottomSheet bs = new PlaylistVideosBottomSheet(requireContext(), playlist);
         bs.setPlaylistActionListener(new PlaylistVideosBottomSheet.PlaylistActionListener() {
             @Override
             public void onPlaylistUpdated(PlaylistEntity updatedPlaylist) {
+                PlaylistsAdapter.invalidatePlaylist(updatedPlaylist.getId());
                 loadAndDisplayPlaylists();
             }
 
             @Override
             public void onPlaylistDeleted(PlaylistEntity deletedPlaylist) {
+                PlaylistsAdapter.invalidatePlaylist(deletedPlaylist.getId());
                 loadAndDisplayPlaylists();
             }
         });
-        bs.setOnDismissListener(dialog -> loadAndDisplayPlaylists());
+        bs.setOnDismissListener(dialog -> {
+            PlaylistsAdapter.invalidatePlaylist(playlist.getId());
+            loadAndDisplayPlaylists();
+        });
         bs.show();
     }
 
@@ -162,19 +226,5 @@ public class PlaylistsFragment extends Fragment {
         intent.putExtra("PLAYLIST_NAME", playlist.getName());
         intent.putExtra("EXTRA_PLAYLIST_ID", playlist.getId());
         startActivity(intent);
-    }
-
-    private void showPlaylistDeleteDialog(PlaylistEntity playlist) {
-        DialogUtils.showCustomDialog(requireContext(), "Удалить плейлист", "Вы действительно хотите удалить плейлист «" + playlist.getName() + "»?", "Удалить", "Отмена", new DialogUtils.DialogListener() {
-            @Override
-            public void onPositiveClick() {
-                databaseManager.deletePlaylist(playlist.getId());
-                CustomToast.showSuccess(requireContext(), "Плейлист удален");
-                loadAndDisplayPlaylists();
-            }
-
-            @Override
-            public void onNegativeClick() {}
-        });
     }
 }

@@ -36,6 +36,9 @@ public interface PlaylistDao {
     @Query("SELECT * FROM playlist_videos WHERE playlistId = :playlistId ORDER BY orderIndex ASC")
     List<PlaylistVideoEntity> getVideosForPlaylist(long playlistId);
 
+    @Query("SELECT COUNT(*) FROM playlist_videos WHERE playlistId = :playlistId")
+    int getVideoCountForPlaylist(long playlistId);
+
     @Query("DELETE FROM playlists WHERE id = :playlistId")
     void deletePlaylist(long playlistId);
 

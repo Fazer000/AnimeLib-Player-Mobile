@@ -297,6 +297,58 @@
                 app:tint="@color/player_item_inactive_text" />
         </LinearLayout>
 
+        <!-- Remove from Playlist (shown when in playlist context) -->
+        <LinearLayout
+            android:id="@+id/optVideoRemoveFromPlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_m3_item_middle"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="3dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_eraser"
+                app:tint="#EF4444"
+                android:layout_marginEnd="14dp"
+                android:contentDescription="Удалить из плейлиста" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Удалить из плейлиста"
+                    android:textColor="#EF4444"
+                    android:textSize="14.5sp"
+                    android:fontFamily="@font/open_sans_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Убрать видео только из этого плейлиста"
+                    android:textColor="#F87171"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/open_sans" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="#EF4444" />
+        </LinearLayout>
+
         <!-- 5. Delete -->
         <LinearLayout
             android:id="@+id/optVideoDelete"

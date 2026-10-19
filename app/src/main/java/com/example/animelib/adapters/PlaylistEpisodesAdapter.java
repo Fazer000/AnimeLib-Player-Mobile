@@ -220,6 +220,9 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         if (cacheKey != null && !cacheKey.isEmpty()) {
             holder.ivVideoThumbnail.setTag(cacheKey);
             Bitmap cached = thumbnailCache.get(cacheKey);
+            if (cached == null) {
+                cached = com.example.animelib.util.VideoThumbnailHelper.getCachedThumbnail(cacheKey);
+            }
             if (cached != null) {
                 holder.ivVideoThumbnail.setImageBitmap(cached);
             } else {

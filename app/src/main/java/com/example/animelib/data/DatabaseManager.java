@@ -494,13 +494,15 @@ public class DatabaseManager {
         try {
             com.example.animelib.data.entity.PlaylistEntity playlist = new com.example.animelib.data.entity.PlaylistEntity(name, System.currentTimeMillis());
             long playlistId = db.playlistDao().insertPlaylist(playlist);
-            List<com.example.animelib.data.entity.PlaylistVideoEntity> videoEntities = new ArrayList<>();
-            for (int i = 0; i < selectedVideos.size(); i++) {
-                VideoItem item = selectedVideos.get(i);
-                String path = item.getPath() != null && !item.getPath().isEmpty() ? item.getPath() : item.getUriString();
-                videoEntities.add(new com.example.animelib.data.entity.PlaylistVideoEntity(playlistId, path, item.getTitle(), i));
+            if (selectedVideos != null && !selectedVideos.isEmpty()) {
+                List<com.example.animelib.data.entity.PlaylistVideoEntity> videoEntities = new ArrayList<>();
+                for (int i = 0; i < selectedVideos.size(); i++) {
+                    VideoItem item = selectedVideos.get(i);
+                    String path = item.getPath() != null && !item.getPath().isEmpty() ? item.getPath() : item.getUriString();
+                    videoEntities.add(new com.example.animelib.data.entity.PlaylistVideoEntity(playlistId, path, item.getTitle(), i));
+                }
+                db.playlistDao().insertPlaylistVideos(videoEntities);
             }
-            db.playlistDao().insertPlaylistVideos(videoEntities);
             return playlistId;
         } catch (Exception e) {
             Log.e(TAG, "Error creating playlist", e);
@@ -523,6 +525,15 @@ public class DatabaseManager {
         } catch (Exception e) {
             Log.e(TAG, "Error getting playlist videos", e);
             return new ArrayList<>();
+        }
+    }
+
+    public int getVideoCountForPlaylist(long playlistId) {
+        try {
+            return db.playlistDao().getVideoCountForPlaylist(playlistId);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting playlist video count", e);
+            return 0;
         }
     }
 
@@ -550,6 +561,7 @@ public class DatabaseManager {
             try {
                 db.playlistDao().deleteVideosForPlaylist(playlistId);
                 db.playlistDao().deletePlaylist(playlistId);
+                com.example.animelib.adapters.PlaylistsAdapter.invalidatePlaylist(playlistId);
             } catch (Exception e) {
                 Log.e(TAG, "Error deleting playlist", e);
             }
@@ -570,6 +582,7 @@ public class DatabaseManager {
         executor.execute(() -> {
             try {
                 db.playlistDao().deleteVideosForPlaylist(playlistId);
+                com.example.animelib.adapters.PlaylistsAdapter.invalidatePlaylist(playlistId);
             } catch (Exception e) {
                 Log.e(TAG, "Error clearing playlist videos", e);
             }
@@ -580,6 +593,7 @@ public class DatabaseManager {
         executor.execute(() -> {
             try {
                 db.playlistDao().deleteVideoFromPlaylist(playlistId, videoPath);
+                com.example.animelib.adapters.PlaylistsAdapter.invalidatePlaylist(playlistId);
             } catch (Exception e) {
                 Log.e(TAG, "Error removing video from playlist", e);
             }
@@ -592,6 +606,7 @@ public class DatabaseManager {
                 List<com.example.animelib.data.entity.PlaylistVideoEntity> existing = db.playlistDao().getVideosForPlaylist(playlistId);
                 int nextIndex = existing != null ? existing.size() : 0;
                 db.playlistDao().insertPlaylistVideo(new com.example.animelib.data.entity.PlaylistVideoEntity(playlistId, path, title, nextIndex));
+                com.example.animelib.adapters.PlaylistsAdapter.invalidatePlaylist(playlistId);
             } catch (Exception e) {
                 Log.e(TAG, "Error adding video to playlist", e);
             }

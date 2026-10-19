@@ -66,6 +66,19 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/btnBsPlaylistPlay"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="7dp"
+            android:layout_marginStart="8dp"
+            app:tint="@color/white_color"
+            android:background="@drawable/button_close_background"
+            app:backgroundTint="@color/accent_color"
+            android:src="@drawable/ic_play"
+            android:scaleType="fitCenter"
+            android:contentDescription="Воспроизвести" />
+
+        <ImageButton
             android:id="@+id/btnBsPlaylistMenu"
             android:layout_width="34dp"
             android:layout_height="34dp"
@@ -112,14 +125,14 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- Playlist Episodes List -->
+    <!-- Playlist Episodes List (Zero horizontal padding - padding is handled by cards) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBsPlaylistEpisodes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="true"
         android:overScrollMode="never"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="0dp"
         android:paddingBottom="16dp"
         android:clipToPadding="false" />
 

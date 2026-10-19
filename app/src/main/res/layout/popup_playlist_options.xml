@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="210dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_sort_popup"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <!-- Воспроизвести всё -->
+    <LinearLayout
+        android:id="@+id/popup_playlist_play_all"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="10dp"
+        android:layout_marginBottom="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/bg_popup_item_ripple">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_play"
+            app:tint="@color/primary_text_color"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="Воспроизвести всё" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Воспроизвести всё"
+            android:textColor="@color/primary_text_color"
+            android:textSize="14sp"
+            android:fontFamily="@font/open_sans_semibold" />
+    </LinearLayout>
+
+    <!-- Переименовать -->
+    <LinearLayout
+        android:id="@+id/popup_playlist_rename"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="10dp"
+        android:layout_marginBottom="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/bg_popup_item_ripple">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_edit_pencil"
+            app:tint="@color/primary_text_color"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="Переименовать" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Переименовать"
+            android:textColor="@color/primary_text_color"
+            android:textSize="14sp"
+            android:fontFamily="@font/open_sans_semibold" />
+    </LinearLayout>
+
+    <!-- Очистить список -->
+    <LinearLayout
+        android:id="@+id/popup_playlist_clear"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="10dp"
+        android:layout_marginBottom="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/bg_popup_item_ripple">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_eraser"
+            app:tint="@color/primary_text_color"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="Очистить список" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Очистить список"
+            android:textColor="@color/primary_text_color"
+            android:textSize="14sp"
+            android:fontFamily="@font/open_sans_semibold" />
+    </LinearLayout>
+
+    <!-- Удалить плейлист -->
+    <LinearLayout
+        android:id="@+id/popup_playlist_delete"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/bg_popup_item_ripple">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_trash_delete"
+            app:tint="#EF4444"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="Удалить плейлист" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Удалить плейлист"
+            android:textColor="#EF4444"
+            android:textSize="14sp"
+            android:fontFamily="@font/open_sans_semibold" />
+    </LinearLayout>
+
+</LinearLayout>

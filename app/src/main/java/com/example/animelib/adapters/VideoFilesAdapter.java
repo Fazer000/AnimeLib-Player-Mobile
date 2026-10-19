@@ -283,6 +283,9 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         holder.ivVideoThumbnail.setTag(cacheKey);
 
         Bitmap cached = thumbnailCache.get(cacheKey);
+        if (cached == null) {
+            cached = com.example.animelib.util.VideoThumbnailHelper.getCachedThumbnail(cacheKey);
+        }
         if (cached != null) {
             holder.ivVideoThumbnail.setImageBitmap(cached);
         } else {
