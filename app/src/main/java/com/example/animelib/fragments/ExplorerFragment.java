@@ -280,7 +280,7 @@ public class ExplorerFragment extends Fragment {
         if (currentImeBottomInset > currentNavBarBottomInset) {
             targetBottomMargin = currentImeBottomInset + (int) (12 * density);
         } else {
-            targetBottomMargin = currentNavBarBottomInset + (int) (88 * density);
+            targetBottomMargin = currentNavBarBottomInset + (int) (76 * density);
         }
         int bottomControlsHeight = (layoutFloatingExplorerControls != null && layoutFloatingExplorerControls.getHeight() > 0)
                 ? layoutFloatingExplorerControls.getHeight()
@@ -313,7 +313,7 @@ public class ExplorerFragment extends Fragment {
         if (imeBottomInset > navBarBottomInset) {
             targetBottomMargin = imeBottomInset + (int) (12 * density);
         } else {
-            targetBottomMargin = navBarBottomInset + (int) (88 * density);
+            targetBottomMargin = navBarBottomInset + (int) (76 * density);
         }
 
         if (layoutFloatingExplorerControls != null && layoutFloatingExplorerControls.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
