@@ -129,7 +129,7 @@
                 android:textSize="15sp"
                 android:fontFamily="@font/open_sans_bold"
                 app:cornerRadius="16dp"
-                app:backgroundTint="#A855F7"
+                app:backgroundTint="@color/accent_color"
                 android:textColor="@color/white_color" />
 
         </LinearLayout>

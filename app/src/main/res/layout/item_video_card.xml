@@ -145,7 +145,7 @@
                     android:background="@drawable/bg_new_badge"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:textColor="@color/purple_primary"
+                    android:textColor="@color/accent_color"
                     android:textSize="9.5sp"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="НОВОЕ"
@@ -191,9 +191,9 @@
                 app:m3GapSize="3dp"
                 app:m3StopDotSize="3.5dp"
                 app:m3ShowStopDot="true"
-                app:m3IndicatorColor="@color/purple_primary"
-                app:m3TrackColor="@color/purple_alpha_25"
-                app:m3StopDotColor="@color/purple_primary"
+                app:m3IndicatorColor="@color/accent_color"
+                app:m3TrackColor="@color/accent_color_alpha_25"
+                app:m3StopDotColor="@color/accent_color"
                 android:visibility="gone" />
 
         </LinearLayout>

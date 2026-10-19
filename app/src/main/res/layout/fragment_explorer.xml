@@ -70,7 +70,7 @@
             android:layout_marginTop="20dp"
             android:text="Обновить"
             android:textColor="@color/white_color"
-            app:backgroundTint="@color/purple_primary"
+            app:backgroundTint="@color/accent_color"
             app:cornerRadius="10dp" />
 
     </LinearLayout>
@@ -80,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/purple_primary"
+        android:indeterminateTint="@color/accent_color"
         android:visibility="gone" />
 
     <!-- Top Floating Controls: Action Buttons, Search, & Playlist Creation Bar -->
@@ -141,7 +141,7 @@
                     android:layout_marginStart="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_check"
-                    app:tint="@color/purple_primary"
+                    app:tint="@color/accent_color"
                     android:padding="4dp"
                     android:contentDescription="Готово" />
 
@@ -181,7 +181,7 @@
                         android:layout_height="match_parent"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_episodes"
-                        app:tint="@color/purple_primary"
+                        app:tint="@color/accent_color"
                         android:padding="8dp"
                         android:contentDescription="Создать плейлист" />
                 </androidx.cardview.widget.CardView>
@@ -253,7 +253,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_search"
-                        app:tint="@color/purple_primary"
+                        app:tint="@color/accent_color"
                         android:contentDescription="Search" />
 
                     <EditText
@@ -420,9 +420,9 @@
                         app:m3GapSize="2.5dp"
                         app:m3StopDotSize="3dp"
                         app:m3ShowStopDot="true"
-                        app:m3IndicatorColor="@color/purple_primary"
-                        app:m3TrackColor="@color/purple_alpha_25"
-                        app:m3StopDotColor="@color/purple_primary"
+                        app:m3IndicatorColor="@color/accent_color"
+                        app:m3TrackColor="@color/accent_color_alpha_25"
+                        app:m3StopDotColor="@color/accent_color"
                         android:visibility="gone" />
                 </LinearLayout>
 

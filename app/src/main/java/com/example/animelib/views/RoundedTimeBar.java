@@ -10,7 +10,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.media3.ui.DefaultTimeBar;
+
+import com.example.animelib.R;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -134,7 +137,7 @@ public class RoundedTimeBar extends DefaultTimeBar {
 
             // Fallback colors if defined as transparent in XML
             if (playedPaint != null && (playedPaint.getColor() == Color.TRANSPARENT || playedPaint.getColor() == 0)) {
-                playedPaint.setColor(Color.parseColor("#8852DE")); // purple_primary
+                playedPaint.setColor(ContextCompat.getColor(getContext(), R.color.accent_color));
             }
             if (bufferedPaint != null && (bufferedPaint.getColor() == Color.TRANSPARENT || bufferedPaint.getColor() == 0)) {
                 bufferedPaint.setColor(Color.parseColor("#80FFFFFF"));

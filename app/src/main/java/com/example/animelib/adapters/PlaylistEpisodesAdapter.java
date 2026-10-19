@@ -109,7 +109,7 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         // Title
         holder.tvVideoTitle.setText(video.getDisplayTitle());
         if (isCurrent) {
-            holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
+            holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.accent_color));
         } else {
             holder.tvVideoTitle.setTextColor(ContextCompat.getColor(context, R.color.primary_text_color));
         }

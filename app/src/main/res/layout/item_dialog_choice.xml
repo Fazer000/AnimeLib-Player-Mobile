@@ -20,7 +20,7 @@
         android:layout_height="20dp"
         android:layout_marginEnd="12dp"
         android:src="@drawable/ic_check"
-        app:tint="@color/purple_primary"
+        app:tint="@color/accent_color"
         android:visibility="gone"
         android:contentDescription="Выбрано" />
 

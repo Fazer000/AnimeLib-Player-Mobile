@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Accent / Primary Purple Brand Colors -->
-    <color name="purple_primary">#8852DE</color>
-    <color name="purple_secondary">#F3E8FF</color>
-    <color name="purple_secondary_dark">#241E38</color>
-    <color name="purple_alpha_10">#1A8852DE</color>
-    <color name="purple_alpha_25">#408852DE</color>
+    <!-- ======================================================== -->
+    <!-- Primary App Accent (Change this to rebrand the entire app!) -->
+    <!-- ======================================================== -->
+    <color name="accent_color">#FF7A00</color>
+    <color name="accent_color_alpha">#40FF7A00</color>
+    <color name="accent_color_alpha_10">#1AFF7A00</color>
+    <color name="accent_color_alpha_15">#26FF7A00</color>
+    <color name="accent_color_alpha_20">#33FF7A00</color>
+    <color name="accent_color_alpha_25">#40FF7A00</color>
+    <color name="accent_color_alpha_40">#66FF7A00</color>
+    <color name="accent_color_alpha_60">#99FF7A00</color>
+
+    <!-- Warm secondary container for light & dark themes -->
+    <color name="accent_secondary">#FFF0E5</color>
+    <color name="accent_secondary_dark">#332014</color>
+
+    <!-- Semantic Brand Aliases -->
+    <color name="brand_primary">@color/accent_color</color>
+    <color name="brand_primary_alpha_10">@color/accent_color_alpha_10</color>
+    <color name="brand_primary_alpha_15">@color/accent_color_alpha_15</color>
+    <color name="brand_primary_alpha_20">@color/accent_color_alpha_20</color>
+    <color name="brand_primary_alpha_25">@color/accent_color_alpha_25</color>
+    <color name="brand_primary_alpha_60">@color/accent_color_alpha_60</color>
+
+    <!-- Legacy / Compatibility Aliases -->
+    <color name="purple_primary">@color/accent_color</color>
+    <color name="purple_secondary">@color/accent_secondary</color>
+    <color name="purple_secondary_dark">@color/accent_secondary_dark</color>
+    <color name="purple_alpha_10">@color/accent_color_alpha_10</color>
+    <color name="purple_alpha_25">@color/accent_color_alpha_25</color>
+
     <color name="switch_track_unchecked">#E3E2E6</color>
     <color name="switch_thumb_unchecked">#79747E</color>
     <color name="switch_track_outline_unchecked">#79747E</color>
@@ -15,18 +40,18 @@
     <color name="gray_color">#D8D8D8</color>
     <color name="black_color">#000000</color>
     <color name="bookmark_color">#ff9b40</color>
-    <color name="secondary_color">@color/purple_primary</color>
+    <color name="secondary_color">@color/accent_color</color>
 
     <!-- Text Colors (Unified - Light Theme Default) -->
     <color name="app_text_primary">#1E1B26</color>
     <color name="app_text_secondary">#6B7280</color>
-    <color name="app_text_brand_button">@color/purple_primary</color>
+    <color name="app_text_brand_button">@color/accent_color</color>
     <color name="app_text_accent_blue">#1D4ED8</color>
 
     <!-- Dark Theme -->
     <!-- General Colors -->
     <color name="dt_primary_color">#1C1C1C</color>
-    <color name="dt_secondary_color">@color/purple_primary</color>
+    <color name="dt_secondary_color">@color/accent_color</color>
     <color name="dt_blue_color">#2196f3</color>
     <color name="dt_alpha_primary_color">#30000000</color>
 
@@ -60,21 +85,21 @@
     <!-- Light Theme -->
     <!-- General Colors -->
     <color name="lt_primary_color">#FFFFFF</color>
-    <color name="lt_secondary_color">@color/purple_primary</color>
+    <color name="lt_secondary_color">@color/accent_color</color>
     <color name="lt_blue_color">#1976D2</color>
-    <color name="lt_alpha_primary_color">@color/purple_alpha_10</color>
+    <color name="lt_alpha_primary_color">@color/accent_color_alpha_10</color>
 
     <color name="lt_border_color">#E5E7EB</color>
     <color name="lt_alpha_border_color">#33E5E7EB</color>
 
     <color name="lt_line_color">#E5E7EB</color>
 
-    <color name="lt_header_color">#ede7f6</color>
-    <color name="lt_webview_status_bar_color">#ede7f6</color>
-    <color name="toolbar_header_bg">#ede7f6</color>
+    <color name="lt_header_color">#FFF4EB</color>
+    <color name="lt_webview_status_bar_color">#FFF4EB</color>
+    <color name="toolbar_header_bg">#FFF4EB</color>
 
     <!-- Lib Site Header Colors (Light Theme) -->
-    <color name="site_header_animelib_light">#ede7f6</color>
+    <color name="site_header_animelib_light">#FFF4EB</color>
     <color name="site_header_mangalib_light">#FFF3E0</color>
     <color name="site_header_ranobelib_light">#E0F2FF</color>
 
@@ -97,8 +122,8 @@
     <color name="lt_related_subtitle_color">@color/app_text_secondary</color>
 
     <!-- Resize mode cards -->
-    <color name="resize_card_selected_bg">@color/purple_secondary</color>
-    <color name="resize_card_selected_stroke">@color/purple_primary</color>
+    <color name="resize_card_selected_bg">@color/accent_secondary</color>
+    <color name="resize_card_selected_stroke">@color/accent_color</color>
     <color name="resize_card_unselected_bg">#F3F4F6</color>
     <color name="resize_card_unselected_stroke">#E5E7EB</color>
     <color name="resize_preview_inner_bg">#2A323D</color>
@@ -112,8 +137,8 @@
     <color name="accent_text_color">@color/app_text_secondary</color>
     <color name="comment_input_bg">#F3F4F6</color>
     <color name="comment_input_stroke">#E5E7EB</color>
-    <color name="chip_selected_bg">@color/purple_primary</color>
-    <color name="chip_selected_stroke">@color/purple_primary</color>
+    <color name="chip_selected_bg">@color/accent_color</color>
+    <color name="chip_selected_stroke">@color/accent_color</color>
     <color name="chip_unselected_bg">#E5E7EB</color>
     <color name="chip_unselected_stroke">#D1D5DB</color>
     <color name="close_btn_bg">#1A000000</color>
@@ -129,7 +154,7 @@
     <color name="player_item_inactive_text">#374151</color>
     <color name="player_item_inactive_stroke">#33FFFFFF</color>
     <color name="player_item_active_text">#FFFFFF</color>
-    <color name="player_item_active_stroke">@color/purple_primary</color>
+    <color name="player_item_active_stroke">@color/accent_color</color>
 
     <!-- Dialog Colors (Unified Defaults) -->
     <color name="m3_item_bg">#12000000</color>
@@ -155,6 +180,6 @@
     <color name="dialog_btn_secondary_text">@color/app_text_secondary</color>
 
     <color name="dialog_ripple_color">#1A000000</color>
-    <color name="dialog_rules_num_bg">@color/purple_primary</color>
+    <color name="dialog_rules_num_bg">@color/accent_color</color>
     <color name="dialog_rules_num_text">#FFFFFF</color>
 </resources>

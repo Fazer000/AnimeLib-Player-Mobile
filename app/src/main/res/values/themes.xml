@@ -175,15 +175,15 @@
     <style name="Widget.AnimeLIB.Slider" parent="Widget.Material3.Slider">
         <item name="trackHeight">14dp</item>
         <item name="trackCornerRadius">7dp</item>
-        <item name="thumbColor">@color/purple_primary</item>
-        <item name="trackColorActive">@color/purple_primary</item>
-        <item name="trackColorInactive">@color/purple_alpha_25</item>
-        <item name="haloColor">@color/purple_alpha_10</item>
+        <item name="thumbColor">@color/accent_color</item>
+        <item name="trackColorActive">@color/accent_color</item>
+        <item name="trackColorInactive">@color/accent_color_alpha_25</item>
+        <item name="haloColor">@color/accent_color_alpha_10</item>
         <item name="haloRadius">12dp</item>
         <item name="labelBehavior">gone</item>
     </style>
 
-    <!-- Custom Style for MaterialSwitch using brand purple -->
+    <!-- Custom Style for MaterialSwitch using brand accent -->
     <style name="Widget.AnimeLIB.MaterialSwitch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
         <item name="trackTint">@color/switch_track_tint</item>
         <item name="thumbTint">@color/switch_thumb_tint</item>
@@ -216,7 +216,7 @@
         <item name="android:textSize">@dimen/button_text_size_standard</item>
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">@dimen/button_corner_radius</item>
-        <item name="backgroundTint">@color/purple_primary</item>
+        <item name="backgroundTint">@color/accent_color</item>
         <item name="android:textColor">@color/white_color</item>
         <item name="iconTint">@color/white_color</item>
         <item name="iconSize">@dimen/button_icon_size</item>

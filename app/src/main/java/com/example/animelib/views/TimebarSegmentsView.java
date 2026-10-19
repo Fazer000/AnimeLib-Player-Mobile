@@ -8,6 +8,8 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import com.example.animelib.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +69,7 @@ public class TimebarSegmentsView extends View {
 
     private void init() {
         playedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        playedPaint.setColor(Color.parseColor("#A855F7")); // Акцентный фиолетовый
+        playedPaint.setColor(ContextCompat.getColor(getContext(), R.color.accent_color));
 
         bufferedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         bufferedPaint.setColor(Color.parseColor("#80FFFFFF")); // Полупрозрачный белый

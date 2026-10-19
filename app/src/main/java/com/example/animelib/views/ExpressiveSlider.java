@@ -45,8 +45,8 @@ public class ExpressiveSlider extends Slider {
         endDotPaint.setStyle(Paint.Style.FILL);
         activeDotPaint.setStyle(Paint.Style.FILL);
 
-        int primaryColor = ContextCompat.getColor(context, R.color.purple_primary);
-        int inactiveColor = ContextCompat.getColor(context, R.color.purple_alpha_25);
+        int primaryColor = ContextCompat.getColor(context, R.color.accent_color);
+        int inactiveColor = ContextCompat.getColor(context, R.color.accent_color_alpha_25);
 
         activeTrackPaint.setColor(primaryColor);
         inactiveTrackPaint.setColor(inactiveColor);
@@ -164,7 +164,7 @@ public class ExpressiveSlider extends Slider {
                     // Inside active track (subtle light dot)
                     canvas.drawCircle(dotX, centerY, dotRadius, activeDotPaint);
                 } else if (dotX > thumbRight + gap && dotX <= trackRightBoundary - dotRadius) {
-                    // Inside inactive track (purple dot, same as end dot)
+                    // Inside inactive track (accent dot, same as end dot)
                     canvas.drawCircle(dotX, centerY, dotRadius, endDotPaint);
                 }
             }

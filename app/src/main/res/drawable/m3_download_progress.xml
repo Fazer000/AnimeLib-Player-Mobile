@@ -13,7 +13,7 @@
         <clip android:clipOrientation="horizontal" android:gravity="left">
             <shape android:shape="rectangle">
                 <corners android:radius="6dp" />
-                <solid android:color="@color/purple_primary" />
+                <solid android:color="@color/accent_color" />
                 <padding android:right="6dp" />
             </shape>
         </clip>

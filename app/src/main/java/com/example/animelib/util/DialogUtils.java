@@ -290,7 +290,7 @@ public class DialogUtils {
                 if (tvChoice != null) {
                     tvChoice.setText(items[i]);
                     if (index == selectedIndex) {
-                        tvChoice.setTextColor(ContextCompat.getColor(context, R.color.purple_primary));
+                        tvChoice.setTextColor(ContextCompat.getColor(context, R.color.accent_color));
                     }
                 }
 

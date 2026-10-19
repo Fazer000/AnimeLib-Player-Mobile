@@ -101,7 +101,7 @@ public class ThemeUtils {
      * Возвращает цвет шапки/системного статус-бара для сайта.
      */
     public static int getSiteHeaderColor(Context context, String url) {
-        if (context == null) return 0xFFEDE7F6;
+        if (context == null) return 0xFFFFF4EB;
         if (isDarkTheme(context)) {
             return androidx.core.content.ContextCompat.getColor(context, com.example.animelib.R.color.dt_header_color);
         }

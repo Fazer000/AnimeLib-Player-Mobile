@@ -40,7 +40,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:src="@drawable/ic_play"
-        app:tint="@color/purple_primary"
+        app:tint="@color/accent_color"
         android:visibility="gone"
         android:contentDescription="Playing" />
 

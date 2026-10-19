@@ -74,7 +74,7 @@
                 app:tabGravity="fill"
                 app:tabIndicator="@drawable/bg_segmented_tab_indicator"
                 app:tabIndicatorAnimationMode="elastic"
-                app:tabIndicatorColor="@color/purple_primary"
+                app:tabIndicatorColor="@color/accent_color"
                 app:tabIndicatorFullWidth="true"
                 app:tabIndicatorGravity="stretch"
                 app:tabIndicatorHeight="38dp"
@@ -119,7 +119,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_gesture_double_tap"
-                    app:tint="@color/purple_primary"
+                    app:tint="@color/accent_color"
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="2dp"/>
 
@@ -162,7 +162,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_gesture_swipe_horizontal"
-                    app:tint="@color/purple_primary"
+                    app:tint="@color/accent_color"
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="2dp"/>
 
@@ -205,7 +205,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_gesture_hold"
-                    app:tint="@color/purple_primary"
+                    app:tint="@color/accent_color"
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="2dp"/>
 
@@ -248,7 +248,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_brightness"
-                    app:tint="@color/purple_primary"
+                    app:tint="@color/accent_color"
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="2dp"/>
 
@@ -291,7 +291,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_gesture_swipe_up"
-                    app:tint="@color/purple_primary"
+                    app:tint="@color/accent_color"
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="2dp"/>
 
@@ -333,7 +333,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_gesture_edge_swipe"
-                    app:tint="@color/purple_primary"
+                    app:tint="@color/accent_color"
                     android:layout_marginEnd="12dp"
                     android:layout_marginTop="2dp"/>
 
@@ -393,7 +393,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:src="@drawable/ic_copyright"
-                        app:tint="@color/purple_primary"
+                        app:tint="@color/accent_color"
                         android:layout_marginEnd="10dp"/>
 
                     <TextView
@@ -435,7 +435,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:src="@drawable/ic_disclaimer"
-                        app:tint="@color/purple_primary"
+                        app:tint="@color/accent_color"
                         android:layout_marginEnd="10dp"/>
 
                     <TextView
@@ -476,7 +476,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:src="@drawable/ic_api_nodes"
-                        app:tint="@color/purple_primary"
+                        app:tint="@color/accent_color"
                         android:layout_marginEnd="10dp"/>
 
                     <TextView

@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- ======================================================== -->
+    <!-- Primary App Accent (Dark Theme) -->
+    <!-- ======================================================== -->
+    <color name="accent_color">#FF7A00</color>
+    <color name="accent_color_alpha">#40FF7A00</color>
+    <color name="accent_color_alpha_10">#1AFF7A00</color>
+    <color name="accent_color_alpha_15">#26FF7A00</color>
+    <color name="accent_color_alpha_20">#33FF7A00</color>
+    <color name="accent_color_alpha_25">#40FF7A00</color>
+    <color name="accent_color_alpha_40">#66FF7A00</color>
+    <color name="accent_color_alpha_60">#99FF7A00</color>
+
+    <!-- Warm secondary container for dark mode -->
+    <color name="accent_secondary">#FFF0E5</color>
+    <color name="accent_secondary_dark">#332014</color>
+
+    <!-- Semantic Brand Aliases -->
+    <color name="brand_primary">@color/accent_color</color>
+    <color name="brand_primary_alpha_10">@color/accent_color_alpha_10</color>
+    <color name="brand_primary_alpha_15">@color/accent_color_alpha_15</color>
+    <color name="brand_primary_alpha_20">@color/accent_color_alpha_20</color>
+    <color name="brand_primary_alpha_25">@color/accent_color_alpha_25</color>
+    <color name="brand_primary_alpha_60">@color/accent_color_alpha_60</color>
+
+    <!-- Legacy / Compatibility Aliases -->
+    <color name="purple_primary">@color/accent_color</color>
+    <color name="purple_secondary">@color/accent_secondary</color>
+    <color name="purple_secondary_dark">@color/accent_secondary_dark</color>
+    <color name="purple_alpha_10">@color/accent_color_alpha_10</color>
+    <color name="purple_alpha_25">@color/accent_color_alpha_25</color>
+
     <color name="dt_primary_color">#131316</color>
     <color name="dt_header_color">#131316</color>
     <color name="dt_card_background">#1C1C1E</color>
@@ -9,12 +40,12 @@
     <!-- Unified Text Colors (Dark Mode Overrides) -->
     <color name="app_text_primary">#BFBFBF</color>
     <color name="app_text_secondary">#8A8A8E</color>
-    <color name="app_text_brand_button">@color/purple_primary</color>
+    <color name="app_text_brand_button">@color/accent_color</color>
     <color name="app_text_accent_blue">#79A5D8</color>
 
     <!-- Semantic Theme Colors (Dark Override) -->
-    <color name="resize_card_selected_bg">@color/purple_secondary_dark</color>
-    <color name="resize_card_selected_stroke">@color/purple_primary</color>
+    <color name="resize_card_selected_bg">@color/accent_secondary_dark</color>
+    <color name="resize_card_selected_stroke">@color/accent_color</color>
     <color name="resize_card_unselected_bg">#1C1C1E</color>
     <color name="resize_card_unselected_stroke">#33333C</color>
     <color name="resize_preview_inner_bg">#2A323D</color>
@@ -31,8 +62,8 @@
     <color name="accent_text_color">#8A8A8E</color>
     <color name="comment_input_bg">#1C1C1E</color>
     <color name="comment_input_stroke">#33333C</color>
-    <color name="chip_selected_bg">@color/purple_secondary_dark</color>
-    <color name="chip_selected_stroke">@color/purple_primary</color>
+    <color name="chip_selected_bg">@color/accent_secondary_dark</color>
+    <color name="chip_selected_stroke">@color/accent_color</color>
     <color name="chip_unselected_bg">#1C1C1E</color>
     <color name="chip_unselected_stroke">#33333C</color>
     <color name="close_btn_bg">#20FFFFFF</color>
@@ -48,7 +79,7 @@
     <color name="player_item_inactive_text">#CBD5E1</color>
     <color name="player_item_inactive_stroke">#33FFFFFF</color>
     <color name="player_item_active_text">#FFFFFF</color>
-    <color name="player_item_active_stroke">@color/purple_primary</color>
+    <color name="player_item_active_stroke">@color/accent_color</color>
 
     <!-- Dialog Colors (Dark Theme Overrides) -->
     <color name="m3_item_bg">#1E1E1E</color>

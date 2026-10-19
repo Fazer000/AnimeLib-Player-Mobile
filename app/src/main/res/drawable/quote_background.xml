@@ -14,12 +14,12 @@
                 android:color="@color/comment_input_stroke" />
         </shape>
     </item>
-    <!-- Left purple accent stripe -->
+    <!-- Left accent stripe -->
     <item
         android:width="4dp"
         android:gravity="left">
         <shape android:shape="rectangle">
-            <solid android:color="@color/purple_primary" />
+            <solid android:color="@color/accent_color" />
             <corners
                 android:topLeftRadius="10dp"
                 android:bottomLeftRadius="10dp"

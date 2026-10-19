@@ -96,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="У вас: v1.8.4  ➔  Новая: v1.8.5"
-                    android:textColor="@color/purple_primary"
+                    android:textColor="@color/accent_color"
                     android:textSize="14sp"
                     android:layout_marginTop="4dp"
                     android:gravity="center" />
