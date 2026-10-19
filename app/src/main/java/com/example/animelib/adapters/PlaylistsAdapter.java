@@ -49,8 +49,9 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Play
     @Override
     public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
         PlaylistEntity playlist = playlists.get(position);
+        String dateStr = new java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()).format(new java.util.Date(playlist.getCreatedAt()));
         holder.tvPlaylistName.setText(playlist.getName());
-        holder.tvPlaylistVideoCount.setText("Создан: " + new java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()).format(new java.util.Date(playlist.getCreatedAt())));
+        holder.tvPlaylistVideoCount.setText("... • " + dateStr);
 
         holder.ivPlaylistThumbnail.setImageResource(R.drawable.placeholder_image);
         String tagKey = "playlist_" + playlist.getId();
@@ -59,6 +60,8 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Play
         Context context = holder.itemView.getContext();
         Executors.newSingleThreadExecutor().execute(() -> {
             List<PlaylistVideoEntity> videos = DatabaseManager.getInstance(context).getVideosForPlaylist(playlist.getId());
+            int count = videos != null ? videos.size() : 0;
+            String countText = count + " видео • " + dateStr;
             Bitmap thumb = null;
             if (videos != null && !videos.isEmpty()) {
                 String firstPath = videos.get(0).getVideoPath();
@@ -69,6 +72,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Play
             final Bitmap finalThumb = thumb;
             mainHandler.post(() -> {
                 if (tagKey.equals(holder.ivPlaylistThumbnail.getTag())) {
+                    holder.tvPlaylistVideoCount.setText(countText);
                     if (finalThumb != null) {
                         holder.ivPlaylistThumbnail.setImageBitmap(finalThumb);
                     } else {
@@ -82,9 +86,16 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<PlaylistsAdapter.Play
             if (listener != null) listener.onPlaylistClick(playlist);
         });
 
-        holder.btnDeletePlaylist.setOnClickListener(v -> {
+        holder.itemView.setOnLongClickListener(v -> {
             if (listener != null) listener.onPlaylistDelete(playlist);
+            return true;
         });
+
+        if (holder.btnDeletePlaylist != null) {
+            holder.btnDeletePlaylist.setOnClickListener(v -> {
+                if (listener != null) listener.onPlaylistDelete(playlist);
+            });
+        }
     }
 
     @Override

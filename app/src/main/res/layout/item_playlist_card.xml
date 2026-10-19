@@ -1,28 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="6dp"
-    android:layout_marginVertical="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/card_bg_color"
-    app:strokeColor="?attr/alphaBorderColor"
-    app:strokeWidth="0.5dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="10dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <!-- Thumbnail Stack Container -->
+    <FrameLayout
+        android:layout_width="128dp"
+        android:layout_height="72dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-        <!-- Thumbnail & Delete Overlay Container -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="116dp">
+        <!-- Layer 1: Back card (shifted right by 12dp, vertically inset) -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="116dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginStart="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#25252A"
+            app:strokeWidth="1dp"
+            app:strokeColor="#3A3A42" />
+
+        <!-- Layer 2: Middle card (shifted right by 6dp, vertically inset) -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="116dp"
+            android:layout_height="66dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginStart="6dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="#1E1E22"
+            app:strokeWidth="1dp"
+            app:strokeColor="#323238" />
+
+        <!-- Layer 3: Main Front Card with Video Thumbnail -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="116dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center_vertical|start"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="#141416"
+            app:strokeWidth="0.5dp"
+            app:strokeColor="#2A2A30">
 
             <ImageView
                 android:id="@+id/ivPlaylistThumbnail"
@@ -30,53 +61,65 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder_image"
-                android:contentDescription="Thumbnail" />
+                android:contentDescription="Превью плейлиста" />
 
-            <!-- Delete Button Overlay -->
-            <ImageButton
-                android:id="@+id/btnDeletePlaylist"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="top|end"
-                android:layout_margin="8dp"
-                android:background="@drawable/video_time_background"
-                android:src="@drawable/ic_trash_delete"
-                app:tint="@color/white_color"
-                android:padding="6dp"
-                android:contentDescription="Удалить" />
+        </com.google.android.material.card.MaterialCardView>
 
-        </FrameLayout>
+    </FrameLayout>
 
-        <!-- Playlist Info -->
-        <LinearLayout
+    <!-- Playlist Info: Name, Video Count, Creation Date -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvPlaylistName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:orientation="vertical">
+            android:textColor="@color/primary_text_color"
+            android:textSize="16sp"
+            android:fontFamily="@font/open_sans_bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Название плейлиста" />
 
-            <TextView
-                android:id="@+id/tvPlaylistName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/primary_text_color"
-                android:textSize="14.5sp"
-                android:fontFamily="@font/open_sans_bold"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:text="Название плейлиста" />
-
-            <TextView
-                android:id="@+id/tvPlaylistVideoCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/player_item_inactive_text"
-                android:textSize="12sp"
-                android:fontFamily="@font/open_sans"
-                android:text="Видео: 5" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvPlaylistVideoCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/player_item_inactive_text"
+            android:textSize="13sp"
+            android:fontFamily="@font/open_sans"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="0 видео • 19.10.2026" />
 
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+    <!-- Delete Button -->
+    <ImageButton
+        android:id="@+id/btnDeletePlaylist"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_trash_delete"
+        app:tint="@color/player_item_inactive_text"
+        android:padding="8dp"
+        android:layout_marginEnd="4dp"
+        android:contentDescription="Удалить плейлист" />
+
+    <!-- Chevron Arrow Right -->
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_chevron_right"
+        app:tint="@color/player_item_inactive_text"
+        android:contentDescription="Открыть" />
+
+</LinearLayout>

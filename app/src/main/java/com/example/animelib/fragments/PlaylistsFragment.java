@@ -12,7 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.animelib.R;
@@ -57,7 +57,7 @@ public class PlaylistsFragment extends Fragment {
         rvPlaylists = view.findViewById(R.id.rvPlaylists);
         layoutPlaylistsEmptyState = view.findViewById(R.id.layoutPlaylistsEmptyState);
 
-        rvPlaylists.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+        rvPlaylists.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         loadAndDisplayPlaylists();
     }
@@ -67,7 +67,7 @@ public class PlaylistsFragment extends Fragment {
         float density = getResources().getDisplayMetrics().density;
         int totalPaddingTop = topInset + (int) (16 * density);
         int totalPaddingBottom = bottomInset + (int) (96 * density);
-        int horizontalPadding = (int) (10 * density);
+        int horizontalPadding = 0;
         rvPlaylists.setPadding(horizontalPadding, totalPaddingTop, horizontalPadding, totalPaddingBottom);
         rvPlaylists.setClipToPadding(false);
         rvPlaylists.setClipChildren(false);
