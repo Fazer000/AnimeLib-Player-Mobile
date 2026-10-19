@@ -294,6 +294,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 findViewById(R.id.gestureIndicatorText),
                 this
         );
+        gestureController.updateOrientation(getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE);
     }
 
     private void setupClickListeners() {
@@ -875,6 +876,10 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         if (playerContainer == null) return;
 
         boolean isLandscape = (orientation == Configuration.ORIENTATION_LANDSCAPE);
+
+        if (gestureController != null) {
+            gestureController.updateOrientation(isLandscape);
+        }
 
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerContainer.getLayoutParams();
 

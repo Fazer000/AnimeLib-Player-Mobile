@@ -256,21 +256,27 @@ public class AddToPlaylistBottomSheet extends FlexibleBottomSheetDialog {
             int count = counts.containsKey(id) ? counts.get(id) : 0;
             boolean alreadyIn = containingIds.contains(id);
 
+            // Set grouped M3 item background depending on position (top, middle, bottom, single)
+            if (getItemCount() == 1) {
+                holder.itemContainer.setBackgroundResource(R.drawable.bg_m3_item_single);
+            } else if (position == 0) {
+                holder.itemContainer.setBackgroundResource(R.drawable.bg_m3_item_top);
+            } else if (position == getItemCount() - 1) {
+                holder.itemContainer.setBackgroundResource(R.drawable.bg_m3_item_bottom);
+            } else {
+                holder.itemContainer.setBackgroundResource(R.drawable.bg_m3_item_middle);
+            }
+
             holder.tvName.setText(playlist.getName());
             holder.tvCount.setText(count + " видео");
 
+            // M3 checkmark pill (active) vs unselected circle (inactive) matching ThemeSelectionBottomSheet
             if (alreadyIn) {
-                holder.tvStatus.setVisibility(View.VISIBLE);
-                holder.ivCheck.setVisibility(View.VISIBLE);
-                holder.ivAdd.setVisibility(View.GONE);
-                holder.card.setStrokeColor(getContext().getResources().getColor(R.color.accent_color));
-                holder.card.setStrokeWidth((int) (1.5f * getContext().getResources().getDisplayMetrics().density));
+                holder.selectedPill.setVisibility(View.VISIBLE);
+                holder.unselectedCircle.setVisibility(View.GONE);
             } else {
-                holder.tvStatus.setVisibility(View.GONE);
-                holder.ivCheck.setVisibility(View.GONE);
-                holder.ivAdd.setVisibility(View.VISIBLE);
-                holder.card.setStrokeColor(getContext().getResources().getColor(R.color.player_item_inactive_stroke));
-                holder.card.setStrokeWidth((int) (1f * getContext().getResources().getDisplayMetrics().density));
+                holder.selectedPill.setVisibility(View.GONE);
+                holder.unselectedCircle.setVisibility(View.VISIBLE);
             }
 
             // Thumbnail loading
@@ -305,7 +311,7 @@ public class AddToPlaylistBottomSheet extends FlexibleBottomSheetDialog {
                 holder.ivFallback.setVisibility(View.VISIBLE);
             }
 
-            holder.card.setOnClickListener(v -> onPlaylistClicked(playlist, alreadyIn));
+            holder.itemContainer.setOnClickListener(v -> onPlaylistClicked(playlist, alreadyIn));
         }
 
         @Override
@@ -314,25 +320,23 @@ public class AddToPlaylistBottomSheet extends FlexibleBottomSheetDialog {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            final MaterialCardView card;
+            final View itemContainer;
             final ImageView ivThumbnail;
             final ImageView ivFallback;
             final TextView tvName;
             final TextView tvCount;
-            final TextView tvStatus;
-            final ImageView ivCheck;
-            final ImageView ivAdd;
+            final View selectedPill;
+            final View unselectedCircle;
 
             ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                card = (MaterialCardView) itemView;
+                itemContainer = itemView.findViewById(R.id.itemContainer);
                 ivThumbnail = itemView.findViewById(R.id.ivItemPlaylistThumbnail);
                 ivFallback = itemView.findViewById(R.id.ivItemPlaylistFallback);
                 tvName = itemView.findViewById(R.id.tvItemPlaylistName);
                 tvCount = itemView.findViewById(R.id.tvItemPlaylistCount);
-                tvStatus = itemView.findViewById(R.id.tvItemPlaylistStatus);
-                ivCheck = itemView.findViewById(R.id.ivItemCheck);
-                ivAdd = itemView.findViewById(R.id.ivItemAdd);
+                selectedPill = itemView.findViewById(R.id.itemSelectedPill);
+                unselectedCircle = itemView.findViewById(R.id.itemUnselectedCircle);
             }
         }
     }

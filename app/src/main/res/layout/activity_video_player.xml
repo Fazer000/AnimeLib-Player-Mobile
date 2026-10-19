@@ -127,14 +127,14 @@
                 android:id="@+id/seekPreviewText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="80dp"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginTop="18dp"
                 android:background="@drawable/video_time_background"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
                 android:text="+0 c"
                 android:textColor="@color/player_item_inactive_text"
-                android:textSize="16sp"
+                android:textSize="12.5sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
 
@@ -143,14 +143,14 @@
                 android:id="@+id/holdSpeedToast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="80dp"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginTop="14dp"
                 android:background="@drawable/video_time_background"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="4dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp"
                 android:text="2x"
                 android:textColor="@color/player_item_inactive_text"
-                android:textSize="18sp"
+                android:textSize="12.5sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
 
@@ -160,7 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|start"
-                android:layout_marginStart="130dp"
+                android:layout_marginStart="32dp"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:alpha="0"
@@ -168,8 +168,8 @@
 
                 <ImageView
                     android:id="@+id/skipIconLeft"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:src="@drawable/ic_skip"
                     android:rotation="180"
                     android:alpha="0.9"
@@ -179,13 +179,13 @@
                     android:id="@+id/skipTextLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="3dp"
                     android:background="@drawable/video_time_background"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
                     android:text="-85 сек"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
+                    android:textSize="11.5sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -195,7 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
-                android:layout_marginEnd="130dp"
+                android:layout_marginEnd="32dp"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:alpha="0"
@@ -203,8 +203,8 @@
 
                 <ImageView
                     android:id="@+id/skipIconRight"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:src="@drawable/ic_skip"
                     android:alpha="0.9"
                     app:tint="@color/white_color" />
@@ -213,33 +213,33 @@
                     android:id="@+id/skipTextRight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="3dp"
                     android:background="@drawable/video_time_background"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
                     android:text="+85 сек"
                     android:textColor="?attr/primaryTextColor"
-                    android:textSize="14sp"
+                    android:textSize="11.5sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Unified vertical gesture indicator plaque (Brightness & Volume) -->
             <LinearLayout
                 android:id="@+id/gestureIndicatorPlaque"
-                android:layout_width="160dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="80dp"
+                android:layout_width="125dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/video_time_background"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="10dp"
                 android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/gestureIndicatorIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:src="@drawable/ic_brightness"
                     app:tint="@color/white_color" />
 
@@ -247,7 +247,7 @@
                     android:id="@+id/gestureIndicatorProgress"
                     style="@android:style/Widget.ProgressBar.Horizontal"
                     android:layout_width="0dp"
-                    android:layout_height="4dp"
+                    android:layout_height="3dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
@@ -262,7 +262,7 @@
                     android:gravity="center_vertical|start"
                     android:text="100%"
                     android:textColor="@color/player_item_inactive_text"
-                    android:textSize="13sp"
+                    android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

@@ -7,9 +7,12 @@ import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -58,6 +61,9 @@ public class PlayerGestureController {
     private final ProgressBar gestureIndicatorProgress;
     private final TextView gestureIndicatorText;
 
+    private final ImageView skipIconLeft;
+    private final ImageView skipIconRight;
+
     // Gesture State
     private float touchStartX = -1f, touchStartY = -1f;
     private float holdStartX = 0f;
@@ -92,6 +98,8 @@ public class PlayerGestureController {
         this.skipTextLeft = skipTextLeft;
         this.skipIndicatorRight = skipIndicatorRight;
         this.skipTextRight = skipTextRight;
+        this.skipIconLeft = skipIndicatorLeft != null ? skipIndicatorLeft.findViewById(R.id.skipIconLeft) : null;
+        this.skipIconRight = skipIndicatorRight != null ? skipIndicatorRight.findViewById(R.id.skipIconRight) : null;
         this.gestureIndicatorPlaque = gestureIndicatorPlaque;
         this.gestureIndicatorIcon = gestureIndicatorIcon;
         this.gestureIndicatorProgress = gestureIndicatorProgress;
@@ -102,6 +110,116 @@ public class PlayerGestureController {
         this.maxVolume = audioManager != null ? audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) : 15;
 
         setupGestureListeners();
+    }
+
+    /**
+     * Динамически перестраивает размеры и отступы плашек перемотки, зажатия 2x и жестов
+     * в зависимости от ориентации экрана (компактные в портретном режиме, полноразмерные в ландшафтном).
+     */
+    public void updateOrientation(boolean isLandscape) {
+        float density = activity.getResources().getDisplayMetrics().density;
+
+        // 1. Двойной тап (перемотка назад и вперед)
+        int skipMargin = (int) ((isLandscape ? 120 : 32) * density);
+        int iconSize = (int) ((isLandscape ? 56 : 36) * density);
+        float skipTextSize = isLandscape ? 14f : 11.5f;
+        int skipTextPadH = (int) ((isLandscape ? 12 : 8) * density);
+        int skipTextPadV = (int) ((isLandscape ? 6 : 2) * density);
+        int skipTextMarginTop = (int) ((isLandscape ? 8 : 3) * density);
+
+        if (skipIndicatorLeft != null && skipIndicatorLeft.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) skipIndicatorLeft.getLayoutParams();
+            lp.leftMargin = skipMargin;
+            lp.gravity = Gravity.CENTER_VERTICAL | Gravity.START;
+            skipIndicatorLeft.setLayoutParams(lp);
+        }
+        if (skipIconLeft != null) {
+            ViewGroup.LayoutParams lp = skipIconLeft.getLayoutParams();
+            lp.width = iconSize;
+            lp.height = iconSize;
+            skipIconLeft.setLayoutParams(lp);
+        }
+        if (skipTextLeft != null) {
+            skipTextLeft.setTextSize(skipTextSize);
+            skipTextLeft.setPadding(skipTextPadH, skipTextPadV, skipTextPadH, skipTextPadV);
+            if (skipTextLeft.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) skipTextLeft.getLayoutParams();
+                lp.topMargin = skipTextMarginTop;
+                skipTextLeft.setLayoutParams(lp);
+            }
+        }
+
+        if (skipIndicatorRight != null && skipIndicatorRight.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) skipIndicatorRight.getLayoutParams();
+            lp.rightMargin = skipMargin;
+            lp.gravity = Gravity.CENTER_VERTICAL | Gravity.END;
+            skipIndicatorRight.setLayoutParams(lp);
+        }
+        if (skipIconRight != null) {
+            ViewGroup.LayoutParams lp = skipIconRight.getLayoutParams();
+            lp.width = iconSize;
+            lp.height = iconSize;
+            skipIconRight.setLayoutParams(lp);
+        }
+        if (skipTextRight != null) {
+            skipTextRight.setTextSize(skipTextSize);
+            skipTextRight.setPadding(skipTextPadH, skipTextPadV, skipTextPadH, skipTextPadV);
+            if (skipTextRight.getLayoutParams() instanceof LinearLayout.LayoutParams) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) skipTextRight.getLayoutParams();
+                lp.topMargin = skipTextMarginTop;
+                skipTextRight.setLayoutParams(lp);
+            }
+        }
+
+        // 2. Плашка перемотки свайпом (драгом)
+        if (seekPreviewText != null) {
+            if (seekPreviewText.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) seekPreviewText.getLayoutParams();
+                lp.topMargin = (int) ((isLandscape ? 70 : 18) * density);
+                lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+                seekPreviewText.setLayoutParams(lp);
+            }
+            seekPreviewText.setTextSize(isLandscape ? 15f : 12.5f);
+            int padH = (int) ((isLandscape ? 14 : 10) * density);
+            int padV = (int) ((isLandscape ? 8 : 4) * density);
+            seekPreviewText.setPadding(padH, padV, padH, padV);
+        }
+
+        // 3. Плашка скорости при зажатии (2x)
+        if (holdSpeedToast != null) {
+            if (holdSpeedToast.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) holdSpeedToast.getLayoutParams();
+                lp.topMargin = (int) ((isLandscape ? 70 : 14) * density);
+                lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+                holdSpeedToast.setLayoutParams(lp);
+            }
+            holdSpeedToast.setTextSize(isLandscape ? 16f : 12.5f);
+            int padH = (int) ((isLandscape ? 16 : 10) * density);
+            int padV = (int) ((isLandscape ? 4 : 3) * density);
+            holdSpeedToast.setPadding(padH, padV, padH, padV);
+        }
+
+        // 4. Плашка громкости и яркости
+        if (gestureIndicatorPlaque != null) {
+            if (gestureIndicatorPlaque.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) gestureIndicatorPlaque.getLayoutParams();
+                lp.topMargin = (int) ((isLandscape ? 70 : 16) * density);
+                lp.width = (int) ((isLandscape ? 160 : 125) * density);
+                lp.height = (int) ((isLandscape ? 36 : 28) * density);
+                lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+                gestureIndicatorPlaque.setLayoutParams(lp);
+            }
+            if (gestureIndicatorIcon != null) {
+                ViewGroup.LayoutParams lp = gestureIndicatorIcon.getLayoutParams();
+                int iconD = (int) ((isLandscape ? 20 : 16) * density);
+                lp.width = iconD;
+                lp.height = iconD;
+                gestureIndicatorIcon.setLayoutParams(lp);
+            }
+            if (gestureIndicatorText != null) {
+                gestureIndicatorText.setTextSize(isLandscape ? 13f : 11f);
+            }
+        }
     }
 
     public void release() {

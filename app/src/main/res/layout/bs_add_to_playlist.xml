@@ -64,80 +64,71 @@
             android:contentDescription="Закрыть" />
     </LinearLayout>
 
-    <!-- Top Action: M3 "Создать новый плейлист" Button/Card -->
-    <com.google.android.material.card.MaterialCardView
+    <!-- Top Action: M3 "Создать новый плейлист" Button (NO STROKE / OUTLINE) -->
+    <LinearLayout
         android:id="@+id/cardCreateNewPlaylist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="12dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/card_bg_color"
-        app:strokeWidth="1.5dp"
-        app:strokeColor="@color/accent_color"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="12dp"
+        android:background="@drawable/bg_m3_item_single"
         android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground">
+        android:focusable="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="14dp"
-            android:paddingVertical="12dp">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                app:cardCornerRadius="22dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/accent_color">
-
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_add"
-                    app:tint="@color/white_color"
-                    android:contentDescription="Создать" />
-            </androidx.cardview.widget.CardView>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="14dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Создать новый плейлист"
-                    android:textColor="@color/accent_color"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="И добавить это видео в него"
-                    android:textColor="@color/player_item_inactive_text"
-                    android:fontFamily="@font/open_sans"
-                    android:textSize="12sp" />
-            </LinearLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="@color/accent_color">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_chevron_right"
-                app:tint="@color/accent_color"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_add"
+                app:tint="@color/white_color"
                 android:contentDescription="Создать" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Создать новый плейлист"
+                android:textColor="@color/accent_color"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="15.5sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="И добавить это видео в него"
+                android:textColor="@color/player_item_inactive_text"
+                android:fontFamily="@font/open_sans"
+                android:textSize="12sp" />
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/accent_color"
+            android:contentDescription="Создать" />
+    </LinearLayout>
 
     <!-- Subtitle: Ваши плейлисты -->
     <TextView
@@ -167,6 +158,8 @@
         android:id="@+id/rvPlaylistsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:clipToPadding="false"
         android:nestedScrollingEnabled="true"
         android:overScrollMode="never" />
 
