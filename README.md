@@ -1,26 +1,31 @@
-# PlayerLib / AnimeLib Video Player
+# AnimeLib Video Player
 
 ![Platform](https://img.shields.io/badge/Platform-Android-78C257?style=flat-square)
 ![Language](https://img.shields.io/badge/Language-Java-ED8B00?style=flat-square)
 ![UI](https://img.shields.io/badge/UI-Android%20Views%20%2F%20XML%20%2F%20M3-007ACC?style=flat-square)
 ![Player](https://img.shields.io/badge/Player-AndroidX%20Media3%20ExoPlayer-FF7A00?style=flat-square)
 
-Современный и функциональный офлайн видеоплеер для Android, разработанный на базе кастомного плеера оригинального проекта [AnimeLib-Mobile](https://github.com/Fazer000/AnimeLib-Mobile). Приложение сочетает в себе удобный проводник медиафайлов, менеджер плейлистов и продвинутый нативный видеоплеер с широкими возможностями кастомизации.
+Современный и функциональный видеоплеер для Android, созданный на базе кастомного плеера оригинального проекта [AnimeLib-Mobile](https://github.com/Fazer000/AnimeLib-Mobile). Приложение сочетает в себе удобный проводник медиафайлов, менеджер плейлистов и продвинутый нативный видеоплеер с широкими возможностями кастомизации.
 
 ---
 
-## 📌 Авторство и основа проекта
+## 📌 Авторство и правовая информация
 
-> **Основа проекта:**
+> **Важное примечание:**
+> Приложение **AnimeLib** является сторонним клиентом и видеоплеером. Все права на контент, бренд, API, веб-сервисы и материалы принадлежат официальному ресурсу [animelib.org](https://animelib.org) и компаниям-правообладателям (**ООО «Мангалиб»**).
+> 
+> Приложение не распространяет защищённый авторским правом контент напрямую.
+> 
+> **Основа кастомного плеера:**
 > Данное приложение использует архитектуру и наработки кастомного видеоплеера из открытого проекта [AnimeLib-Mobile](https://github.com/Fazer000/AnimeLib-Mobile) от **Fazer000**.
->
-> Оригинальный плеер был расширен и адаптирован для работы с локальным медиахранилищем, локальными плейлистами, гибким проводником видеофайлов и улучшенным портретным интерфейсом.
+> 
+> Оригинальный плеер был расширен и адаптирован для работы с локальным медиахранилищем, кастомными плейлистами, гибким проводником видеофайлов и улучшенным портретным интерфейсом.
 
 ---
 
 ## 📱 О приложении
 
-**PlayerLib** разработан для комфортного воспроизведения любых локальных видеозаписей и аниме-эпизодов на Android. Приложение автоматически сканирует память устройства, группирует файлы по папкам, создаёт качественные миниатюры и сохраняет прогресс просмотра для каждого файла.
+**AnimeLib Video Player** разработан для комфортного просмотра аниме-эпизодов и видеозаписей на мобильных устройствах Android. Приложение автоматически сканирует память устройства, группирует файлы по папкам, генерирует качественные превью и сохраняет прогресс просмотра.
 
 ---
 
@@ -42,7 +47,7 @@
     * Интерактивный список серий/файлов с отслеживанием прогресса.
   * **Жесты и управление**:
     * Свайпы для регулировки громкости и яркости.
-    * Двойной тап для настраиваемой перемотки (например, пропуск опенингов/эндингов).
+    * Двойной тап для настраиваемой перемотки (пропуск опенингов/эндингов).
     * Удержание для ускорения воспроизведения (2x).
   * **Режим «Картинка в картинке» (PiP)**: Фоновый просмотр поверх других приложений.
 
@@ -70,6 +75,16 @@
 * **Media Player Engine**: AndroidX Media3 (ExoPlayer, UI, OkHttp Datasource)
 * **Database & Persistence**: Room Database (Entities, DAOs, DatabaseManager)
 * **Thumbnail Generation**: Android MediaMetadataRetriever + MediaStore
+
+---
+
+## 📥 Скачать
+
+| Платформа / Версия | Последний релиз | Ссылка |
+|-------------------|-----------------|--------|
+| 🎬 **AnimeLib Video Player (Android)** | [![Player Release](https://img.shields.io/badge/release-v1.0.0-FF7A00?style=flat-square)](#) | [Скачать последнюю версию](../../releases) |
+| 📱 **AnimeLib Mobile (Android)** | [![Mobile Release](https://img.shields.io/github/v/release/Fazer000/AnimeLib-Mobile?label=mobile&style=flat-square)](https://github.com/Fazer000/AnimeLib-Mobile/releases) | [Скачать оригинальную мобильную версию](https://github.com/Fazer000/AnimeLib-Mobile/releases) |
+| 🖥️ **AnimeLib Desktop (ПК)** | [![Desktop Release](https://img.shields.io/github/v/release/Fazer000/AnimeLib-Desktop?label=desktop&style=flat-square)](https://github.com/Fazer000/AnimeLib-Desktop/releases) | [Скачать PC версию](https://github.com/Fazer000/AnimeLib-Desktop/releases) |
 
 ---
 
@@ -121,6 +136,13 @@ app/src/main/
 
 ---
 
-## 📄 Ссылки и оригинальный проект
+## 📄 Отказ от ответственности (Disclaimer)
 
-* **Оригинальный репозиторий AnimeLib Mobile**: [github.com/Fazer000/AnimeLib-Mobile](https://github.com/Fazer000/AnimeLib-Mobile)
+* Данное приложение создано исключительно в ознакомительных и образовательных целях.
+* Все логотипы, товарные знаки и графические материалы сайта **animelib.org** принадлежат **ООО «Мангалиб»**.
+* Разработчик не несёт ответственности за контент, предоставляемый сторонними ресурсами и сервисами.
+
+---
+
+**Сайт и API**: [animelib.org](https://animelib.org) (ООО «Мангалиб»)  
+**Оригинальный репозиторий AnimeLib Mobile**: [github.com/Fazer000/AnimeLib-Mobile](https://github.com/Fazer000/AnimeLib-Mobile)
