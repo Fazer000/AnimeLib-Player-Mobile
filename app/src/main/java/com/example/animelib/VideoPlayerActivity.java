@@ -65,6 +65,7 @@ import com.example.animelib.settings.AddToPlaylistBottomSheet;
 import com.example.animelib.settings.SettingsBottomSheet;
 import com.example.animelib.settings.VideoOptionsBottomSheet;
 import com.example.animelib.settings.VideoInfoBottomSheet;
+import com.example.animelib.settings.VideoFiltersBottomSheet;
 import com.example.animelib.util.DialogUtils;
 import com.example.animelib.ui.AmbientVignetteOverlayView;
 import com.example.animelib.util.CustomToast;
@@ -96,6 +97,16 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     private TextView tvAnimeSubtitle;
     private TextView tvPortraitAnimeTitle;
     private TextView tvPortraitPlaylistInfo;
+    private View btnPortraitAddToPlaylist;
+    private View btnPortraitSpeed;
+    private View btnPortraitFilters;
+    private View btnPortraitSound;
+    private View btnPortraitInfo;
+    private View btnPortraitSettings;
+    private TextView tvPortraitSpeedText;
+    private TextView tvPortraitFormatTag;
+    private TextView tvPortraitEpisodesHeaderTitle;
+    private TextView tvPortraitEpisodesCountBadge;
     private RecyclerView rvPlaylistEpisodes;
     private PlaylistEpisodesAdapter playlistEpisodesAdapter;
     private ImageButton btnClose;
@@ -224,6 +235,75 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
 
         rvPlaylistEpisodes = findViewById(R.id.rvPlaylistEpisodes);
         tvPortraitPlaylistInfo = findViewById(R.id.tvPortraitPlaylistInfo);
+        btnPortraitAddToPlaylist = findViewById(R.id.btnPortraitAddToPlaylist);
+        btnPortraitSpeed = findViewById(R.id.btnPortraitSpeed);
+        btnPortraitFilters = findViewById(R.id.btnPortraitFilters);
+        btnPortraitSound = findViewById(R.id.btnPortraitSound);
+        btnPortraitInfo = findViewById(R.id.btnPortraitInfo);
+        btnPortraitSettings = findViewById(R.id.btnPortraitSettings);
+        tvPortraitSpeedText = findViewById(R.id.tvPortraitSpeedText);
+        tvPortraitFormatTag = findViewById(R.id.tvPortraitFormatTag);
+        tvPortraitEpisodesHeaderTitle = findViewById(R.id.tvPortraitEpisodesHeaderTitle);
+        tvPortraitEpisodesCountBadge = findViewById(R.id.tvPortraitEpisodesCountBadge);
+
+        if (btnPortraitAddToPlaylist != null) {
+            btnPortraitAddToPlaylist.setOnClickListener(v -> {
+                VideoItem video = getCurrentVideoItem();
+                if (video != null) {
+                    showAddToPlaylistDialog(video);
+                } else {
+                    CustomToast.showInfo(this, "Видео не выбрано");
+                }
+            });
+        }
+
+        if (btnPortraitSpeed != null) {
+            btnPortraitSpeed.setOnClickListener(v -> showSettingsBottomSheet());
+        }
+
+        if (btnPortraitFilters != null) {
+            btnPortraitFilters.setOnClickListener(v -> {
+                float[] filters = databaseManager.loadVideoFilters();
+                VideoFiltersBottomSheet dialog = new VideoFiltersBottomSheet(
+                        this,
+                        filters[0], filters[1], filters[2], filters[3], filters[4],
+                        (b, c, s, g, h) -> {
+                            databaseManager.saveVideoFilters(b, c, s, g, h);
+                            if (videoFiltersManager != null) {
+                                videoFiltersManager.setFilters(b, c, s, g, h);
+                            }
+                        }
+                );
+                dialog.show();
+            });
+        }
+
+        if (btnPortraitSound != null) {
+            btnPortraitSound.setOnClickListener(v -> {
+                boolean currentVal = databaseManager.loadSurroundSoundSetting();
+                boolean newVal = !currentVal;
+                databaseManager.saveSurroundSoundSetting(newVal);
+                if (surroundSoundManager != null) {
+                    surroundSoundManager.setEnabled(newVal);
+                }
+                CustomToast.showInfo(this, newVal ? "3D Звук включен" : "3D Звук выключен");
+            });
+        }
+
+        if (btnPortraitInfo != null) {
+            btnPortraitInfo.setOnClickListener(v -> {
+                VideoItem video = getCurrentVideoItem();
+                if (video != null) {
+                    VideoInfoBottomSheet infoBs = new VideoInfoBottomSheet(this, video);
+                    infoBs.show();
+                }
+            });
+        }
+
+        if (btnPortraitSettings != null) {
+            btnPortraitSettings.setOnClickListener(v -> showSettingsBottomSheet());
+        }
+
         if (rvPlaylistEpisodes != null) {
             rvPlaylistEpisodes.setLayoutManager(new LinearLayoutManager(this));
             playlistEpisodesAdapter = new PlaylistEpisodesAdapter(
@@ -501,13 +581,66 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             tvPortraitAnimeTitle.setText(mainTitle);
         }
         if (tvPortraitPlaylistInfo != null) {
-            if (subtitleText != null) {
-                tvPortraitPlaylistInfo.setText(subtitleText);
-                tvPortraitPlaylistInfo.setVisibility(View.VISIBLE);
+            String folderName = playlistManager.getCurrentFolderName();
+            String infoStr = subtitleText != null ? subtitleText : (folderName != null ? "Папка: " + folderName : "Видео");
+            tvPortraitPlaylistInfo.setText(infoStr);
+            tvPortraitPlaylistInfo.setVisibility(View.VISIBLE);
+        }
+
+        if (tvPortraitSpeedText != null) {
+            tvPortraitSpeedText.setText(String.format(Locale.US, "%.1fx", currentPlaybackSpeed));
+        }
+
+        String path = playlistManager.getCurrentPath();
+        if (tvPortraitFormatTag != null) {
+            if (path != null && path.contains(".")) {
+                String ext = path.substring(path.lastIndexOf(".") + 1).toUpperCase(Locale.ROOT);
+                if (ext.length() <= 5) {
+                    tvPortraitFormatTag.setText(ext);
+                    tvPortraitFormatTag.setVisibility(View.VISIBLE);
+                } else {
+                    tvPortraitFormatTag.setVisibility(View.GONE);
+                }
             } else {
-                tvPortraitPlaylistInfo.setVisibility(View.GONE);
+                tvPortraitFormatTag.setVisibility(View.GONE);
             }
         }
+
+        int totalCount = playlistManager.getPlaylistPaths() != null ? playlistManager.getPlaylistPaths().size() : 0;
+        int currentIdx = playlistManager.getCurrentIndex() + 1;
+
+        if (tvPortraitEpisodesHeaderTitle != null) {
+            if (playlistManager.isPlaylist()) {
+                tvPortraitEpisodesHeaderTitle.setText("Серии в плейлисте");
+            } else {
+                tvPortraitEpisodesHeaderTitle.setText("Видео в этой папке");
+            }
+        }
+
+        if (tvPortraitEpisodesCountBadge != null) {
+            if (totalCount > 0) {
+                tvPortraitEpisodesCountBadge.setText(currentIdx + " / " + totalCount);
+                tvPortraitEpisodesCountBadge.setVisibility(View.VISIBLE);
+            } else {
+                tvPortraitEpisodesCountBadge.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private VideoItem getCurrentVideoItem() {
+        if (playlistManager == null) return null;
+        String path = playlistManager.getCurrentPath();
+        String title = playlistManager.getCurrentTitle();
+        if (path == null || path.isEmpty()) return null;
+        File f = new File(path);
+        long size = f.exists() ? f.length() : 0;
+        long modified = f.exists() ? f.lastModified() / 1000L : 0;
+        String folder = playlistManager.getCurrentFolderName();
+        if (folder == null || folder.isEmpty()) {
+            folder = (f.getParentFile() != null) ? f.getParentFile().getName() : "Видео";
+        }
+        long duration = (player != null && player.getDuration() > 0) ? player.getDuration() : 0;
+        return new VideoItem(playlistManager.getCurrentIndex(), title, path, null, duration, size, modified, folder);
     }
 
     private void playCurrentVideo(boolean shouldResume) {
@@ -760,6 +893,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
                 speed -> {
                     currentPlaybackSpeed = speed;
                     if (player != null) player.setPlaybackParameters(new PlaybackParameters(speed));
+                    if (tvPortraitSpeedText != null) {
+                        tvPortraitSpeedText.setText(String.format(Locale.US, "%.1fx", speed));
+                    }
                 },
                 databaseManager.loadAmbientLightSetting(),
                 enabled -> {
