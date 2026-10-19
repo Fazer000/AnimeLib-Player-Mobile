@@ -19,7 +19,9 @@ public class VideoListFilter {
         DATE_DESC,
         DATE_ASC,
         NAME_ASC,
-        SIZE_DESC
+        NAME_DESC,
+        SIZE_DESC,
+        SIZE_ASC
     }
 
     /**
@@ -93,8 +95,16 @@ public class VideoListFilter {
                         a.getTitle() != null ? a.getTitle() : "",
                         b.getTitle() != null ? b.getTitle() : ""));
                 break;
+            case NAME_DESC:
+                Collections.sort(list, (a, b) -> String.CASE_INSENSITIVE_ORDER.compare(
+                        b.getTitle() != null ? b.getTitle() : "",
+                        a.getTitle() != null ? a.getTitle() : ""));
+                break;
             case SIZE_DESC:
                 Collections.sort(list, (a, b) -> Long.compare(b.getSizeBytes(), a.getSizeBytes()));
+                break;
+            case SIZE_ASC:
+                Collections.sort(list, (a, b) -> Long.compare(a.getSizeBytes(), b.getSizeBytes()));
                 break;
         }
     }

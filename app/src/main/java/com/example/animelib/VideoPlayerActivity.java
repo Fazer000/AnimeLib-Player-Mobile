@@ -61,6 +61,7 @@ import com.example.animelib.data.entity.VideoPlaybackHistoryEntity;
 import com.example.animelib.managers.AmbientLightManager;
 import com.example.animelib.managers.SurroundSoundManager;
 import com.example.animelib.managers.VideoFiltersManager;
+import com.example.animelib.settings.AddToPlaylistBottomSheet;
 import com.example.animelib.settings.SettingsBottomSheet;
 import com.example.animelib.settings.VideoOptionsBottomSheet;
 import com.example.animelib.settings.VideoInfoBottomSheet;
@@ -1204,38 +1205,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
     }
 
     private void showAddToPlaylistDialog(VideoItem video) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            java.util.List<com.example.animelib.data.entity.PlaylistEntity> playlists = databaseManager.getAllPlaylists();
-            runOnUiThread(() -> {
-                ArrayList<String> options = new ArrayList<>();
-                options.add("＋ Новый плейлист");
-                for (com.example.animelib.data.entity.PlaylistEntity p : playlists) {
-                    options.add(p.getName());
-                }
-                DialogUtils.showListDialog(this, "Добавить в плейлист", options.toArray(new String[0]), index -> {
-                    if (index == 0) {
-                        DialogUtils.showInputDialog(this, "Новый плейлист", "Введите название плейлиста:", "", "Название", "Создать", "Отмена", new DialogUtils.InputDialogListener() {
-                            @Override
-                            public void onInputConfirmed(String input) {
-                                if (input == null || input.trim().isEmpty()) return;
-                                ArrayList<VideoItem> single = new ArrayList<>();
-                                single.add(video);
-                                databaseManager.createPlaylist(input.trim(), single);
-                                CustomToast.showSuccess(VideoPlayerActivity.this, "Плейлист создан и видео добавлено");
-                            }
-
-                            @Override
-                            public void onCancelled() {}
-                        });
-                    } else {
-                        com.example.animelib.data.entity.PlaylistEntity chosen = playlists.get(index - 1);
-                        String path = video.getPath() != null && !video.getPath().isEmpty() ? video.getPath() : video.getUriString();
-                        databaseManager.addVideoToPlaylist(chosen.getId(), path, video.getTitle());
-                        CustomToast.showSuccess(VideoPlayerActivity.this, "Добавлено в " + chosen.getName());
-                    }
-                });
-            });
-        });
+        if (video == null) return;
+        AddToPlaylistBottomSheet bs = new AddToPlaylistBottomSheet(this, video, null);
+        bs.show();
     }
 
     private void showRenameVideoDialog(VideoItem video) {

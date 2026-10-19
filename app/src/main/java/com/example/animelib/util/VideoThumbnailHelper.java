@@ -14,12 +14,21 @@ import java.io.File;
 import java.util.HashMap;
 
 /**
- * Высокопроизводительный хелпер для извлечения превью видеофайлов.
- * Предотвращает отображение черных кадров (fade-in/черный интро) с помощью
- * адаптивного анализа ключевых кадров и встроенного LruCache.
+ * Высокопроизводительный хелпер для извлечения уникальных и качественных превью видеофайлов.
+ *
+ * Особенности:
+ * 1. Уникальность превью: в сериалах и аниме первые 1.5-2 минуты занимает одинаковый опенинг (OP),
+ *    а в самом начале (0с) часто находится логотип релиз-группы/дистрибьютора или черный экран.
+ *    Поэтому выборка кадров производится из содержательной части (20%-75% хронометража)
+ *    со смещением на основе хэша файла, гарантируя разные превью для каждой серии!
+ * 2. Аппаратное масштабирование: извлечение через getScaledFrameAtTime и OPTION_CLOSEST_SYNC
+ *    по ключевым I-кадрам без выделения избыточной оперативной памяти.
+ * 3. Детектор темных кадров: быстрый анализ исключает черные сцены и переходы.
+ * 4. Двухуровневый кэш в памяти: быстрый LruCache для мгновенного скролла.
  */
 public class VideoThumbnailHelper {
 
+    private static final String CACHE_VERSION_PREFIX = "v3_";
     private static final int MEMORY_CACHE_SIZE = (int) (Runtime.getRuntime().maxMemory() / 1024 / 8); // 1/8 памяти приложения
     private static final LruCache<String, Bitmap> MEMORY_CACHE = new LruCache<String, Bitmap>(
             Math.max(1024 * 10, MEMORY_CACHE_SIZE)) {
@@ -28,6 +37,19 @@ public class VideoThumbnailHelper {
             return bitmap != null ? (bitmap.getByteCount() / 1024) : 1;
         }
     };
+
+    /**
+     * Создает единый унифицированный ключ для кэша на основе пути или URI.
+     */
+    public static String buildCacheKey(String path, Uri uri) {
+        if (path != null && !path.trim().isEmpty()) {
+            return CACHE_VERSION_PREFIX + path.trim();
+        }
+        if (uri != null) {
+            return CACHE_VERSION_PREFIX + uri.toString();
+        }
+        return null;
+    }
 
     public static Bitmap getCachedThumbnail(String key) {
         if (key == null) return null;
@@ -55,7 +77,7 @@ public class VideoThumbnailHelper {
             path = uri.getPath();
         }
 
-        String cacheKey = (uri != null) ? uri.toString() : path;
+        String cacheKey = buildCacheKey(path, uri);
         if (cacheKey != null) {
             Bitmap cached = MEMORY_CACHE.get(cacheKey);
             if (cached != null && !cached.isRecycled()) {
@@ -65,44 +87,16 @@ public class VideoThumbnailHelper {
 
         Bitmap thumb = null;
 
-        // 1. Попытка получить системный мини-кэш MediaStore/ContentResolver (самый быстрый путь ~1-5мс)
-        if (context != null && uri != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            try {
-                thumb = context.getContentResolver().loadThumbnail(uri, new Size(320, 180), null);
-            } catch (Throwable ignored) {}
-        }
-
-        if (thumb == null && path != null && new File(path).exists()) {
-            try {
-                thumb = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
-            } catch (Throwable ignored) {}
-        }
-
-        // Если системное превью получено, проверяем: не черный ли это начальный кадр (t=0)
-        if (thumb != null) {
-            if (!isMostlyBlack(thumb)) {
-                if (cacheKey != null) {
-                    putCachedThumbnail(cacheKey, thumb);
-                }
-                return thumb;
-            } else {
-                // Первый кадр из системы оказался черным — сбрасываем и переходим к умному поиску кадра
-                try {
-                    thumb.recycle();
-                } catch (Throwable ignored) {}
-                thumb = null;
-            }
-        }
-
-        // 2. Умное извлечение кадра через MediaMetadataRetriever (с аппаратным масштабированием и пропуском черных кадров)
+        // 1. Интеллектуальное извлечение кадра через MediaMetadataRetriever
+        // Делаем выборку из основного хронометража конкретной серии, минуя общие логотипы и одинаковые опенинги
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            if (uri != null && context != null) {
+            if (path != null && new File(path).exists()) {
+                retriever.setDataSource(path);
+            } else if (uri != null && context != null) {
                 retriever.setDataSource(context, uri);
             } else if (path != null && (path.startsWith("http://") || path.startsWith("https://"))) {
                 retriever.setDataSource(path, new HashMap<>());
-            } else if (path != null && new File(path).exists()) {
-                retriever.setDataSource(path);
             } else if (path != null) {
                 retriever.setDataSource(path);
             } else {
@@ -119,19 +113,20 @@ public class VideoThumbnailHelper {
                 }
             }
 
-            // Набор временных меток в микросекундах для быстрого поиска первого НЕ черного кадра
-            long[] candidateTimesUs = getCandidateTimesUs(durationMs);
+            // Вычисляем набор уникальных временных меток для данного видео
+            String seedStr = (path != null && !path.isEmpty()) ? path : (uri != null ? uri.toString() : "");
+            long[] candidateTimesUs = getCandidateTimesUs(durationMs, seedStr);
 
             Bitmap fallbackCandidate = null;
             for (long timeUs : candidateTimesUs) {
                 Bitmap candidate = extractScaledFrame(retriever, timeUs);
                 if (candidate != null) {
                     if (!isMostlyBlack(candidate)) {
-                        // Найден информативный, не черный кадр! Завершаем поиск сразу
+                        // Найден отличный, не черный и уникальный кадр из сюжета!
                         thumb = candidate;
                         break;
                     } else {
-                        // Сохраняем как крайний вариант на случай, если видео целиком темное
+                        // Сохраняем как запасной вариант на случай темного видеоряда
                         if (fallbackCandidate == null) {
                             fallbackCandidate = candidate;
                         } else {
@@ -151,6 +146,20 @@ public class VideoThumbnailHelper {
             try {
                 retriever.release();
             } catch (Throwable ignored) {}
+        }
+
+        // 2. Системный фолбэк (только если MediaMetadataRetriever не смог обработать файл)
+        if (thumb == null) {
+            if (context != null && uri != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                try {
+                    thumb = context.getContentResolver().loadThumbnail(uri, new Size(320, 180), null);
+                } catch (Throwable ignored) {}
+            }
+            if (thumb == null && path != null && new File(path).exists()) {
+                try {
+                    thumb = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
+                } catch (Throwable ignored) {}
+            }
         }
 
         if (thumb != null && cacheKey != null) {
@@ -186,36 +195,73 @@ public class VideoThumbnailHelper {
     }
 
     /**
-     * Вычисление оптимальных меток времени (в микросекундах) для нахождения яркого содержательного кадра.
+     * Вычисление оптимальных меток времени (в микросекундах) для нахождения яркого содержательного
+     * кадра из сюжета.
+     *
+     * Устраняет проблему одинаковых превью:
+     * - Исключает первые 2-2.5 минуты (в аниме это стандартный опенинг/заставка, одинаковый во всех сериях).
+     * - Исключает последние 2 минуты (эндинг и титры).
+     * - Генерирует детерминированное смещение по хэшу файла, чтобы серия 1, 2, 3 брали кадры из разных сцен.
      */
-    private static long[] getCandidateTimesUs(long durationMs) {
-        if (durationMs > 30_000) { // Длиннее 30 сек
+    public static long[] getCandidateTimesUs(long durationMs, String seedStr) {
+        int seed = 0;
+        if (seedStr != null && !seedStr.isEmpty()) {
+            // Лавинный хэш-миксер для равномерного распределения значений даже при близких именах (Ep01, Ep02)
+            int h = seedStr.hashCode();
+            h ^= (h >>> 16);
+            h *= 0x85ebca6b;
+            h ^= (h >>> 13);
+            h *= 0xc2b2ae35;
+            h ^= (h >>> 16);
+            seed = Math.abs(h);
+        }
+
+        if (durationMs > 180_000) { // Длиннее 3 минут (аниме-эпизоды, фильмы, сериалы)
+            // Пропуск заставки (интро/опенинг длится до 90-120 сек, реклама/логотипы).
+            // Берем гарантированно безопасную зону после 2.5 минут (150 сек).
+            long minSafeMs = Math.max(150_000L, (long) (durationMs * 0.12f));
+            long maxSafeMs = Math.max(minSafeMs + 30_000L, durationMs - Math.max(120_000L, (long) (durationMs * 0.10f)));
+
+            // Уникальный процент для конкретного видео на основе хэша (от 20% до 75% длительности)
+            float uniqueFraction = 0.20f + ((seed % 100) / 100.0f) * 0.55f;
+            long primaryMs = (long) (durationMs * uniqueFraction);
+            if (primaryMs < minSafeMs) primaryMs = minSafeMs + ((seed % 30) * 1000L);
+            if (primaryMs > maxSafeMs) primaryMs = maxSafeMs - ((seed % 30) * 1000L);
+
             return new long[] {
-                    Math.max(5_000_000L, Math.min(25_000_000L, (long) (durationMs * 1000L * 0.10f))), // 10% или 5-25 сек (после интро)
-                    Math.max(12_000_000L, Math.min(60_000_000L, (long) (durationMs * 1000L * 0.25f))), // 25%
-                    (long) (durationMs * 1000L * 0.50f), // 50% середина
-                    (long) (durationMs * 1000L * 0.70f), // 70%
-                    2_000_000L // 2 сек
+                    primaryMs * 1000L,
+                    Math.max(minSafeMs, (long) (durationMs * 0.45f)) * 1000L,
+                    Math.min(maxSafeMs, (long) (durationMs * 0.65f)) * 1000L,
+                    Math.max(minSafeMs, (long) (durationMs * 0.32f)) * 1000L,
+                    Math.min(maxSafeMs, (long) (durationMs * 0.52f)) * 1000L,
+                    Math.max(minSafeMs, (long) (durationMs * 0.22f)) * 1000L
+            };
+        } else if (durationMs > 30_000) { // 30 сек - 3 мин
+            float uniqueFraction = 0.25f + ((seed % 100) / 100.0f) * 0.45f;
+            return new long[] {
+                    (long) (durationMs * uniqueFraction) * 1000L,
+                    (long) (durationMs * 0.50f) * 1000L,
+                    (long) (durationMs * 0.30f) * 1000L,
+                    (long) (durationMs * 0.70f) * 1000L
             };
         } else if (durationMs > 5_000) { // 5 - 30 сек
             return new long[] {
-                    (long) (durationMs * 1000L * 0.30f), // 30%
-                    (long) (durationMs * 1000L * 0.60f), // 60%
-                    (long) (durationMs * 1000L * 0.15f), // 15%
-                    1_000_000L // 1 сек
+                    (long) (durationMs * 0.40f) * 1000L,
+                    (long) (durationMs * 0.60f) * 1000L,
+                    (long) (durationMs * 0.25f) * 1000L
             };
-        } else if (durationMs > 0) { // короткий клип < 5 сек
+        } else if (durationMs > 0) { // Очень короткое видео < 5 сек
             return new long[] {
-                    (long) (durationMs * 1000L * 0.50f),
-                    (long) (durationMs * 1000L * 0.25f),
-                    (long) (durationMs * 1000L * 0.75f)
+                    (long) (durationMs * 0.50f) * 1000L
             };
         } else { // Длительность неизвестна
+            long seedSec = 150L + (seed % 150); // От 2.5 до 5 минут
             return new long[] {
-                    8_000_000L,  // 8 сек
-                    20_000_000L, // 20 сек
-                    40_000_000L, // 40 сек
-                    2_000_000L   // 2 сек
+                    seedSec * 1_000_000L,
+                    300_000_000L, // 5 мин
+                    180_000_000L, // 3 мин
+                    420_000_000L, // 7 мин
+                    90_000_000L   // 1.5 мин
             };
         }
     }

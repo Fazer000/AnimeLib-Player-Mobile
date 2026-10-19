@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardPlaylistItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="4dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/card_bg_color"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/player_item_inactive_stroke"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="10dp">
+
+        <!-- Playlist Thumbnail / Icon -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="@color/black_color">
+
+            <ImageView
+                android:id="@+id/ivItemPlaylistThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder_image"
+                android:contentDescription="Обложка" />
+
+            <ImageView
+                android:id="@+id/ivItemPlaylistFallback"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_episodes"
+                app:tint="@color/accent_color"
+                android:visibility="gone"
+                android:contentDescription="Иконка плейлиста" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Playlist Info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvItemPlaylistName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Название плейлиста"
+                android:textColor="@color/primary_text_color"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="15sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvItemPlaylistCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="0 видео"
+                android:textColor="@color/player_item_inactive_text"
+                android:fontFamily="@font/open_sans"
+                android:textSize="12.5sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvItemPlaylistStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="✓ Уже в этом плейлисте"
+                android:textColor="@color/accent_color"
+                android:fontFamily="@font/open_sans_semibold"
+                android:textSize="11.5sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Trailing action indicator -->
+        <FrameLayout
+            android:layout_width="36dp"
+            android:layout_height="36dp">
+
+            <ImageView
+                android:id="@+id/ivItemCheck"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_check"
+                app:tint="@color/accent_color"
+                android:visibility="gone"
+                android:contentDescription="Уже в плейлисте" />
+
+            <ImageView
+                android:id="@+id/ivItemAdd"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_add"
+                app:tint="@color/primary_text_color"
+                android:visibility="visible"
+                android:contentDescription="Добавить" />
+        </FrameLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

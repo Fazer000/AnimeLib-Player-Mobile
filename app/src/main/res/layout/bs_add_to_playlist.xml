@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="24dp"
+    android:background="@android:color/transparent">
+
+    <!-- Bottom Sheet Drag Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bottom_sheet_handle"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Добавить в плейлист"
+                android:textColor="@color/primary_text_color"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvBsVideoTargetTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Выберите плейлист"
+                android:textColor="@color/player_item_inactive_text"
+                android:fontFamily="@font/open_sans"
+                android:textSize="12.5sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnCloseAddToPlaylist"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="6dp"
+            app:tint="@color/accent_text_color"
+            android:background="@drawable/button_close_background"
+            android:src="@drawable/ic_close"
+            android:scaleType="fitCenter"
+            android:contentDescription="Закрыть" />
+    </LinearLayout>
+
+    <!-- Top Action: M3 "Создать новый плейлист" Button/Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardCreateNewPlaylist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/card_bg_color"
+        app:strokeWidth="1.5dp"
+        app:strokeColor="@color/accent_color"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="12dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/accent_color">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_add"
+                    app:tint="@color/white_color"
+                    android:contentDescription="Создать" />
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Создать новый плейлист"
+                    android:textColor="@color/accent_color"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="И добавить это видео в него"
+                    android:textColor="@color/player_item_inactive_text"
+                    android:fontFamily="@font/open_sans"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/accent_color"
+                android:contentDescription="Создать" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Subtitle: Ваши плейлисты -->
+    <TextView
+        android:id="@+id/tvPlaylistsSectionTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="18dp"
+        android:layout_marginBottom="6dp"
+        android:text="Ваши плейлисты"
+        android:textColor="@color/player_item_inactive_text"
+        android:fontFamily="@font/open_sans_bold"
+        android:textSize="12sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.05" />
+
+    <ProgressBar
+        android:id="@+id/pbLoadingPlaylists"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="24dp"
+        android:indeterminateTint="@color/accent_color"
+        android:visibility="gone" />
+
+    <!-- RecyclerView for playlists list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPlaylistsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="true"
+        android:overScrollMode="never" />
+
+    <!-- Empty State -->
+    <LinearLayout
+        android:id="@+id/layoutEmptyPlaylists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_episodes"
+            app:tint="@color/player_item_inactive_text"
+            android:alpha="0.6"
+            android:contentDescription="Нет плейлистов" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="У вас пока нет плейлистов"
+            android:textColor="@color/primary_text_color"
+            android:fontFamily="@font/open_sans_bold"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Нажмите кнопку выше, чтобы создать свой первый плейлист"
+            android:textColor="@color/player_item_inactive_text"
+            android:fontFamily="@font/open_sans"
+            android:textSize="12sp"
+            android:gravity="center" />
+    </LinearLayout>
+
+</LinearLayout>

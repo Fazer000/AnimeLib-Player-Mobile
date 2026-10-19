@@ -4,7 +4,9 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.graphics.Bitmap;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -50,6 +53,7 @@ import com.example.animelib.models.VideoFolder;
 import com.example.animelib.models.VideoItem;
 import com.example.animelib.repository.LocalVideoRepository;
 import android.net.Uri;
+import com.example.animelib.settings.AddToPlaylistBottomSheet;
 import com.example.animelib.settings.PlaylistVideosBottomSheet;
 import com.example.animelib.settings.VideoInfoBottomSheet;
 import com.example.animelib.settings.VideoOptionsBottomSheet;
@@ -105,6 +109,7 @@ public class ExplorerFragment extends Fragment {
 
     private String selectedFolder = "Все";
     private String currentSearchQuery = "";
+    private VideoListFilter.SortOrder currentSortOrder = VideoListFilter.SortOrder.DATE_DESC;
     private boolean isPlaylistCreationMode = false;
 
     private ActivityResultLauncher<String[]> permissionLauncher;
@@ -245,6 +250,14 @@ public class ExplorerFragment extends Fragment {
         setupRecyclerViews();
         setupListeners();
         loadAndDisplayLastPlayedVideo();
+
+        try {
+            SharedPreferences prefs = requireContext().getSharedPreferences("app_settings_prefs", Context.MODE_PRIVATE);
+            String savedSort = prefs.getString("explorer_sort_order", VideoListFilter.SortOrder.DATE_DESC.name());
+            currentSortOrder = VideoListFilter.SortOrder.valueOf(savedSort);
+        } catch (Exception e) {
+            currentSortOrder = VideoListFilter.SortOrder.DATE_DESC;
+        }
 
         if (hasStoragePermission()) {
             loadVideosFromStorage();
@@ -393,7 +406,7 @@ public class ExplorerFragment extends Fragment {
 
     private void setupListeners() {
         if (btnSort != null) {
-            btnSort.setOnClickListener(v -> showSortDialog());
+            btnSort.setOnClickListener(this::showSortMenu);
         }
         if (btnCreatePlaylist != null) {
             btnCreatePlaylist.setOnClickListener(v -> startPlaylistCreationMode());
@@ -537,7 +550,7 @@ public class ExplorerFragment extends Fragment {
     }
 
     private void filterAndDisplayVideos() {
-        VideoListFilter.SortOrder sortOrder = VideoListFilter.SortOrder.DATE_DESC;
+        VideoListFilter.SortOrder sortOrder = currentSortOrder != null ? currentSortOrder : VideoListFilter.SortOrder.DATE_DESC;
 
         List<VideoItem> filtered = videoFilter.filterAndSort(
                 allVideos,
@@ -635,46 +648,12 @@ public class ExplorerFragment extends Fragment {
 
     private void showAddToPlaylistDialog(VideoItem video) {
         if (!isAdded() || getContext() == null || video == null) return;
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<PlaylistEntity> playlists = databaseManager.getAllPlaylists();
-            if (getActivity() == null) return;
-            getActivity().runOnUiThread(() -> {
-                if (!isAdded()) return;
-                ArrayList<String> options = new ArrayList<>();
-                options.add("＋ Новый плейлист");
-                for (PlaylistEntity p : playlists) {
-                    options.add(p.getName());
-                }
-                DialogUtils.showListDialog(requireContext(), "Добавить в плейлист", options.toArray(new String[0]), index -> {
-                    if (index == 0) {
-                        DialogUtils.showInputDialog(requireContext(), "Новый плейлист", "Введите название плейлиста:", "", "Название", "Создать", "Отмена", new DialogUtils.InputDialogListener() {
-                            @Override
-                            public void onInputConfirmed(String input) {
-                                if (input == null || input.trim().isEmpty()) return;
-                                ArrayList<VideoItem> single = new ArrayList<>();
-                                single.add(video);
-                                databaseManager.createPlaylist(input.trim(), single);
-                                CustomToast.showSuccess(requireContext(), "Плейлист создан и видео добавлено");
-                                if (getActivity() instanceof MainActivity) {
-                                    ((MainActivity) getActivity()).notifyPlaylistsChanged();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled() {}
-                        });
-                    } else {
-                        PlaylistEntity chosen = playlists.get(index - 1);
-                        String path = video.getPath() != null && !video.getPath().isEmpty() ? video.getPath() : video.getUriString();
-                        databaseManager.addVideoToPlaylist(chosen.getId(), path, video.getTitle());
-                        CustomToast.showSuccess(requireContext(), "Добавлено в " + chosen.getName());
-                        if (getActivity() instanceof MainActivity) {
-                            ((MainActivity) getActivity()).notifyPlaylistsChanged();
-                        }
-                    }
-                });
-            });
+        AddToPlaylistBottomSheet bs = new AddToPlaylistBottomSheet(requireContext(), video, playlistName -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).notifyPlaylistsChanged();
+            }
         });
+        bs.show();
     }
 
     private void showRenameVideoDialog(VideoItem video) {
@@ -770,15 +749,87 @@ public class ExplorerFragment extends Fragment {
     }
 
     private void showSortDialog() {
-        String[] sortOptions = new String[]{
-                "По имени (А-Я)",
-                "По дате (сначала новые)",
-                "По дате (сначала старые)",
-                "По размеру (сначала большие)"
-        };
-        DialogUtils.showSingleChoiceDialog(requireContext(), "Сортировка видео", sortOptions, 1, which -> {
-            filterAndDisplayVideos();
-        });
+        if (btnSort != null) {
+            showSortMenu(btnSort);
+        }
+    }
+
+    /**
+     * Показывает выпадающий список вариантов сортировки видео (PopupWindow),
+     * оформленный в стиле AnimeLib-Mobile (bg_sort_popup), аналогично выпадающему меню в BS плейлиста.
+     */
+    private void showSortMenu(View anchorView) {
+        if (anchorView == null || getContext() == null) return;
+        try {
+            View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popup_video_sort, null);
+            float density = getContext().getResources().getDisplayMetrics().density;
+            int width = (int) (230 * density);
+            PopupWindow popupWindow = new PopupWindow(
+                    popupView,
+                    width,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    true
+            );
+            popupWindow.setOutsideTouchable(true);
+            popupWindow.setFocusable(true);
+            popupWindow.setElevation(14 * density);
+            popupWindow.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+            setupSortItem(popupView, popupWindow, R.id.popup_sort_date_desc, R.id.iv_check_date_desc, R.id.tv_title_date_desc, R.id.iv_icon_date_desc, VideoListFilter.SortOrder.DATE_DESC);
+            setupSortItem(popupView, popupWindow, R.id.popup_sort_date_asc, R.id.iv_check_date_asc, R.id.tv_title_date_asc, R.id.iv_icon_date_asc, VideoListFilter.SortOrder.DATE_ASC);
+            setupSortItem(popupView, popupWindow, R.id.popup_sort_name_asc, R.id.iv_check_name_asc, R.id.tv_title_name_asc, R.id.iv_icon_name_asc, VideoListFilter.SortOrder.NAME_ASC);
+            setupSortItem(popupView, popupWindow, R.id.popup_sort_name_desc, R.id.iv_check_name_desc, R.id.tv_title_name_desc, R.id.iv_icon_name_desc, VideoListFilter.SortOrder.NAME_DESC);
+            setupSortItem(popupView, popupWindow, R.id.popup_sort_size_desc, R.id.iv_check_size_desc, R.id.tv_title_size_desc, R.id.iv_icon_size_desc, VideoListFilter.SortOrder.SIZE_DESC);
+            setupSortItem(popupView, popupWindow, R.id.popup_sort_size_asc, R.id.iv_check_size_asc, R.id.tv_title_size_asc, R.id.iv_icon_size_asc, VideoListFilter.SortOrder.SIZE_ASC);
+
+            int xOffset = -(width - anchorView.getWidth());
+            int yOffset = (int) (6 * density);
+            popupWindow.showAsDropDown(anchorView, xOffset, yOffset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setupSortItem(View popupView, PopupWindow popupWindow, int itemId, int checkId, int titleId, int iconId, VideoListFilter.SortOrder order) {
+        View item = popupView.findViewById(itemId);
+        View check = popupView.findViewById(checkId);
+        TextView title = popupView.findViewById(titleId);
+        ImageView icon = popupView.findViewById(iconId);
+
+        boolean isSelected = (currentSortOrder == order);
+        if (check != null) {
+            check.setVisibility(isSelected ? View.VISIBLE : View.GONE);
+        }
+        if (title != null && getContext() != null) {
+            int color = isSelected
+                    ? ContextCompat.getColor(requireContext(), R.color.accent_color)
+                    : ContextCompat.getColor(requireContext(), R.color.primary_text_color);
+            title.setTextColor(color);
+        }
+        if (icon != null && getContext() != null) {
+            int color = isSelected
+                    ? ContextCompat.getColor(requireContext(), R.color.accent_color)
+                    : ContextCompat.getColor(requireContext(), R.color.primary_text_color);
+            icon.setImageTintList(android.content.res.ColorStateList.valueOf(color));
+        }
+
+        if (item != null) {
+            item.setOnClickListener(v -> {
+                popupWindow.dismiss();
+                if (currentSortOrder != order) {
+                    currentSortOrder = order;
+                    if (getContext() != null) {
+                        try {
+                            requireContext().getSharedPreferences("app_settings_prefs", Context.MODE_PRIVATE)
+                                    .edit()
+                                    .putString("explorer_sort_order", currentSortOrder.name())
+                                    .apply();
+                        } catch (Exception ignored) {}
+                    }
+                    filterAndDisplayVideos();
+                }
+            });
+        }
     }
 
     private void startPlaylistCreationMode() {

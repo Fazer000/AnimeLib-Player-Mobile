@@ -215,9 +215,8 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
         }
 
         // Thumbnail loading
-        String cacheKey = (video.getUriString() != null && !video.getUriString().isEmpty())
-                ? video.getUriString() : video.getPath();
-        if (cacheKey != null && !cacheKey.isEmpty()) {
+        String cacheKey = com.example.animelib.util.VideoThumbnailHelper.buildCacheKey(video.getPath(), video.getUri());
+        if (cacheKey != null) {
             holder.ivVideoThumbnail.setTag(cacheKey);
             Bitmap cached = thumbnailCache.get(cacheKey);
             if (cached == null) {
@@ -252,9 +251,11 @@ public class PlaylistEpisodesAdapter extends RecyclerView.Adapter<PlaylistEpisod
 
             if (thumb != null) {
                 final Bitmap finalThumb = thumb;
-                thumbnailCache.put(cacheKey, finalThumb);
+                if (cacheKey != null) {
+                    thumbnailCache.put(cacheKey, finalThumb);
+                }
                 mainHandler.post(() -> {
-                    if (cacheKey.equals(imageView.getTag())) {
+                    if (cacheKey != null && cacheKey.equals(imageView.getTag())) {
                         imageView.setImageBitmap(finalThumb);
                     }
                 });

@@ -278,19 +278,23 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         // Thumbnail loading
-        String cacheKey = video.getUriString() != null && !video.getUriString().isEmpty()
-                ? video.getUriString() : video.getPath();
+        String cacheKey = com.example.animelib.util.VideoThumbnailHelper.buildCacheKey(video.getPath(), video.getUri());
         holder.ivVideoThumbnail.setTag(cacheKey);
 
-        Bitmap cached = thumbnailCache.get(cacheKey);
-        if (cached == null) {
-            cached = com.example.animelib.util.VideoThumbnailHelper.getCachedThumbnail(cacheKey);
+        Bitmap cached = null;
+        if (cacheKey != null) {
+            cached = thumbnailCache.get(cacheKey);
+            if (cached == null) {
+                cached = com.example.animelib.util.VideoThumbnailHelper.getCachedThumbnail(cacheKey);
+            }
         }
         if (cached != null) {
             holder.ivVideoThumbnail.setImageBitmap(cached);
         } else {
             holder.ivVideoThumbnail.setImageResource(R.drawable.placeholder_image);
-            loadThumbnailAsync(holder.itemView.getContext(), video, cacheKey, holder.ivVideoThumbnail);
+            if (cacheKey != null) {
+                loadThumbnailAsync(holder.itemView.getContext(), video, cacheKey, holder.ivVideoThumbnail);
+            }
         }
 
         holder.itemView.setOnClickListener(v -> {
@@ -313,9 +317,11 @@ public class VideoFilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             if (thumb != null) {
                 final Bitmap finalThumb = thumb;
-                thumbnailCache.put(cacheKey, finalThumb);
+                if (cacheKey != null) {
+                    thumbnailCache.put(cacheKey, finalThumb);
+                }
                 mainHandler.post(() -> {
-                    if (cacheKey.equals(imageView.getTag())) {
+                    if (cacheKey != null && cacheKey.equals(imageView.getTag())) {
                         imageView.setImageBitmap(finalThumb);
                     }
                 });
