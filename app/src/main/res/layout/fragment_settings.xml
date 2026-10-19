@@ -702,7 +702,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:text="AnimeLib Player v1.8.9"
+                        android:text="PlayerLib v1.0.0"
                         android:textColor="@color/accent_text_color"
                         android:textSize="12.5sp" />
                 </LinearLayout>
@@ -725,7 +725,7 @@
             android:paddingBottom="12dp"
             android:textColor="@color/secondary_text_color"
             android:textSize="13sp"
-            android:text="Версия v1.8.9 (AnimeLib)" />
+            android:text="Версия v1.0.0 (PlayerLib)" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -459,6 +459,15 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
         });
     }
 
+    private String stripExtension(String filename) {
+        if (filename == null) return "";
+        int dot = filename.lastIndexOf('.');
+        if (dot > 0) {
+            return filename.substring(0, dot);
+        }
+        return filename;
+    }
+
     private void updatePlayerTitles() {
         String mainTitle;
         String subtitleText;
@@ -468,7 +477,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements PlayerGest
             int episodeNum = playlistManager.getCurrentIndex() + 1;
             subtitleText = "Серия " + episodeNum;
         } else {
-            mainTitle = playlistManager.getCurrentTitle();
+            mainTitle = stripExtension(playlistManager.getCurrentTitle());
             subtitleText = null;
         }
 

@@ -78,7 +78,7 @@
                     android:layout_height="48dp"
                     android:src="?attr/logoDrawable"
                     android:layout_marginBottom="10dp"
-                    android:contentDescription="AnimeLib Logo" />
+                    android:contentDescription="PlayerLib Logo" />
 
                 <TextView
                     android:id="@+id/tvVersionTitle"

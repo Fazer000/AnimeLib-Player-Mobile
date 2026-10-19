@@ -408,7 +408,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Приложение AnimeLib является сторонним неофициальным клиентом. Все права на контент, бренд, логотипы, товарные знаки, сайт animelib.org и его API принадлежат их законным владельцам (ООО «Мангалиб»)."
+                    android:text="PlayerLib — современный офлайн видеоплеер для воспроизведения локальных видеофайлов, организации плейлистов и управления историей просмотра на вашем устройстве."
                     android:textColor="@color/accent_text_color"
                     android:textSize="13sp"
                     android:fontFamily="@font/open_sans"
@@ -450,7 +450,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Приложение создано исключительно в ознакомительных целях. Разработчик приложения не несёт ответственности за контент, предоставляемый сторонними ресурсами и сервисом animelib.org, а также за использование их публичного API."
+                    android:text="Приложение предназначено исключительно для воспроизведения локальных видеофайлов, хранящихся на вашем устройстве, и не осуществляет стриминг или загрузку контента из интернета."
                     android:textColor="@color/accent_text_color"
                     android:textSize="13sp"
                     android:fontFamily="@font/open_sans"
@@ -491,7 +491,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Приложение не распространяет защищённый авторским правом контент напрямую, а использует публично доступный функционал сайта animelib.org и его API для отображения каталога, личных закладок, комментариев и воспроизведения плееров."
+                    android:text="PlayerLib работает полностью локально без использования внешних API, серверов или учетных записей, обеспечивая высокую скорость работы и полную приватность ваших данных."
                     android:textColor="@color/accent_text_color"
                     android:textSize="13sp"
                     android:fontFamily="@font/open_sans"

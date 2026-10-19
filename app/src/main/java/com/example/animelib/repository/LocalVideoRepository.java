@@ -3,6 +3,7 @@ package com.example.animelib.repository;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -63,12 +64,21 @@ public class LocalVideoRepository implements VideoRepository {
             }
         }
 
-        // Синхронизация сохраненного прогресса из Room Database
+        // Синхронизация сохраненного прогресса и длительности из Room Database или MediaMetadataRetriever
         for (VideoItem item : list) {
             if (item.getPath() != null) {
                 VideoPlaybackHistoryEntity history = databaseManager.getVideoHistory(item.getPath());
                 if (history != null) {
                     item.setLastPositionMs(history.getLastPositionMs());
+                    if (item.getDurationMs() <= 0 && history.getDurationMs() > 0) {
+                        item.setDurationMs(history.getDurationMs());
+                    }
+                }
+                if (item.getDurationMs() <= 0) {
+                    long extractedDuration = extractDurationFromFile(item.getPath(), item.getUri());
+                    if (extractedDuration > 0) {
+                        item.setDurationMs(extractedDuration);
+                    }
                 }
             }
         }
@@ -250,5 +260,26 @@ public class LocalVideoRepository implements VideoRepository {
             }
         } catch (Exception ignored) {}
         return "Видео";
+    }
+
+    private long extractDurationFromFile(String path, Uri uri) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            if (path != null && new File(path).exists()) {
+                retriever.setDataSource(path);
+            } else if (uri != null) {
+                retriever.setDataSource(context, uri);
+            }
+            String durStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            if (durStr != null) {
+                return Long.parseLong(durStr);
+            }
+        } catch (Exception ignored) {
+        } finally {
+            try {
+                retriever.release();
+            } catch (Exception ignored) {}
+        }
+        return 0;
     }
 }

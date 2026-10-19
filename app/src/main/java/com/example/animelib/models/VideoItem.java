@@ -9,7 +9,7 @@ public class VideoItem implements Serializable {
     private String title;
     private final String path;
     private final String uriString;
-    private final long durationMs;
+    private long durationMs;
     private final long sizeBytes;
     private final long dateModified;
     private final String folderName;
@@ -72,6 +72,7 @@ public class VideoItem implements Serializable {
     public Uri getUri() { return uriString != null && !uriString.isEmpty() ? Uri.parse(uriString) : null; }
     public String getUriString() { return uriString; }
     public long getDurationMs() { return durationMs; }
+    public void setDurationMs(long durationMs) { this.durationMs = durationMs; }
     public long getSizeBytes() { return sizeBytes; }
     public long getDateModified() { return dateModified; }
     public String getFolderName() { return folderName; }
